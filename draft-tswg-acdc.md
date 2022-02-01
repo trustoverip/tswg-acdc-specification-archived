@@ -22,9 +22,9 @@ pi: [toc, sortrefs, symrefs]
 
 author:
  -
-    name: Your Name Here
+    name: "Kevin Griffin"
     organization: Your Organization Here
-    email: your.email@example.com
+    email: "griffin.kev@gmail.com"
 
 normative:
 
