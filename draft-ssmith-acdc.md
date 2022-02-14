@@ -82,12 +82,13 @@ TODO: mention about informative example used across whole spec
   "v": "ACDC10JSON00011c_",
   "d": "EBdXt3gIXOf2BBWNHdSXCJnFJL5OuQPyM5K0neuniccM",
   "i": "did:keri:EmkPreYpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPM",
+  "ri": "did:keri:EymRy7xMwsxUelUauaXtMxTfPAMPAI6FkekwlOjkggt",
   "s": "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
   "a": {
     "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
     "i": "did:keri:EQzFVaMasUf4cZZBKA0pUbRc9T8yUXRFLyM1JDASYqAA",
+    "n": "0ANghkDaG7OY1wjaDAE0qHcg"
     "dt": "2021-06-09T17:35:54.169967+00:00",
-    "ri": "did:keri:EymRy7xMwsxUelUauaXtMxTfPAMPAI6FkekwlOjkggt",
     "LEI": "254900OPPU84GM83MG36",
   },
   "p": [
@@ -112,9 +113,12 @@ TODO: mention about informative example used across whole spec
 
 - `v` version string of ACDC
 - `d` SAID of ACDC.
-- `i` Attributable Source Identifier (Issuer, Testator). 
+- `i` Attributable Source Identifier (Issuer, Issuee). 
+- `ri` Registry Identifier (Issuance, Revocation, Transfer Registry of ACDC)
 - `s` Schema SAID
-- 'a' Attributes
+- `a` Attributes
+  - `n` Nonce (optional for hidded attribute ACDC)
+  - `dt` Datetime of issuance
 - `p` Provenance chain
 - `r` Rules rules/delegation/consent/license/data agreement under which data are shared.
 
