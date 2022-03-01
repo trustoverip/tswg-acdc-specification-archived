@@ -4,7 +4,6 @@ abbrev: "ACDC"
 category: info
 
 docname: draft-ssmith-acdc-latest
-category: info
 
 ipr: trust200902
 area: TODO
