@@ -23,6 +23,35 @@ author:
 
 normative:
 
+  JSON:
+    target: https://www.json.org/json-en.html
+    title: JavaScript Object Notation Delimeters
+    
+  RFC4627:
+    target: https://datatracker.ietf.org/doc/rfc4627/
+    title: The application/json Media Type for JavaScript Object Notation (JSON)
+  
+  CBOR:
+    target: https://en.wikipedia.org/wiki/CBOR
+    title: CBOR Mapping Object Codes
+    
+  RFC8949:
+    target: https://datatracker.ietf.org/doc/rfc8949/
+    title: Concise Binary Object Representation (CBOR)
+    author:
+      -
+        ins: C. Bormann
+        name: Carsten Bormann
+      -
+        ins: P. Hoffman
+        name: Paul Hoffman
+    date: 2020-12-04
+    
+MGPK:
+    target: https://github.com/msgpack/msgpack/blob/master/spec.md
+    title: Msgpack Mapping Object Codes
+  
+
 informative:
   KERI:
     target: https://arxiv.org/abs/1907.02143
