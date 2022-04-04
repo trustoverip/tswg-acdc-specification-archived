@@ -22,6 +22,87 @@ author:
 
 normative:
 
+  ACDC_ID:
+    target: https://github.com/trustoverip/tswg-acdc-specification
+    title: IETF ACDC (Authentic Chained Data Containers) Internet Draft
+    author:
+      ins: S. Smith
+      name: Samuel M. Smith
+      org: ProSapien LLC
+    date: 2022
+
+  KERI_ID:
+    target: https://github.com/WebOfTrust/ietf-keri
+    title: IETF KERI (Key Event Receipt Infrastructure) Internet Draft
+    author:
+      ins: S. Smith
+      name: Samuel M. Smith
+      org: ProSapien LLC
+    date: 2022
+    
+  CESR_ID:
+    target: https://github.com/WebOfTrust/ietf-cesr
+    title: IETF CESR (Composable Event Streaming Representation) Internet Draft
+    author:
+      ins: S. Smith
+      name: Samuel M. Smith
+      org: ProSapien LLC
+    date: 2022
+    
+  SAID_ID:
+    target: https://github.com/WebOfTrust/ietf-said
+    title: IETF SAID (Self-Addressing IDentifier) Internet Draft
+    author:
+      ins: S. Smith
+      name: Samuel M. Smith
+      org: ProSapien LLC
+    date: 2022
+    
+  PTEL_ID:
+    target: https://github.com/WebOfTrust/ietf-ptel
+    title: IETF PTEL (Public Transaction Event Log) Internet Draft
+    author:
+      ins: P. Feairheller
+      name: Phil Feairheller
+      org: GLEIF
+    date: 2022
+    
+  Proof_ID:
+    target: https://github.com/WebOfTrust/ietf-cesr-proof
+    title: IETF CESR-Proof Internet Draft
+    author:
+      ins: P. Feairheller
+      name: Phil Feairheller
+      org: GLEIF
+    date: 2022
+ 
+  IPEX_ID:
+    target: https://github.com/WebOfTrust/keripy/blob/master/ref/Peer2PeerCredentials.md
+    title: IPEX (Issuance and Presentation EXchange) Internet Draft
+    author:
+      ins: P. Feairheller
+      name: Phil Feairheller
+      org: GLEIF
+    date: 2022
+
+  DIDK_ID:
+    target: https://github.com/WebOfTrust/ietf-did-keri
+    title: IETF DID-KERI Internet Draft
+    author:
+      ins: P. Feairheller
+      name: Phil Feairheller
+      org: GLEIF
+    date: 2022
+    
+  OOBI_ID:
+    target: https://github.com/WebOfTrust
+    title: IETF OOBI Internet Draft
+    author:
+      ins: S. Smith
+      name: Samuel M. Smith
+      org: ProSapien LLC
+    date: 2022
+
   JSON:
     target: https://www.json.org/json-en.html
     title: JavaScript Object Notation Delimeters
@@ -46,13 +127,33 @@ normative:
         name: Paul Hoffman
     date: 2020-12-04
     
-MGPK:
+  MGPK:
     target: https://github.com/msgpack/msgpack/blob/master/spec.md
     title: Msgpack Mapping Object Codes
   
 
 informative:  
+  
+  ACDC: 
+    target: https://github.com/SmithSamuelM/Papers/blob/master/whitepapers/ACDC.web.pdf
+    title: Authentic Chained Data Containers (ACDC) White Paper
+    
+  VCEnh:
+    target: https://github.com/SmithSamuelM/Papers/blob/master/whitepapers/VC_Enhancement_Strategy.md
+    title: VC Spec Enhancement Strategy Proposal 
 
+  ACDC_TF: 
+    target: https://wiki.trustoverip.org/display/HOME/ACDC+%28Authentic+Chained+Data+Container%29+Task+Force
+    title: ACDC (Authentic Chained Data Container) Task Force
+    
+  TOIP: 
+    target: https://trustoverip.org
+    title: Trust Over IP (ToIP) Foundation
+
+  TOIP: 
+    target: https://www.ietf.org
+    title: IETF (Internet Engineering Task Force)
+  
   KERI:
     target: https://arxiv.org/abs/1907.02143
     title: Key Event Receipt Infrastructure (KERI)
@@ -97,14 +198,15 @@ informative:
   XORA: 
     target: https://github.com/SmithSamuelM/Papers/blob/master/whitepapers/XORA.md
     title: XORA (XORed Accumulator)
+    
 
 tags: IETF, ACDC, CESR, SAID, KERI
 
 --- abstract
 
-Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema, multiple serialization formats, that are, JSON, CBOR, MGPK, and CESR [JSON][RFC4627][CBOR][RFC8949][MGPK], compact formats, 
+Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema, multiple serialization formats, that are, JSON, CBOR, MGPK, and CESR [JSON][RFC4627][CBOR][RFC8949][MGPK][CESR_ID], compact formats, 
 
-a well-defined security model derived from KERI [KERI], 
+a well-defined security model derived from KERI [KERI][KERI_ID], 
 
 simple *partial disclosure* mechanisms and simple *selective disclosure* mechanisms. 
 
@@ -115,11 +217,7 @@ The primary purpose of the ACDC protocol is to provide granular provenanced proo
 
 --- middle
 
-# Abstract
-
-Authentic Chained Data Containers (ACDC) Standard Specification provides semantic of authentic provenance chaining of authentic data containers. This semantics include both source provenance and authorization provenance or delegation.
-
-# Motivation
+# Introduction
 
 We need a way to chain authentic data together, allowing its provenance to be traced. This is valuable in many use cases:
 
