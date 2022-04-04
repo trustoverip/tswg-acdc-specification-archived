@@ -111,11 +111,11 @@ normative:
     target: https://datatracker.ietf.org/doc/rfc4627/
     title: The application/json Media Type for JavaScript Object Notation (JSON)
     
- JSON_Schema:
+  JSON_Schema:
     target: https://json-schema.org
     title: JSON Schema
     
- JSON_Schema_202012:
+  JSON_Schema_202012:
     target: https://json-schema.org/draft/2020-12/release-notes.html
     title: "JSON Schema 2020-12"
   
