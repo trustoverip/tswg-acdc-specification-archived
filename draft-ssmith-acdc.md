@@ -267,7 +267,7 @@ informative:
         name: Mang Zhao  
     date: 2021-05-24
 
-TmEd:
+  TmEd:
     target: https://eprint.iacr.org/2020/1244.pdf
     title: Taming the many EdDSAs  
 
