@@ -116,8 +116,8 @@ normative:
     title: JSON Schema
     
  JSON_Schema_202012:
-    target: https://json-schema.org/draft/2020-12/release-notes.html
-    title: JSON Schema 2020-12
+    target: "https://json-schema.org/draft/2020-12/release-notes.html"
+    title: "JSON Schema 2020-12"
   
   CBOR:
     target: https://en.wikipedia.org/wiki/CBOR
@@ -295,8 +295,8 @@ informative:
     title: Ricardian Contract 
 
   CLC:
-    target: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2045818
-    title: Chain-Link Confidentiality 
+    target: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2045818"
+    title: "Chain-Link Confidentiality" 
 
 
     
