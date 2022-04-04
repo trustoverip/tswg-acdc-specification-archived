@@ -241,12 +241,12 @@ informative:
     
   QCHC:
     target: https://cr.yp.to/hash/collisioncost-20090823.pdf
-    title: Cost analysis of hash collisions: Will quantum computers make SHARCS obsolete?
+    title: "Cost analysis of hash collisions: Will quantum computers make SHARCS obsolete?"
     
   EdSC:
     target: https://eprint.iacr.org/2020/823
     title: The Provable Security of Ed25519: Theory and Practice Report
-
+    
   PSEd:
     target: https://ieeexplore.ieee.org/document/9519456?denied=
     title: The Provable Security of Ed25519: Theory and Practice
@@ -265,6 +265,7 @@ informative:
         ins: M. Zhao  
         name: Mang Zhao  
     date: 2021-05-24
+
 
   TmEd:
     target: https://eprint.iacr.org/2020/1244.pdf
