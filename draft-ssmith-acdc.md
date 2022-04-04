@@ -107,6 +107,10 @@ normative:
     target: https://www.json.org/json-en.html
     title: JavaScript Object Notation Delimeters
     
+  RFC8259:
+    target: https://datatracker.ietf.org/doc/html/rfc8259
+    title: JSON (JavaScript Object Notation)
+    
   RFC4627:
     target: https://datatracker.ietf.org/doc/rfc4627/
     title: The application/json Media Type for JavaScript Object Notation (JSON)
@@ -247,6 +251,10 @@ informative:
     target: https://auth0.com/blog/birthday-attacks-collisions-and-password-strength/
     title: Birthday Attacks, Collisions, And Password Strength
     
+  HCR:
+    target: https://en.wikipedia.org/wiki/Collision_resistance
+    title: Hash Collision Resistance
+    
   QCHC:
     target: https://cr.yp.to/hash/collisioncost-20090823.pdf
     title: "Cost analysis of hash collisions: Will quantum computers make SHARCS obsolete?"
@@ -289,6 +297,10 @@ informative:
   JS_Id:
     target: https://json-schema.org/understanding-json-schema/structuring.html#schema-identification
     title: JSON Schema Identification
+    
+  JS_Cplx:
+    target: https://json-schema.org/understanding-json-schema/structuring.html#base-uri
+    title: Complex JSON Schema Structuring
 
   RC:
     target: https://en.wikipedia.org/wiki/Ricardian_contract
@@ -297,9 +309,75 @@ informative:
   CLC:
     target: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2045818
     title: "Chain-Link Confidentiality" 
-
-
     
+  DHKE:
+    target: https://www.infoworld.com/article/3647751/understand-diffie-hellman-key-exchange.html
+    title: "Diffie-Hellman Key Exchange" 
+
+  KeyEx:
+    target: https://libsodium.gitbook.io/doc/key_exchange
+    title: Key Exchange  
+    
+  IDSys:
+    target: https://github.com/SmithSamuelM/Papers/blob/master/whitepapers/Identity-System-Essentials.pdf
+    title: Identity System Essentials 
+    
+  Hash:
+    target: https://en.wikipedia.org/wiki/Cryptographic_hash_function
+    title: Cryptographic Hash Function 
+    
+  Mrkl:
+    target: https://en.wikipedia.org/wiki/Merkle_tree
+    title: Merkle Tree
+      
+  2PI:
+    target: https://flawed.net.nz/2018/02/21/attacking-merkle-trees-with-a-second-preimage-attack/
+    title: Second Pre-image Attack on Merkle Trees 
+    
+  MTSec:
+    target: https://blog.enuma.io/update/2019/06/10/merkle-trees-not-that-simple.html
+    title: Merkle Tree Security
+
+  MTSec:
+    target: https://en.wikipedia.org/wiki/Digital_signature
+    title: Digital Signature       
+    
+  Level:
+    target: https://en.wikipedia.org/wiki/Security_level
+    title: Security Level  
+    
+  Twin:
+    target: https://en.wikipedia.org/wiki/Digital_twin
+    title: Digital Twin
+    
+  Mal:
+    target: https://en.wikipedia.org/wiki/Transaction_malleability_problem
+    title: Transaction Malleability   
+    
+  PGM:
+    target: http://ceur-ws.org/Vol-2100/paper26.pdf
+    title: The Property Graph Database Model
+    author:
+      ins: R. Angles
+      name: Renzo Angles
+    date: 2018
+
+Dots:
+    target: https://arxiv.org/pdf/1006.2361.pdf
+    title: Constructions from Dots and Lines
+    author:
+      -
+        ins: M. Rodriguez
+        name: Marko A. Rodriguez
+      -
+        ins: P. Neubauer
+        name: Peter Neubauer
+    date: 2010
+      
+KG:
+  target: https://arxiv.org/pdf/2003.02320.pdf
+  title: Knowledge Graphs 
+ 
 
 tags: IETF, ACDC, CESR, SAID, KERI
 
