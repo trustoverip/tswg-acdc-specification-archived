@@ -150,9 +150,9 @@ informative:
     target: https://trustoverip.org
     title: Trust Over IP (ToIP) Foundation
 
-  TOIP: 
+  IETF: 
     target: https://www.ietf.org
-    title: IETF (Internet Engineering Task Force)
+    title: IETF (Internet Engineering Task Force
   
   KERI:
     target: https://arxiv.org/abs/1907.02143
@@ -199,12 +199,86 @@ informative:
     target: https://github.com/SmithSamuelM/Papers/blob/master/whitepapers/XORA.md
     title: XORA (XORed Accumulator)
     
+  vLEI: 
+    target: https://github.com/WebOfTrust/vLEI
+    title: vLEI (verifiable Legal Entity Identifier) Definition
+    
+  GLEIF_vLEI:
+    target: https://www.gleif.org/en/lei-solutions/gleifs-digital-strategy-for-the-lei/introducing-the-verifiable-lei-vlei
+    title: GLEIF vLEI (verifiable Legal Entity Identifier)
+
+  GLEIF_KERI: 
+    target: https://github.com/WebOfTrust/vLEI
+    title: GLEIF with KERI Architecture
+    
+  W3C_DID:
+    target: https://w3c-ccg.github.io/did-spec/
+    title: W3C Decentralized Identifiers (DIDs) v1.0
+    
+  W3C_VC:
+    target: https://www.w3.org/TR/vc-data-model/
+    title: W3C Verifiable Credentials Data Model v1.1 
+    
+  Salt:
+    target: https://medium.com/@fridakahsas/salt-nonces-and-ivs-whats-the-difference-d7a44724a447
+    title: Salts, Nonces, and Initial Values 
+    
+  RB:
+    target: https://en.wikipedia.org/wiki/Rainbow_table
+    title: Rainbow Table 
+    
+  DRB:
+    target: https://www.commonlounge.com/discussion/2ee3f431a19e4deabe4aa30b43710aa7
+    title: Dictionary Attacks, Rainbow Table Attacks and how Password Salting defends against them
+    
+  BDay:
+    target: https://en.wikipedia.org/wiki/Birthday_attack
+    title: Birthday Attack
+    
+  BDC:
+    target: https://auth0.com/blog/birthday-attacks-collisions-and-password-strength/
+    title: Birthday Attacks, Collisions, And Password Strength
+    
+  QCHC:
+    target: https://cr.yp.to/hash/collisioncost-20090823.pdf
+    title: Cost analysis of hash collisions: Will quantum computers make SHARCS obsolete?
+    
+  EdSC:
+    target: https://eprint.iacr.org/2020/823
+    title: The Provable Security of Ed25519: Theory and Practice Report
+
+  PSEd:
+    target: https://ieeexplore.ieee.org/document/9519456?denied=
+    title: The Provable Security of Ed25519: Theory and Practice
+    seriesinfo: 2021 IEEE Symposium on Security and Privacy (SP)
+    DOI: 10.1109/SP40001.2021.00042
+    author:
+      -
+        ins: J. Brendel  
+        name: Jacqueline Brendel  
+      -
+        ins: C. Cremers  
+        name: Cas Cremers  
+      -
+        ins: D. Jackson  
+        name: Dennis Jackson    
+      -
+        ins: M. Zhao  
+        name: Mang Zhao  
+    date: 2021-05-24
+
+TmEd:
+    target: https://eprint.iacr.org/2020/1244.pdf
+    title: Taming the many EdDSAs  
+
+
+    
 
 tags: IETF, ACDC, CESR, SAID, KERI
 
 --- abstract
 
-Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema, multiple serialization formats, that are, JSON (see [JSON], [RFC4627]), CBOR (see [CBOR], [RFC8949]), MGPK (see [MGPK]), and CESR (see [CESR_ID]), compact formats, 
+Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema, multiple serialization formats, that are, JSON {{JSON}}{{RFC4627}}, CBOR {{CBOR}}{{RFC8949}}, MGPK {{MGPK}}, and CESR {{CESR_ID}}, compact formats, 
 
 a well-defined security model derived from KERI {{KERI}}{{KERI_ID}}, 
 
@@ -218,8 +292,6 @@ The primary purpose of the ACDC protocol is to provide granular provenanced proo
 --- middle
 
 # Introduction
-
-Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema, multiple serialization formats, that are, JSON [JSON] [RFC4627], CBOR [CBOR] [RFC8949], MGPK [MGPK], and CESR [CESR_ID], compact formats, 
 
 
 
