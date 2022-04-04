@@ -51,7 +51,8 @@ MGPK:
     title: Msgpack Mapping Object Codes
   
 
-informative:
+informative:  
+
   KERI:
     target: https://arxiv.org/abs/1907.02143
     title: Key Event Receipt Infrastructure (KERI)
