@@ -219,6 +219,11 @@ The primary purpose of the ACDC protocol is to provide granular provenanced proo
 
 # Introduction
 
+Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema, multiple serialization formats, that are, JSON [JSON] [RFC4627], CBOR [CBOR] [RFC8949], MGPK [MGPK], and CESR [CESR_ID], compact formats, 
+
+
+
+
 We need a way to chain authentic data together, allowing its provenance to be traced. This is valuable in many use cases:
 
 * Supply chain, where a valid transfer of custody downstream depends on the validity of all upstream handoffs.
