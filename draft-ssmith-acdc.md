@@ -116,7 +116,7 @@ normative:
     title: JSON Schema
     
  JSON_Schema_202012:
-    target: "https://json-schema.org/draft/2020-12/release-notes.html"
+    target: https://json-schema.org/draft/2020-12/release-notes.html
     title: "JSON Schema 2020-12"
   
   CBOR:
@@ -142,7 +142,7 @@ normative:
 
 informative:  
   
-  ACDC: 
+  ACDC_WP: 
     target: https://github.com/SmithSamuelM/Papers/blob/master/whitepapers/ACDC.web.pdf
     title: Authentic Chained Data Containers (ACDC) White Paper
     
@@ -295,7 +295,7 @@ informative:
     title: Ricardian Contract 
 
   CLC:
-    target: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2045818"
+    target: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2045818
     title: "Chain-Link Confidentiality" 
 
 
