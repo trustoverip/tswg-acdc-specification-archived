@@ -405,6 +405,28 @@ The ACDC specification (including its partial and selective disclosure mechanism
 
 An important property of high-strength cryptographic digests is that a verifiable cryptographic commitment (such as a digital signature) to the digest of some data is equivalent to a commitment to the data itself. ACDCs leverage this property to enable compact chains of ACDCs that anchor data via digests. The data *contained* in an ACDC may therefore be merely its equivalent anchoring digest. The anchored data is thereby equivalently authenticated or authorized by the chain of ACDCs. 
 
+# ACDC Fields
+
+An ACDC may be abstractly modeled as a nested `key: value` mapping. To avoid confusion with the cryptographic use of the term *key* we instead use the term *field* to refer to a mapping pair and the terms *field label* and *field value* for each member of a pair. These pairs can be represented by two tuples e.g `(label, value)`. We qualify this terminology when necessary by using the term *field map* to reference such a mapping. *Field maps* may be nested where a given *field value* is itself a reference to another *field map*.  We call this nested set of fields a *nested field map* or simply a *nested map* for short. A *field* may be represented by a framing code or block delimited serialization.  In a block delimited serialization, such as JSON, each *field map* is represented by an object block with block delimiters such as `{}` {{RFC8259}}{{JSON}}{{RFC4627}}. Given this equivalence, we may also use the term *block* or *nested block* as synonymous with *field map* or *nested field map*. In many programming languages, a field map is implemented as a dictionary or hash table in order to enable performant asynchronous lookup of a *field value* from its *field label*. Reproducible serialization of *field maps* requires a canonical ordering of those fields. One such canonical ordering is called insertion or field creation order. A list of `(field, value)` pairs provides an ordered representation of any field map. Most programming languages now support ordered dictionaries or hash tables that provide reproducible iteration over a list of ordered field `(label, value)` pairs where the ordering is the insertion or field creation order. This enables reproducible round trip serialization/deserialization of *field maps*.  ACDCs depend on insertion ordered field maps for canonical serialization/deserialization. ACDCs support multiple serialization types, namely JSON, CBOR, MGPK, and CESR but for the sake of simplicity, we will only use JSON herein for examples {{RFC8259}}{{JSON}}. The basic set of normative field labels in ACDC field maps is defined in the following table.
+
+
+| Label | Title | Description |
+|:-:|:--|:--|
+|`v`| Version String| Regexable format: ACDCvvSSSShhhhhh_ that provides protocol type, version, serialization type, size, and terminator. | 
+|`d`| Digest (SAID) | Self-referential fully qualified cryptographic digest of enclosing map. |
+|`i`| Identifier (AID)| Semantics are determined by the context of its enclosing map. | 
+|`u`| UUID | Random Universally Unique IDentifier as fully qualified high entropy pseudo-random string, a salted nonce. |
+|`ri`| Registry Identifier (AID) | Issuance and/or revocation, transfer, or retraction registry for ACDC. | 
+|`s`| Schema| Either the SAID of a JSON Schema block or the block itself. | 
+|`a`| Attribute| Either the SAID of a block of attributes or the block itself. | 
+|`A`| Attribute Aggregate| Either the Aggregate of a selectively disclosable block of attributes or the block itself. | 
+|`e`| Edge| Either the SAID of a block of edges or the block itself.| 
+|`r`| Rule | Either the SAID a block of rules or the block itself. | 
+|`n`| Node| SAID of another ACDC as the terminating point of a directed edge that connects the encapsulating ACDC node to the specified ACDC node as a fragment of a distributed property graph (PG).| 
+|`l`| Legal Language| Text of Ricardian contract clause.| 
+
+
+
 # Conventions and Definitions
 
 {::boilerplate bcp14-tagged}
