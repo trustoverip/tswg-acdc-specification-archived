@@ -251,7 +251,6 @@ informative:
     target: https://ieeexplore.ieee.org/document/9519456?denied=
     title: The Provable Security of Ed25519: Theory and Practice
     seriesinfo: 2021 IEEE Symposium on Security and Privacy (SP)
-    DOI: 10.1109/SP40001.2021.00042
     author:
       -
         ins: J. Brendel  
