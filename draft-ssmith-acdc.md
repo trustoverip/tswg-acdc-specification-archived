@@ -102,7 +102,7 @@ tags: IETF, ACDC, CESR, SAID, KERI
 
 --- abstract
 
-Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema , multiple serialization formats (JSON, CBOR, MGPK, and CESR) [JSON][RFC4627][CBOR][RFC8949][MGPK], compact formats, 
+Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema, multiple serialization formats, that are, JSON, CBOR, MGPK, and CESR [JSON][RFC4627][CBOR][RFC8949][MGPK], compact formats, 
 
 a well-defined security model derived from KERI [KERI], 
 
