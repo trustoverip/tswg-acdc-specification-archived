@@ -51,7 +51,8 @@ MGPK:
     title: Msgpack Mapping Object Codes
   
 
-informative:
+informative:  
+
   KERI:
     target: https://arxiv.org/abs/1907.02143
     title: Key Event Receipt Infrastructure (KERI)
@@ -60,12 +61,56 @@ informative:
       name: Samuel M. Smith
       org: ProSapien LLC
     date: 2021
+    
+  ITPS:
+    target: https://en.wikipedia.org/wiki/Information-theoretic_security
+    title: Information-Theoretic and Perfect Security
+
+  OTP: 
+    target: https://en.wikipedia.org/wiki/One-time_pad
+    title: One-Time-Pad
+
+  VCphr: 
+    target: https://www.ciphermachinesandcryptology.com/en/onetimepad.htm
+    title: Vernom Cipher (OTP)
+    
+  SSplt: 
+    target: https://www.ciphermachinesandcryptology.com/en/secretsplitting.htm
+    title: Secret Splitting
+    
+  SShr: 
+    target: https://en.wikipedia.org/wiki/Secret_sharing
+    title: Secret Sharing
+    
+  CSPRNG: 
+    target: https://en.wikipedia.org/wiki/Cryptographically-secure_pseudorandom_number_generator
+    title: Cryptographically-secure pseudorandom number generator (CSPRNG)
+  
+  IThry: 
+    target: https://en.wikipedia.org/wiki/Information_theory
+    title: Information Theory
+
+  CAcc: 
+    target: https://en.wikipedia.org/wiki/Accumulator_(cryptography)
+    title: Cryptographic Accumulator
+    
+  XORA: 
+    target: https://github.com/SmithSamuelM/Papers/blob/master/whitepapers/XORA.md
+    title: XORA (XORed Accumulator)
 
 tags: IETF, ACDC, CESR, SAID, KERI
 
 --- abstract
 
-Authentic Chained Data Containers (ACDC) Standard Specification provides semantic of authentic provenance chaining of authentic data containers. This semantics include both source provenance and authorization provenance or delegation.
+Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema , multiple serialization formats (JSON, CBOR, MGPK, and CESR) [JSON][RFC4627][CBOR][RFC8949][MGPK], compact formats, 
+
+a well-defined security model derived from KERI [KERI], 
+
+simple *partial disclosure* mechanisms and simple *selective disclosure* mechanisms. 
+
+The primary purpose of the ACDC protocol is to provide granular provenanced proof-of-authorship (authenticity) of their contained data via a tree or chain of linked ACDCs (technically a directed acyclic graph or DAG). Similar to the concept of a chain-of-custody, ACDCs provide a verifiable chain of proof-of-authorship of the contained data. With a little additional syntactic sugar, this primary facility of chained (treed) proof-of-authorship (authenticity) is extensible to a chained (treed) verifiable authentic proof-of-authority (proof-of-authorship-of-authority). A proof-of-authority may be used to provide verifiable authorizations or permissions or rights or credentials. A chained (treed) proof-of-authority enables delegation of authority and delegated authorizations. 
+
+
 
 
 --- middle
