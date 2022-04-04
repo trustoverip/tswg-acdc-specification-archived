@@ -245,11 +245,11 @@ informative:
     
   EdSC:
     target: https://eprint.iacr.org/2020/823
-    title: The Provable Security of Ed25519: Theory and Practice Report
+    title: "The Provable Security of Ed25519: Theory and Practice Report"
     
   PSEd:
     target: https://ieeexplore.ieee.org/document/9519456?denied=
-    title: The Provable Security of Ed25519: Theory and Practice
+    title: "The Provable Security of Ed25519: Theory and Practice"
     seriesinfo: 2021 IEEE Symposium on Security and Privacy (SP)
     author:
       -
