@@ -110,6 +110,14 @@ normative:
   RFC4627:
     target: https://datatracker.ietf.org/doc/rfc4627/
     title: The application/json Media Type for JavaScript Object Notation (JSON)
+    
+ JSON_Schema:
+    target: https://json-schema.org
+    title: JSON Schema
+    
+ JSON_Schema_202012:
+    target: https://json-schema.org/draft/2020-12/release-notes.html
+    title: JSON Schema 2020-12
   
   CBOR:
     target: https://en.wikipedia.org/wiki/CBOR
@@ -266,10 +274,29 @@ informative:
         name: Mang Zhao  
     date: 2021-05-24
 
-
   TmEd:
     target: https://eprint.iacr.org/2020/1244.pdf
     title: Taming the many EdDSAs  
+
+  JS_Comp:
+    target: https://json-schema.org/understanding-json-schema/reference/combining.html
+    title: Schema Composition in JSON Schema 
+
+  JS_RegEx:
+    target: https://json-schema.org/understanding-json-schema/reference/regular_expressions.html
+    title: Regular Expressions in JSON Schema
+    
+  JS_Id:
+    target: https://json-schema.org/understanding-json-schema/structuring.html#schema-identification
+    title: JSON Schema Identification
+
+  RC:
+    target: https://en.wikipedia.org/wiki/Ricardian_contract
+    title: Ricardian Contract 
+
+  CLC:
+    target: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2045818
+    title: Chain-Link Confidentiality 
 
 
     
