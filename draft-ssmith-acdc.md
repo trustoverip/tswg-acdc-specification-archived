@@ -1387,7 +1387,7 @@ In compact form, the discovery of either the rule section as a whole or a given 
           },
           "additionalProperties": false,
         }
-      ],
+      ]
     },
     "e":
     {
@@ -1445,7 +1445,7 @@ In compact form, the discovery of either the rule section as a whole or a given 
           },
           "additionalProperties": false
         }
-      ],
+      ]
     },
     "r": 
     {
@@ -1958,12 +1958,12 @@ The highest level of cryptographic security with respect to a cryptographic secr
 
 {::boilerplate bcp14-tagged}
 
-- `SAID` - Self-Addressing Identifier - any identifier which is deterministaclly generated out of the content, digest of the content
+- `SAID` - Self-Addressing Identifier - any identifier which is deterministically generated out of the content, digest of the content
 
 
 # Security Considerations
 
-TODO Security
+Refer to the body of the specification. Security considerations are included in the context of each section. The ACDC specification is security driven so the specification itself is riddled with discussions of the security considerations in the context in which those discussions are most understandable and relevant. 
 
 
 # IANA Considerations
@@ -1976,4 +1976,4 @@ This document has no IANA actions.
 # Acknowledgments
 {:numbered="false"}
 
-TODO acknowledge.
+ACDC community.
