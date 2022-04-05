@@ -1144,7 +1144,7 @@ The use of clause SAIDS enables a compact form of a set of clauses where each cl
 {
   "d": "EwY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NA",
   "warrantyDisclaimer":  "EXgOcLxUdYerzwLIr9Bf7V_NAwY1lkFrn9y2PgveY4-9",
-  "liabilityDisclaimer": "EY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NAw",
+  "liabilityDisclaimer": "EY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NAw"
 }
 ~~~
 
@@ -1201,7 +1201,7 @@ In compact form, the discovery of either the rule section as a whole or a given 
   "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
   "a":  "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
   "e":  "ERH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZIl3MOA",
-  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB",
+  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB"
 }
 ~~~
 
@@ -1568,11 +1568,11 @@ Given a total of *N* elements in the attributes array, let *a<sub>i</sub>* repre
 
 The ordered set of *a<sub>i</sub>*  may be also expressd as a list, that is, 
 
-*[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>]*,
+*\[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>\]*,
 
 or equivalently 
 
-*[a<sub>i</sub> | i ∈ \{0, ..., N-1\}]*
+*\[a<sub>i</sub> | i ∈ \{0, ..., N-1\}\]*
 
 ### Composed Schema for Selectively Disclosable Attribute Section
 
@@ -1690,7 +1690,7 @@ Because the selectively-disclosable attributes are provided by an array (list), 
       }
     }
   ]
-  "additionalProperties": false,
+  "additionalProperties": false
 }
 ~~~
 
