@@ -290,19 +290,19 @@ informative:
     target: https://eprint.iacr.org/2020/1244.pdf
     title: Taming the many EdDSAs  
 
-  JS_Comp:
+  JSchCp:
     target: https://json-schema.org/understanding-json-schema/reference/combining.html
     title: Schema Composition in JSON Schema 
 
-  JS_RegEx:
+  JSchRE:
     target: https://json-schema.org/understanding-json-schema/reference/regular_expressions.html
     title: Regular Expressions in JSON Schema
     
-  JS_Id:
+  JSchId:
     target: https://json-schema.org/understanding-json-schema/structuring.html#schema-identification
     title: JSON Schema Identification
     
-  JS_Cplx:
+  JSchCx:
     target: https://json-schema.org/understanding-json-schema/structuring.html#base-uri
     title: Complex JSON Schema Structuring
 
@@ -354,7 +354,7 @@ informative:
     target: https://en.wikipedia.org/wiki/Digital_twin
     title: Digital Twin
     
-  Mal:
+  TMal:
     target: https://en.wikipedia.org/wiki/Transaction_malleability_problem
     title: Transaction Malleability   
     
@@ -387,7 +387,7 @@ tags: IETF, ACDC, CESR, SAID, KERI
 
 --- abstract
 
-An authentic chained data container (ACDC)  {{ACDC_ID}}{{ACDC_WP}}{{VCEnh}} is an IETF {{IETF}} internet draft focused specification being incubated at the ToIP (Trust over IP) foundation {{TOIP}}{{ACDC_TF}}.  An ACDC is a variant of the W3C Verifiable Credential (VC) specification {{W3C_VC}}. The W3C VC specification depends on the W3C DID (Decentralized IDentifier) specification {{W3C_DID}}. A major use case for the ACDC specification is to provide GLEIF vLEIs (verifiable Legal Entity Identifiers) {{vLEI}}{{GLEIF_vLEI}}{{GLEIF_KERI}}. GLEIF is the Global Legal Entity Identifier Foundation {{GLEIF}}. ACDCs are dependent on a suite of related IETF focused standards associated with the KERI (Key Event Receipt Infrastructure) {{KERI_ID}}{{KERI}} specification. These include CESR {{CESR_ID}}, SAID {{SAID_ID}}, PTEL {{PTEL_ID}}, CESR-Proof {{Proof_ID}}, IPEX {{IPEX_ID}}, did:keri {{DIDK_ID}}, and OOBI {{OOBI_ID}}. Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema {{JSch}}{{JS_Comp}}, multiple serialization formats, namely, JSON {{JSON}}{{RFC4627}}, CBOR {{CBOR}}{{RFC8949}}, MGPK {{MGPK}}, and CESR {{CESR_ID}}, support for Ricardian contracts {{RC}},  support for chain-link confidentiality {{CLC}}, a well defined security model derived from KERI {{KERI}}{{KERI_ID}}, *compact* formats for resource constrained applications, simple *partial disclosure* mechanisms and simple *selective disclosure* mechanisms. 
+An authentic chained data container (ACDC)  {{ACDC_ID}}{{ACDC_WP}}{{VCEnh}} is an IETF {{IETF}} internet draft focused specification being incubated at the ToIP (Trust over IP) foundation {{TOIP}}{{ACDC_TF}}.  An ACDC is a variant of the W3C Verifiable Credential (VC) specification {{W3C_VC}}. The W3C VC specification depends on the W3C DID (Decentralized IDentifier) specification {{W3C_DID}}. A major use case for the ACDC specification is to provide GLEIF vLEIs (verifiable Legal Entity Identifiers) {{vLEI}}{{GLEIF_vLEI}}{{GLEIF_KERI}}. GLEIF is the Global Legal Entity Identifier Foundation {{GLEIF}}. ACDCs are dependent on a suite of related IETF focused standards associated with the KERI (Key Event Receipt Infrastructure) {{KERI_ID}}{{KERI}} specification. These include CESR {{CESR_ID}}, SAID {{SAID_ID}}, PTEL {{PTEL_ID}}, CESR-Proof {{Proof_ID}}, IPEX {{IPEX_ID}}, did:keri {{DIDK_ID}}, and OOBI {{OOBI_ID}}. Some of the major distinguishing features of ACDCs include normative support for chaining, use of composable JSON Schema {{JSch}}{{JSchCp}}, multiple serialization formats, namely, JSON {{JSON}}{{RFC4627}}, CBOR {{CBOR}}{{RFC8949}}, MGPK {{MGPK}}, and CESR {{CESR_ID}}, support for Ricardian contracts {{RC}},  support for chain-link confidentiality {{CLC}}, a well defined security model derived from KERI {{KERI}}{{KERI_ID}}, *compact* formats for resource constrained applications, simple *partial disclosure* mechanisms and simple *selective disclosure* mechanisms. 
 
 --- middle
 
@@ -472,6 +472,79 @@ When used in the context of *selective disclosure*, *full disclosure* means deta
 The SAID of a field map provides a *compact* cryptographically equivalent commitment to the yet to be undisclosed field map details.  A later exchange of the uncompacted field map detail provides *full disclosure*. Any later *full disclosure* is verifiable to an earlier *partial disclosure*. Partial disclosure via compact SAIDs enables the scalable repeated verifiable exchange of SAID references to cached full disclosures. Multiple SAID references to cached fully disclosed field maps may be transmitted compactly without redundant retransmission of the full details each time a new reference is transmitted. Likewise, *partial disclosure* via SAIDs also supports the bow-tie model of Ricardian contracts {{RC}}. Similarly, the schema of a field map is metadata about the structure of the field map this is validatable given the full disclosure of the field map. The details of*compact* and/or confidential exchange mechanisms that leverage partial disclosure are explained later. 
 
 *Selective disclosure*, on the other hand, is an essential mechanism needed to unbundle in a correlation minimizing way a single commitment by an Issuer to a bundle of fields (i.e. a nested array or list or tuple of fields) as a whole. This allows separating a "stew" (bundle) of "ingredients" (attributes) into its constituent "ingredients" (attributes) without correlating the constituents via the Issuer's commitment to the "stew" (bundle) as a whole. 
+
+# Schema Section
+
+## Schema is Type
+
+Notable is the fact that there are no top-level type fields in an ACDC. This is because the schema, `s`, field itself is the type field. ACDCs follow the design principle of separation of concerns between a data container's actual payload information and the type information of that container's payload. In this sense, type information is metadata, not data. The schema dialect is JSON Schema 2020-12 {{JSch}}{{JSch_202012}}. JSON Schema support for composable schema (sub-schema), conditional schema (sub-schema), and regular expressions in schema enable a validator to ask and answer complex questions about the type of even optional payload elements while maintaining isolation between payload information and type (structure) information about the payload {{JSchCp}}{{JSchRE}}{{JSchId}}{{JSchCx}}. ACDC's use of JSON Schema MUST be in accordance with the ACDC defined profile as defined herein. The exceptions are defined below.
+
+## Schema ID Field Label
+
+The usual field label for SAID fields in ACDCs is `d`. In the case of the schema section, however, the field label for the SAID of the schema section is `$id`. This repurposes the schema id field label, `$id` as defined by JSON Schema {{JSchId}}{{JSchCx}}.  The top-level id, `$id`, field value in a JSON Schema provides a unique identifier of the schema instance. In a usual (non-ACDC) schema the value of the id, `$id`, field is expressed as a URI. This is called the *Base URI* of the schema. In an ACDC schema, however, the top-level id, `$id`, field value is repurposed. Its value MUST include the SAID of the schema. This ensures that the ACDC schema is static and verifiable to their SAIDS. A verifiably static schema satisfies one of the essential security properties of ACDCs as discussed below. There are several ACDC supported formats for the value of the top-level id, `$id`, field but all of the formats MUST include the SAID of the schema (see below). Correspondingly, the value of the top-level schema, `s`, field MUST be the SAID included in the schema's top-level `$id` field. The detailed schema is either attached or cached and maybe discovered via its SAIDified, id, `$id`, field value.
+
+When an id, '$id', field appears in a sub-schema it indicates a bundled sub-schema called a schema resource {{JSchId}}{{JSchCx}}. The value of the id, '$id', field in any ACDC bundled sub-schema resource MUST include the SAID of that sub-schema using one of the formats described below. The sub-schema so bundled MUST be verifiable against its referenced and embedded SAID value. This ensures secure bundling. 
+
+
+## Static Schema
+
+For security reasons, the full schema of an ACDC must be completely self-contained and statically fixed (immutable) for that ACDC. By this, we mean that no dynamic schema references or dynamic schema generation mechanisms are allowed. 
+
+Should an adversary successfully attack the source that provides the dynamic schema resource and change the result provided by that reference, then the schema validation on any ACDC that uses that dynamic schema reference may fail. Such an attack effectively revokes all the ACDCs that use that dynamic schema reference. We call this a ***schema revocation*** attack. 
+
+More insidiously, an attacker could shift the semantics of the dynamic schema in such a way that although the ACDC still passes its schema validation, the behavior of the downstream processing of that ACDC is changed by the semantic shift. This we call a ***semantic malleability*** attack. It may be considered a new type of *transaction malleability* attack {{TMal}}. 
+
+To prevent both forms of attack, all schema must be static, i.e. schema MUST be SADs and therefore verifiable against their SAIDs. 
+
+To elaborate, the serialization of a static schema may be self-contained. A compact commitment to the detailed static schema may be provided by its SAID. In other words, the SAID of a static schema is a verifiable cryptographic identifier for its SAD. Therefore all ACDC compliant schema must be SADs. In other words, they MUST therefore be *SAIDified*. The associated detailed static schema (uncompacted SAD) is cryptographically bound and verifiable to its SAID. 
+
+The JSON Schema specification allows complex schema references that may include non-local URI references {{JSchId}}{{JSchCx}}. These references may use the `$id` or `$ref` keywords. A relative URI reference provided by a `$ref` keyword is resolved against the *Base URI* provided by the top-level `$id` field. When this top-level *Base URI* is non-local then all relative `$ref` references are therefore also non-local. A non-local URI reference provided by a `$ref` keyword may be resolved without reference to the *Base URI*. 
+
+In general, schema indicated by non-local URI references (`$id` or `$ref`) MUST NOT be used because they are not cryptographically end-verifiable. The value of the underlying schema resource so referenced may change (mutate). To restate, a non-local URI schema resource is not end-verifiable to its URI reference because there is no cryptographic binding between URI and resource. 
+
+This does not preclude the use of remotely cached SAIDified schema resources because those resources are end-verifiable to their embedded SAID references. Said another way, a SAIDified schema resource is itself a SAD (Self-Address Data) referenced by its SAID. A URI that includes a SAID may be used to securely reference a remote or distributed SAIDified schema resource because that resource is fixed (immutable, nonmalleable) and verifiable to both the SAID in the reference and the embedded SAID in the resource so referenced. To elaborate, a non-local URI reference that includes an embedded cryptographic commitment such as a SAID is verifiable to the underlying resource when that resource is a SAD. This applies to JSON Schema as a whole as well as bundled sub-schema resources.
+
+There ACDC supported formats for the value of the top-level id, `$id`, field are as follows:
+
+* Bare SAIDs may be used to refer to a SAIDified schema as long as the JSON schema validator supports bare SAID references. By default, many if not all JSON schema validators support bare strings (non-URIs) for the *Base URI* provided by the top-level `$id` field value. 
+
+* The `sad:` URI scheme may be used to directly indicate a URI resource that safely returns a verifiable SAD. For example `sad:SAID` where *SAID* is replaced with the actual SAID of a SAD that provides a verifiable non-local reference to JSON Schema as indicated by the mime-type of `schema+json`. 
+
+* The IETF KERI OOBI internet draft specification provides a URL syntax that references a SAD resource by its SAID at the service endpoint indicated by that URL {{OOBI_ID}}. Such remote OOBI URLs are also safe because the provided SAD resource is verifiable against the SAID in the OOBI URL. Therefore OOBI URLs are also acceptable non-local URI references for JSON Schema.
+
+* The `did:` URI scheme may be used safely to prefix non-local URI references that act to namespace SAIDs expressed as DID URIs or DID URLs.  DID resolvers resolve DID URLs for a given DID method such as `did:keri` {{DIDK_ID}} and may return DID docs or DID doc metadata with SAIDified schema or service endpoints that return SAIDified schema. A verifiable non-local reference in the form of DID URL that includes the schema SAID is resolved safely when it dereferences to the SAD of that SAID. For example, the resolution result returns an ACDC JSON Schema whose id, `$id`, field includes the SAID and returns a resource with JSON Schema mime-type of `schema+json`.
+
+
+To clarify, ACDCs MUST NOT use complex JSON Schema references which allow *dynamically generated *schema resources to be obtained from online JSON Schema Libraries {{JSchId}}{{JSchCx}}. The latter approach may be difficult or impossible to secure because a cryptographic commitment to the base schema that includes complex schema (non-relative URI-based) references only commits to the non-relative URI reference and not to the actual schema resource which may change (is dynamic, mutable, malleable). To restate, this approach is insecure because a cryptographic commitment to a complex (non-relative URI-based) reference is NOT equivalent to a commitment to the detailed associated schema resource so referenced if it may change.
+
+ACDCs MUST use static JSON Schema (i.e. *SAIDifiable* schema). These may include internal relative references to other parts of a fully self-contained static (*SAIDified*) schema or references to static (*SAIDified*) external schema parts. As indicated above, these references may be bare SAIDs, DID URIs or URLs (`did:` scheme), SAD URIs (`sad:` scheme), or OOBI URLs. Recall that a commitment to a SAID with sufficient collision resistance makes an equivalent secure commitment to its encapsulating block SAD. Thus static schema may be either fully self-contained or distributed in parts but the value of any reference to a part must be verifiably static (immutable, nonmalleable) by virtue of either being relative to the self-contained whole or being referenced by its SAID. The static schema in whole or in parts may be attached to the ACDC itself or provided via a highly available cache or data store. To restate, this approach is securely end-verifiable (zero-trust) because a cryptographic commitment to the SAID of a SAIDified schema is equivalent to a commitment to the detailed associated schema itself (SAD).
+
+## Schema Dialect
+
+The schema dialect for ACDC 1.0 is JSON Schema 2020-12 and is indicated by the identifier `"https://json-schema.org/draft/2020-12/schema"`  {{JSch}}{{JSch_202012}}. This is indicated in a JSON Schema via the value of the top-level `$schema` field. Although the value of `$schema` is expressed as a URI, de-referencing does not provide dynamically downloadable schema dialect validation code. This would be an attack vector. The validator MUST control the tooling code dialect used for schema validation and hence the tooling dialect version actually used. A mismatch between the supported tooling code dialect version and the `$schema` string value should cause the validation to fail. The string is simply an identifier that communicates the intended dialect to be processed by the schema validation tool. When provided, the top-level `$schema` field value for ACDC version 1.0 must be "https://json-schema.org/draft/2020-12/schema".
+
+## Schema Availablity
+
+The composed detailed (uncompacted) (bundled) static schema for an ACDC may be cached or attached. But cached, and/or attached static schema is not to be confused with dynamic schema. Nonetheless, while securely verifiable, a remotely cached, *SAIDified*, schema resource may be unavailable. Availability is a separate concern. Unavailable does not mean insecure or unverifiable. ACDCs MUST be verifiable when available.  Availability is typically solvable through redundancy. Although a given ACDC application domain or eco-system governance framework may impose schema availability constraints, the ACDC specification itself does not impose any specific availability requirements on Issuers other than schema caches SHOULD be sufficiently available for the intended application of their associated ACDCs. It's up to the Issuer of an ACDC to satisfy any availability constraints on its schema that may be imposed by the application domain or eco-system. 
+
+
+## Composable JSON Schema
+
+A composable JSON Schema enables the use of any combination of compacted/uncompacted attribute, edge, and rule sections in a provided ACDC. When compact, any one of these sections may be represented merely by its SAID {{JSch}}{{JSchCp}}. When used for the top-level attribute, `a`, edge, `e`, or rule, `r`, section field values, the `oneOf` sub-schema composition operator provides both compact and uncompacted variants. The provided ACDC MUST validate against an allowed combination of the composed variants, either the compact SAID of a block or the full detailed (uncompacted) block for each section. The validator determines what decomposed variants the provided ACDC MUST also validate against. Decomposed variants may be dependent on the type of disclosure, partial, full, or selective.
+
+Unlike the other compactifiable sections, it is impossible to define recursively the exact detailed schema as a variant of a `oneOf` composition operator contained in itself. Nonetheless, the provided schema, whether self-contained, attached, or cached MUST validate as a SAD against its provided SAID. It MUST also validate against one of its specified `oneOf` variants.  
+
+The compliance of the provided non-schema attribute, `a`, edge, `e`, and rule, `r`,  sections MUST be enforced by validating against the composed schema. In contrast, the compliance of the provided composed schema for an expected ACDC type  MUST be enforced by the validator. This is because it is not possible to enforce strict compliance of the schema by validating it against itself. 
+
+ACDC specific schema compliance requirements are usually specified in the eco-system governance framework for a given ACDC type.  Because the SAID of a schema is a unique content-addressable identifier of the schema itself, compliance can be enforced by comparison to the allowed schema SAID in a well-known publication or registry of ACDC types for a given ecosystem governance framework (EGF). The EGF may be solely specified by the Issuer for the ACDCs it generates or be specified by some mutually agreed upon eco-system governance mechanism. Typically the business logic for making a decision about a presentation of an ACDC starts by specifying the SAID of the composed schema for the ACDC type that the business logic is expecting from the presentation. The verified SAID of the actually presented schema is then compared against the expected SAID. If they match then the actually presented ACDC may be validated against any desired decomposition of the expected (composed) schema.
+
+To elaborate, a validator can confirm compliance of any non-schema section of the ACDC against its schema both before and after uncompacted disclosure of that section by using a composed base schema with `oneOf` pre-disclosure and a decomposed schema post-disclosure with the compact `oneOf` option removed. This capability provides a mechanism for secure schema validation of both compact and uncompacted variants that require the Issuer to only commit to the composed schema and not to all the different schema variants for each combination of a given compact/uncompacted section in an ACDC.
+
+One of the most important features of ACDCs is support for Chain-Link Confidentiality {{CLC}}. This provides a powerful mechanism for protecting against un-permissioned exploitation of the data disclosed via an ACDC. Essentially an exchange of information compatible with chain-link confidentiality starts with an offer by the discloser to disclose confidential information to a potential disclosee. This offer includes sufficient metadata about the information to be disclosed such that the disclosee can agree to those terms. Specifically, the metadata includes both the schema of the information to be disclosed and the terms of use of that data once disclosed. Once the disclosee has accepted the terms then full disclosure is made. A full disclosure that happens after contractual acceptance of the terms of use we call *permissioned* disclosure. The pre-acceptance disclosure of metadata is a form of partial disclosure.
+
+As is the case for compact (uncompacted) ACDC disclosure, Composable JSON Schema, enables the use of the same base schema for both the validation of the partial disclosure of the offer metadata prior to contract acceptance and validation of full or detailed disclosure after contract acceptance {{JSch}}{{JSchCp}}. A cryptographic commitment to the base schema securely specifies the allowable semantics for both partial and full disclosure. Decomposition of the base schema enables a validator to impose more specific semantics at later stages of the exchange process. Specifically, the `oneOf` sub-schema composition operator validates against either the compact SAID of a block or the full block. Decomposing the schema to remove the optional compact variant enables a validator to ensure complaint full disclosure. To clarify, a validator can confirm schema compliance both before and after detailed disclosure by using a composed base schema pre-disclosure and a decomposed schema post-disclosure with the undisclosed options removed. These features provide a mechanism for secure schema-validated contractually-bound partial (and/or selective) disclosure of confidential data via ACDCs. 
+
+
 
 # Conventions and Definitions
 
