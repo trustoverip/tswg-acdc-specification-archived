@@ -1603,12 +1603,13 @@ The *Issuer* attribute block is present in an uncompacted untargeted selectively
 
 Given that each attribute block's UUID, `u`, field has sufficient cryptographic entropy, then each attribute block's SAID, `d`, field provides a secure cryptographic digest of its contents that effectively blinds the attribute value from discovery given only its Schema and SAID. To clarify, the adversary despite being given both the schema of the attribute block and its  SAID, `d`, field, is not able to discover the remaining contents of the attribute block in a computationally feasible manner such as a rainbow table attack {{RB}}{{DRB}}.  Therefore the UUID, `u`, field of each attribute block enables the associated SAID, `d`, field to securely blind the block's contents notwithstanding knowledge of the block's schema and that SAID, `d`, field.  Moreover, a cryptographic commitment to that SAID, `d`, field does not provide a fixed point of correlation to the associated attribute (SAD) field values themselves unless and until there has been specific disclosure of those field values themselves. 
 
-Given a total of *N* elements in the attributes array, let *a<sub>i</sub>* represent the SAID, `d`, field of the attribute at zero-based index *i*. More precisely the set of attributes is expressed as:
+Given a total of *N* elements in the attributes array, let *a<sub>i</sub>* represent the SAID, `d`, field of the attribute at zero-based index *i*. More precisely the set of attributes is expressed as the ordered set,
 
 *\{a<sub>i</sub> \| i ∈ \{0, ..., N-1\}\}*. 
 
 The ordered set of *a<sub>i</sub>*  may be also expressed as a list, that is, 
 
+*\[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>\]*.
 
 
 # Conventions and Definitions
