@@ -1188,6 +1188,311 @@ An alternate simplified compact form uses the value of the legal, `l`, field as 
 
 In compact form, the discovery of either the rule section as a whole or a given clause begins with the provided SAID. Because the SAID, `d`, field of any block is a cryptographic digest with high collision resistance it provides a universally unique identifier to the referenced block details (whole rule section or individual clause). The discovery of a service endpoint URL that provides database access to a copy of the rule section or to any of its clauses may be bootstrapped via an OOBI (Out-Of-Band-Introduction) that links the service endpoint URL to the SAID of the respective block. Alternatively, the issuer may provide as an attachment at issuance a copy of the referenced contract associated with the whole rule section or any clause. In either case, after a successful issuance exchange, the Issuee or holder of any ACDC will have either a copy or a means of obtaining a copy of any referenced contracts in whole or in part of all ACDCs so issued. That Issuee or recipient will then have everything it needs to subsequently make a successful presentation or disclosure to a Disclosee. This is the essence of percolated discovery.
 
+# Informative Example of an ACDC
+
+## Public Compact Variant
+
+~~~json
+{
+  "v":  "ACDC10JSON00011c_",
+  "d":  "EBdXt3gIXOf2BBWNHdSXCJnFJL5OuQPyM5K0neuniccM",
+  "i":  "did:keri:EmkPreYpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPM",
+  "ri": "did:keri:EymRy7xMwsxUelUauaXtMxTfPAMPAI6FkekwlOjkggt",
+  "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
+  "a":  "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+  "e":  "ERH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZIl3MOA",
+  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB",
+}
+~~~
+
+## Public Uncompacted Variant
+
+~~~json
+{
+  "v":  "ACDC10JSON00011c_",
+  "d":  "EBdXt3gIXOf2BBWNHdSXCJnFJL5OuQPyM5K0neuniccM",
+  "i":  "did:keri:EmkPreYpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPM",
+  "ri": "did:keri:EymRy7xMwsxUelUauaXtMxTfPAMPAI6FkekwlOjkggt",
+  "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
+  "a":  
+  {
+    "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+    "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
+    "score": 96,
+    "name": "Jane Doe"
+  },
+  "e": 
+  {
+    "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLxUdY",
+    "boss":
+    {
+      "d": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn",
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+      "w": "high",
+    }
+  },
+  "r": 
+  {
+    "d": "EwY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NA",
+    "warrantyDisclaimer": 
+    {
+      "d": "EXgOcLxUdYerzwLIr9Bf7V_NAwY1lkFrn9y2PgveY4-9",
+      "l": "Issuer provides this credential on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE",
+    },
+    "liabilityDisclaimer": 
+    {
+      "d": "EY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NAw",
+      "l": "In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall the Issuer be liable for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this credential. "
+    }
+  }
+}
+~~~
+
+## Composed Schema that Supports both Public Compact and Uncompacted Variants
+
+~~~json
+{
+  "$id": "EN8i2i5ye0-xGS95pm5cg1j0GmFkarJe0zzsSrrf4XJY",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Public ACDC",
+  "description": "Example JSON Schema Public ACDC.",
+  "credentialType": "PublicACDCExample",
+  "type": "object",
+   "required": 
+  [
+    "v",
+    "d",
+    "i",
+    "ri",
+    "s",
+    "a",
+    "e",
+    "r"
+  ],
+  "properties": 
+  {
+    "v": 
+    {
+      "description": "ACDC version string",
+      "type": "string"
+    },
+    "d": 
+    {
+     "description": "ACDC SAID",
+      "type": "string"
+    },
+    "i": 
+    {
+      "description": "Issuer AID",
+      "type": "string"
+    },
+    "ri": 
+    {
+      "description": "credential status registry AID",
+      "type": "string"
+    },
+    "s": 
+    {
+      "description": "schema section",
+      "oneOf":
+      [
+        {
+          "description": "schema section SAID",
+          "type": "string"
+        },
+        {
+          "description": "schema detail",
+          "type": "object"
+        },
+      ]
+    },
+    "a": 
+    {
+      "description": "attribute section",
+      "oneOf":
+      [
+        {
+          "description": "attribute section SAID",
+          "type": "string"
+        },
+        {
+          "description": "attribute detail",
+          "type": "object",
+          "required": 
+          [
+            "d",
+            "i",
+            "score",
+            "name"
+          ],
+          "properties": 
+          {
+            "d": 
+            {
+              "description": "attribute section SAID",
+              "type": "string"
+            },
+            "i": 
+            {
+              "description": "Issuee AID",
+              "type": "string"
+            },
+            "score": 
+            {
+              "description": "test score",
+              "type": "integer"
+            },
+            "name": 
+            {
+              "description": "test taker full name",
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+        }
+      ],
+    },
+    "e":
+    {
+      "description": "edge section",
+      "oneOf":
+      [ 
+        {
+          "description": "edge section SAID",
+          "type": "string"
+        },
+        {
+          "description": "edge detail",
+          "type": "object",
+          "required": 
+          [
+            "d",
+            "boss"
+          ],
+          "properties": 
+          {
+            "d": 
+            {
+              "description": "edge section SAID",
+              "type": "string"
+            },
+            "boss": 
+            {
+              "description": "boss edge",
+              "type": "object",
+              "required":
+              [
+                "d",
+                "n",
+                "w"
+              ],
+              "properties":
+              {
+                "d": 
+                {
+                  "description": "edge SAID",
+                  "type": "string"
+                },
+                "n": 
+                {
+                  "description": "node SAID",
+                  "type": "string"
+                },
+                "w": 
+                {
+                  "description": "edge weight",
+                  "type": "string"
+              },
+              "additionalProperties": false
+            },
+          },
+          "additionalProperties": false
+        }
+      ],
+    },
+    "r": 
+    {
+      "description": "rule section",
+      "oneOf":
+      [
+        {
+          "description": "rule section SAID",
+          "type": "string"
+        },
+        {
+          "description": "rule detail",
+          "type": "object",
+          "required": 
+          [
+            "d",
+            "warrantyDisclaimer",
+            "liabilityDisclaimer"
+          ],
+          "properties": 
+          {
+            "d": 
+            {
+              "description": "edge section SAID",
+              "type": "string"
+            },
+            "warrantyDisclaimer": 
+            {
+              "description": "warranty disclaimer clause",
+              "type": "object",
+              "required":
+              [
+                "d",
+                "l"
+              ],
+              "properties":
+              {
+                "d": 
+                {
+                  "description": "clause SAID",
+                  "type": "string"
+                },
+                "l": 
+                {
+                  "description": "legal language",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "liabilityDisclaimer": 
+            {
+              "description": "liability disclaimer clause",
+              "type": "object",
+              "required":
+              [
+                "d",
+                "l"
+              ],
+              "properties":
+              {
+                "d": 
+                {
+                  "description": "clause SAID",
+                  "type": "string"
+                },
+                "l": 
+                {
+                  "description": "legal language",
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}
+~~~
+
 
 
 
