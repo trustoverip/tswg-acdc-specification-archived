@@ -739,7 +739,7 @@ The attribute section in the examples above has been compacted into its SAID. Th
 {
   "description": "attribute section SAID",
   "type": "string"
-},
+}
 ~~~
 
 Two variants of an ACDC, namely, namely, ***private (public) attribute*** are defined respectively by the presence (absence) of a UUID, `u`, field in the uncompacted attribute section block. 
