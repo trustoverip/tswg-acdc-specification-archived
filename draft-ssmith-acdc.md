@@ -820,51 +820,53 @@ The subschema for the public uncompacted attribute section is shown below,
 Through the use of the JSON Schema `oneOf` composition operator the following composed schema will validate against both the compact and un-compacted value of the attribute section field.
 
 ~~~json
-"a": 
 {
-  "description": "attribute section",
-  "oneOf":
-  [
-    {
-      "description": "attribute SAID",
-      "type": "string"
-    },
-    {
-      "description": "uncompacted attribute section",
-      "type": "object",
-      "required": 
-      [
-        "d",
-        "i",
-        "score",
-        "name"
-      ],
-      "properties": 
+  "a": 
+  {
+    "description": "attribute section",
+    "oneOf":
+    [
       {
-        "d": 
-        {
-          "description": "attribute SAID",
-          "type": "string"
-        },
-        "i": 
-        {
-          "description": "Issuee AID",
-          "type": "string"
-        },
-        "score": 
-        {
-          "description": "test score",
-          "type": "integer"
-        },
-        "name": 
-        {
-          "description": "test taker full name",
-          "type": "string"
-        }
+        "description": "attribute SAID",
+        "type": "string"
       },
-      "additionalProperties": false
-    }
-  ]
+      {
+        "description": "uncompacted attribute section",
+        "type": "object",
+        "required": 
+        [
+          "d",
+          "i",
+          "score",
+          "name"
+        ],
+        "properties": 
+        {
+          "d": 
+          {
+            "description": "attribute SAID",
+            "type": "string"
+          },
+          "i": 
+          {
+            "description": "Issuee AID",
+            "type": "string"
+          },
+          "score": 
+          {
+            "description": "test score",
+            "type": "integer"
+          },
+          "name": 
+          {
+            "description": "test taker full name",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  }
 }
 ~~~
 
@@ -875,13 +877,15 @@ Through the use of the JSON Schema `oneOf` composition operator the following co
 Consider the following form of an uncompacted private-attribute block,
 
 ~~~json
-"a":
 {
-  "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
-  "u": "0AwjaDAE0qHcgNghkDaG7OY1",
-  "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
-  "score": 96,
-  "name": "Jane Doe"
+  "a":
+  {
+    "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+    "u": "0AwjaDAE0qHcgNghkDaG7OY1",
+    "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
+    "score": 96,
+    "name": "Jane Doe"
+  }
 }
 ~~~
 
@@ -898,57 +902,59 @@ Through the use of the JSON Schema `oneOf` composition operator the following co
 
 
 ~~~json
-"a": 
 {
-  "description": "attribute section",
-  "oneOf":
-  [
-    {
-      "description": "attribute SAID",
-      "type": "string"
-    },
-    {
-      "description": "uncompacted attribute section",
-      "type": "object",
-      "required": 
-      [
-        "d",
-        "u",
-        "i",
-        "score",
-        "name"
-      ],
-      "properties": 
+  "a": 
+  {
+    "description": "attribute section",
+    "oneOf":
+    [
       {
-        "d": 
-        {
-          "description": "attribute SAID",
-          "type": "string"
-        },
-        "u": 
-        {
-          "description": "attribute UUID",
-          "type": "string"
-        },
-        "i": 
-        {
-          "description": "Issuee AID",
-          "type": "string"
-        },
-        "score": 
-        {
-          "description": "test score",
-          "type": "integer"
-        },
-        "name": 
-        {
-          "description": "test taker full name",
-          "type": "string"
-        }
+        "description": "attribute SAID",
+        "type": "string"
       },
-      "additionalProperties": false,
-    }
-  ]
+      {
+        "description": "uncompacted attribute section",
+        "type": "object",
+        "required": 
+        [
+          "d",
+          "u",
+          "i",
+          "score",
+          "name"
+        ],
+        "properties": 
+        {
+          "d": 
+          {
+            "description": "attribute SAID",
+            "type": "string"
+          },
+          "u": 
+          {
+            "description": "attribute UUID",
+            "type": "string"
+          },
+          "i": 
+          {
+            "description": "Issuee AID",
+            "type": "string"
+          },
+          "score": 
+          {
+            "description": "test score",
+            "type": "integer"
+          },
+          "name": 
+          {
+            "description": "test taker full name",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+      }
+    ]
+  }
 }
 ~~~
 
@@ -961,12 +967,14 @@ As described above in the Schema section of this specification, the `oneOf` sub-
 Consider the case where the issuee, `i`, field is absent at the top level of the attribute block as shown below,
 
 ~~~json
-"a":
 {
-  "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
-  "temp": 45,
-  "lat": "N40.3433", 
-  "lon": "W111.7208"
+  "a":
+  {
+    "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+    "temp": 45,
+    "lat": "N40.3433", 
+    "lon": "W111.7208"
+  }
 }
 ~~~
 
