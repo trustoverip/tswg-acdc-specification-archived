@@ -735,10 +735,12 @@ The schema for the compact private ACDC example above is provided below.
 The attribute section in the examples above has been compacted into its SAID. The schema of the compacted attribute section is as follows,
 
 ~~~Json
-"a": 
 {
-  "description": "attribute section SAID",
-  "type": "string"
+  "a": 
+  {
+    "description": "attribute section SAID",
+    "type": "string"
+  }
 }
 ~~~
 
@@ -752,12 +754,14 @@ Two other variants of an ACDC, namely, ***targeted (untargeted)*** are defined r
 Suppose that the un-compacted value of the attribute section as denoted by the attribute section, `a`, field is as follows,
 
 ~~~json
-"a":
 {
-  "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
-  "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
-  "score": 96,
-  "name": "Jane Doe"
+  "a":
+  {
+    "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+    "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
+    "score": 96,
+    "name": "Jane Doe"
+  }
 }
 ~~~
 
@@ -771,41 +775,43 @@ Given the absence of a `u` field at the top level of the attributes block, then 
 The subschema for the public uncompacted attribute section is shown below,
 
 ~~~json
-"a": 
 {
-  "description": "attribute section",
-  "type": "object",
-  "required": 
-  [
-    "d",
-    "i",
-    "score",
-    "name"
-  ],
-  "properties": 
+  "a": 
   {
-    "d": 
+    "description": "attribute section",
+    "type": "object",
+    "required": 
+    [
+      "d",
+      "i",
+      "score",
+      "name"
+    ],
+    "properties": 
     {
-      "description": "attribute SAID",
-      "type": "string"
+      "d": 
+      {
+        "description": "attribute SAID",
+        "type": "string"
+      },
+      "i": 
+      {
+        "description": "Issuee AID",
+        "type": "string"
+      },
+      "score": 
+      {
+        "description": "test score",
+        "type": "integer"
+      },
+      "name": 
+      {
+        "description": "test taker full name",
+        "type": "string"
+      }
     },
-    "i": 
-    {
-      "description": "Issuee AID",
-      "type": "string"
-    },
-    "score": 
-    {
-      "description": "test score",
-      "type": "integer"
-    },
-    "name": 
-    {
-      "description": "test taker full name",
-      "type": "string"
-    }
-  },
-  "additionalProperties": false
+    "additionalProperties": false
+  }
 }
 ~~~
 
