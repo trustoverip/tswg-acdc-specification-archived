@@ -291,20 +291,20 @@ informative:
     title: Taming the many EdDSAs  
 
   JSchCp:
-    target: https://json-schema.org/understanding-json-schema/reference/combining.html
-    title: Schema Composition in JSON Schema 
+    target: "https://json-schema.org/understanding-json-schema/reference/combining.html"
+    title: "Schema Composition in JSON Schema" 
 
   JSchRE:
-    target: https://json-schema.org/understanding-json-schema/reference/regular_expressions.html
-    title: Regular Expressions in JSON Schema
+    target: "https://json-schema.org/understanding-json-schema/reference/regular_expressions.html"
+    title: "Regular Expressions in JSON Schema"
     
   JSchId:
-    target: https://json-schema.org/understanding-json-schema/structuring.html#schema-identification
+    target: "https://json-schema.org/understanding-json-schema/structuring.html#schema-identification"
     title: JSON Schema Identification
     
   JSchCx:
-    target: https://json-schema.org/understanding-json-schema/structuring.html#base-uri
-    title: Complex JSON Schema Structuring
+    target: "https://json-schema.org/understanding-json-schema/structuring.html#base-uri"
+    title: "Complex JSON Schema Structuring"
 
   RC:
     target: https://en.wikipedia.org/wiki/Ricardian_contract
