@@ -1605,7 +1605,7 @@ Given that each attribute block's UUID, `u`, field has sufficient cryptographic 
 
 Given a total of *N* elements in the attributes array, let *a<sub>i</sub>* represent the SAID, `d`, field of the attribute at zero-based index *i*. More precisely the set of attributes is expressed as the ordered set,
 
-*\{a<sub>i</sub> \| i ∈ \{0, ..., N-1\}\}*. 
+*\{a<sub>i</sub> for all i in \{0, ..., N-1\}\}*. 
 
 The ordered set of *a<sub>i</sub>*  may be also expressed as a list, that is, 
 
@@ -1738,7 +1738,7 @@ Because the selectively-disclosable attributes are provided by an array (list), 
 
 All the *a<sub>i</sub>* in the list are aggregated into a single aggregate digest denoted *A* by computing the digest of their ordered concatenation. This is expressed as follows:
 
-*A = H(C(a<sub>i</sub> for all i ∈ \\{0, ..., N-1\}))* where *H* is the digest (hash) operator and *C* is the concatentation operator.
+*A = H(C(a<sub>i</sub> for all i in \{0, ..., N-1\}))* where *H* is the digest (hash) operator and *C* is the concatentation operator.
 
 To be explicit, using the targeted example above, let *a<sub>0</sub>* denote the SAID of the *Issuee* attribute, *a<sub>1</sub>* denote the SAID of the *score* attribute, and *a<sub>2</sub>* denote the SAID of the *name* attribute then the aggregated digest *A* is computed as follows:
 
@@ -1850,7 +1850,7 @@ Similarly, to the process of generating a selective disclosure attribute ACDC, t
 
 The basic approach is to compute the aggregate denoted, *B*, as the digest of the concatenation of a set of blinded digests of bulk issued ACDC SAIDS. Each ACDC SAID is first blinded via concatenation to a UUID (salty nonce) and then the digest of that concatenation is concatenated with the other blinded SAID digests. Finally, a digest of that concatenation provides the aggregate. 
 
-Suppose there are *M* ACDCs in a bulk issued set. Using zero-based indexing for each member of the bulk issued set of ACDCs, such that index *k* satisfies *k ∈ \{0, ..., M-1\}, let *d<sub>k</sub>* denote the top-level SAID of an ACDC in an ordered set of bulk-issued ACDCs. Let *v<sub>k</sub>* denote the UUID (salty nonce) or blinding factor that is used to blind that said. The blinding factor, *v<sub>k</sub>*, is NOT the top-level UUID, `u`, field of the ACDC itself but an entirely different UUID used to blind the ACDC's SAID for the purpose of aggregation. The derivation path for *v<sub>k</sub>* from the shared secret salt is *"k."* where *k* is the index of the bulk-issued ACDC. 
+Suppose there are *M* ACDCs in a bulk issued set. Using zero-based indexing for each member of the bulk issued set of ACDCs, such that index *k* satisfies *k in \{0, ..., M-1\}, let *d<sub>k</sub>* denote the top-level SAID of an ACDC in an ordered set of bulk-issued ACDCs. Let *v<sub>k</sub>* denote the UUID (salty nonce) or blinding factor that is used to blind that said. The blinding factor, *v<sub>k</sub>*, is NOT the top-level UUID, `u`, field of the ACDC itself but an entirely different UUID used to blind the ACDC's SAID for the purpose of aggregation. The derivation path for *v<sub>k</sub>* from the shared secret salt is *"k."* where *k* is the index of the bulk-issued ACDC. 
 
 Let *c<sub>k</sub> = v<sub>k</sub> + d<sub>k</sub>*,  denote the blinding concatenation where *+* is the infix concatenation operator.  
 Then the blinded digest, *b<sub>k</sub>*, is given by,  
@@ -1858,7 +1858,7 @@ Then the blinded digest, *b<sub>k</sub>*, is given by,
 where *H* is the digest operator. 
 
 The aggregation of blinded digests, *B*, is given by,  
-*B = H(C(b<sub>k</sub> \| k ∈ \{0, ..., M-1\}))*,   
+*B = H(C(b<sub>k</sub> for all k in \{0, ..., M-1\}))*,   
 where *C* is the concatenation operator and *H* is the digest operator. This aggregate, *B*, provides the issuance proof digest. 
 
 The aggregate, *B*, makes a blinded cryptographic commitment to the ordered elements in the list
