@@ -334,7 +334,7 @@ informative:
     target: https://en.wikipedia.org/wiki/Merkle_tree
     title: Merkle Tree
       
-  2PI:
+  TwoPI:
     target: https://flawed.net.nz/2018/02/21/attacking-merkle-trees-with-a-second-preimage-attack/
     title: Second Pre-image Attack on Merkle Trees 
     
@@ -660,7 +660,7 @@ A fully compact private ACDC is shown below.
 
 ### Compact Private ACDC Schema
 
-The schema for the compact private ACDC example above is provided below:
+The schema for the compact private ACDC example above is provided below.
 
 ~~~json
 {
@@ -732,7 +732,7 @@ The schema for the compact private ACDC example above is provided below:
 
 # Attribute Section
 
-The attribute section in the examples above has been compacted into its SAID. The schema of the compacted attribute section is as follows:
+The attribute section in the examples above has been compacted into its SAID. The schema of the compacted attribute section is as follows,
 
 ~~~Json
 "a": 
@@ -749,7 +749,7 @@ Two other variants of an ACDC, namely, ***targeted (untargeted)*** are defined r
 
 ## Public-Attribute ACDC
 
-Suppose that the un-compacted value of the attribute section as denoted by the attribute section, `a`, field is as follows:
+Suppose that the un-compacted value of the attribute section as denoted by the attribute section, `a`, field is as follows,
 
 ~~~json
 "a":
@@ -768,7 +768,7 @@ Given the absence of a `u` field at the top level of the attributes block, then 
 
 ## Public Uncompacted Attribute Section Schema
 
-The subschema for the public uncompacted attribute section is shown below:
+The subschema for the public uncompacted attribute section is shown below,
 
 ~~~json
 "a": 
@@ -866,7 +866,7 @@ Through the use of the JSON Schema `oneOf` composition operator the following co
 
 ## Private-Attribute ACDC
 
-Consider the following form of an uncompacted private-attribute block:
+Consider the following form of an uncompacted private-attribute block,
 
 ~~~json
 "a":
@@ -952,7 +952,7 @@ As described above in the Schema section of this specification, the `oneOf` sub-
 
 ## Untargeted ACDC
 
-Consider the case where the issuee, `i`, field is absent at the top level of the attribute block as shown below:
+Consider the case where the issuee, `i`, field is absent at the top level of the attribute block as shown below,
 
 ~~~json
 "a":
@@ -964,7 +964,7 @@ Consider the case where the issuee, `i`, field is absent at the top level of the
 }
 ~~~
 
-This ACDC has an *Issuer* but no *Issuee*. Therefore, there is no provably controllable *Target* AID. This may be thought of as an undirected verifiable attestation or observation of the data in the attributes block by the *Issuer*. One could say that the attestation is addressed to "whom it may concern". It is therefore an ***untargeted*** ACDC, or equivalently an *unissueed* ACDC. An *untargeted* ACDC enables verifiable authorship by the Issuer of the data in the attributes block but there is no specified counter-party and no verifiable mechanism for delegation of authority.  Consequently, the rule section may only provide contractual obligations of implied counter-parties
+This ACDC has an *Issuer* but no *Issuee*. Therefore, there is no provably controllable *Target* AID. This may be thought of as an undirected verifiable attestation or observation of the data in the attributes block by the *Issuer*. One could say that the attestation is addressed to "whom it may concern". It is therefore an ***untargeted*** ACDC, or equivalently an *unissueed* ACDC. An *untargeted* ACDC enables verifiable authorship by the Issuer of the data in the attributes block but there is no specified counter-party and no verifiable mechanism for delegation of authority.  Consequently, the rule section may only provide contractual obligations of implied counter-parties.
 
 This form of an ACDC provides a container for authentic data only (not authentic data as authorization). But authentic data is still a very important use case. To clarify, an untargeted ACDC enables verifiable authorship of data. An observer such as a sensor that controls an AID may make verifiable non-repudiable measurements and publish them as ACDCs. These may be chained together to provide provenance for or a chain-of-custody of any data.  These ACDCs could be used to provide a verifiable data supply chain for any compliance-regulated application. This provides a way to protect participants in a supply chain from imposters. Such data supply chains are also useful as a verifiable digital twin of a physical supply chain {{Twin}}.
 
@@ -987,7 +987,7 @@ Likewise, the presence of an issuee, `i`, field, enables the *Issuer* to use the
 
 # Edge Section
 
-In the compact ACDC examples above, the edge section has been compacted into merely the SAID of that section. Suppose that the un-compacted value of the edge section denoted by the top-level edge, `e`, field is as follows:
+In the compact ACDC examples above, the edge section has been compacted into merely the SAID of that section. Suppose that the un-compacted value of the edge section denoted by the top-level edge, `e`, field is as follows,
 
 ~~~json
 "e": 
@@ -1039,7 +1039,7 @@ Abstractly, an ACDC with one or more edges may be a fragment of a distributed pr
 
 ## Compact Edge
 
-Given that an individual edge's property block includes a SAID, `d`, field then a compact representation of the edge's property block is provided by replacing it with its SAID. This may be useful for complex edges with many properties. This is called a ***compact edge***. This is shown as follows:
+Given that an individual edge's property block includes a SAID, `d`, field then a compact representation of the edge's property block is provided by replacing it with its SAID. This may be useful for complex edges with many properties. This is called a ***compact edge***. This is shown as follows,
 
 ~~~json
 "e": 
@@ -1089,7 +1089,7 @@ In general, the discovery of the details of an ACDC referenced as a node, `n` fi
 
 # Rule Section
 
-In the compact ACDC examples above, the rule section has been compacted into merely the SAID of that section. Suppose that the un-compacted value of the rule section denoted by the top-level rule, `r`, field is as follows:
+In the compact ACDC examples above, the rule section has been compacted into merely the SAID of that section. Suppose that the un-compacted value of the rule section denoted by the top-level rule, `r`, field is as follows,
 
 ~~~json
 "r": 
@@ -1116,7 +1116,7 @@ Note there are no type fields in the rule section. The type of a contract and th
 
 Each rule section clause may also have its own clause SAID, `d`, field. Clause SAIDs enable reference to individual clauses, not merely the whole contract as given by the rule section's top-level SAID, `d`, field.
 
-An example rule section with clause SAIDs is provided below:
+An example rule section with clause SAIDs is provided below.
 
 ~~~json
 "r": 
@@ -1137,7 +1137,7 @@ An example rule section with clause SAIDs is provided below:
 
 ## Compact Clauses
 
-The use of clause SAIDS enables a compact form of a set of clauses where each clause value is the SAID of the corresponding clause. For example:
+The use of clause SAIDS enables a compact form of a set of clauses where each clause value is the SAID of the corresponding clause. For example,
 
 ~~~json
 "r": 
@@ -1150,7 +1150,7 @@ The use of clause SAIDS enables a compact form of a set of clauses where each cl
 
 ## Private Clause
 
-The disclosure of some clauses may be pre-conditioned on acceptance of chain-link confidentiality. In this case, some clauses may benefit from partial disclosure. Thus clauses may be blinded by their SAID, `d`, field when the clause block includes a sufficiently high entropy UUID, `u`, field. The use of a clause UUID enables the compact form of a clause to NOT be discoverable merely from the schema for the clause and its SAID via rainbow table attack {{RB}}{{DRB}}. Therefore such a clause may be partially disclosable. These are called ***private clauses***. A private clause example is shown below:
+The disclosure of some clauses may be pre-conditioned on acceptance of chain-link confidentiality. In this case, some clauses may benefit from partial disclosure. Thus clauses may be blinded by their SAID, `d`, field when the clause block includes a sufficiently high entropy UUID, `u`, field. The use of a clause UUID enables the compact form of a clause to NOT be discoverable merely from the schema for the clause and its SAID via rainbow table attack {{RB}}{{DRB}}. Therefore such a clause may be partially disclosable. These are called ***private clauses***. A private clause example is shown below.
 
 ~~~json
 "r": 
@@ -1507,7 +1507,7 @@ The use of a revocation registry is an example of a type of bundling, not of att
 
 In either case, the basic selective disclosure mechanism is comprised of a single aggregated blinded commitment to a list of blinded commitments to undisclosed values. Membership of any blinded commitment to a value in the list of aggregated blinded commitments may be proven without leaking (disclosing) the unblinded value belonging to any other blinded commitment in the list. This enables provable selective disclosure of the unblinded values. When a non-repudiable digital signature is created on the aggregated blinded commitment then any disclosure of a given value belonging to a given blinded commitment in the list is also non-repudiable. This approach does not require any more complex cryptography than digests and digital signatures. This satisfies the design ethos of minimally sufficient means. The primary drawback of this approach is verbosity. It trades ease and simplicity and adoptability of implementation for size. Its verbosity may be mitigated by replacing the list of blinded commitments with a Merkle tree of those commitments where the Merkle tree root becomes the aggregated blinded commitment.
 
-Given sufficient cryptographic entropy of the blinding factors, collision resistance of the digests, and unforgeability of the digital signatures, either inclusion proof format (list or Merkle tree digest) prevents a potential disclosee or adversary from discovering in a computationally feasible way the values of any undisclosed blinded value details from the combination of the schema of those value details and either the aggregated blinded commitment and/or the list of aggregated blinded commitments {{Hash}}{{HCR}}{{QCHC}}{{Mrkl}}{{2PI}}{{MTSec}}. A potential disclosee or adversary would also need both the blinding factor and the actual value details.
+Given sufficient cryptographic entropy of the blinding factors, collision resistance of the digests, and unforgeability of the digital signatures, either inclusion proof format (list or Merkle tree digest) prevents a potential disclosee or adversary from discovering in a computationally feasible way the values of any undisclosed blinded value details from the combination of the schema of those value details and either the aggregated blinded commitment and/or the list of aggregated blinded commitments {{Hash}}{{HCR}}{{QCHC}}{{Mrkl}}{{TwoPI}}{{MTSec}}. A potential disclosee or adversary would also need both the blinding factor and the actual value details.
 
 Selective disclosure in combination with partial disclosure for chain-link confidentiality provides comprehensive correlation minimization because a discloser may use a non-disclosing metadata ACDC prior to acceptance by the disclosee of the terms of the chain-link confidentiality expressed in the rule section {{CLC}}. Thus only malicious disclosees who violate chain-link confidentiality may correlate between independent disclosures of the value details of distinct members in the list of aggregated blinded commitments. Nonetheless, they are not able to discover any as of yet undisclosed (unblinded) value details.
 
@@ -1755,7 +1755,7 @@ A private selectively disclosable ACDC provides significant correlation minimiza
 
 The inclusion proof via aggregated list may be somewhat verbose when there are a large number of attribute blocks in the selectively disclosable attribute section. A more efficient approach is to create a Merkle tree of the attribute block digests and let the aggregate, *A*, be the Merkle tree root digest {{Mrkl}}. Specifically, set the value of the top-level selectively-disclosable attribute section, `A`, field to the aggregate, *A* whose value is the Merkle tree root digest {{Mrkl}}.
 
-The Merkle tree needs to have appropriate second-pre-image attack protection of interior branch nodes {{2PI}}{{MTSec}}. The discloser then only needs to provide a subset of digests from the Merkle tree to prove that a given digest, *a<sub>j</sub>* contributed to the Merkle tree root digest, *A*. For ACDCs with a small number of attributes the added complexity of the Merkle tree approach may not be worth the savings in verbosity.
+The Merkle tree needs to have appropriate second-pre-image attack protection of interior branch nodes {{TwoPI}}{{MTSec}}. The discloser then only needs to provide a subset of digests from the Merkle tree to prove that a given digest, *a<sub>j</sub>* contributed to the Merkle tree root digest, *A*. For ACDCs with a small number of attributes the added complexity of the Merkle tree approach may not be worth the savings in verbosity.
 
 ### Hierarchical Derivation at Issuance of Selectively Disclosable Attribute ACDCs
 
