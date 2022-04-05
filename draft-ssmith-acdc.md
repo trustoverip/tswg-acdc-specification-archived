@@ -545,6 +545,193 @@ One of the most important features of ACDCs is support for Chain-Link Confidenti
 As is the case for compact (uncompacted) ACDC disclosure, Composable JSON Schema, enables the use of the same base schema for both the validation of the partial disclosure of the offer metadata prior to contract acceptance and validation of full or detailed disclosure after contract acceptance {{JSch}}{{JSchCp}}. A cryptographic commitment to the base schema securely specifies the allowable semantics for both partial and full disclosure. Decomposition of the base schema enables a validator to impose more specific semantics at later stages of the exchange process. Specifically, the `oneOf` sub-schema composition operator validates against either the compact SAID of a block or the full block. Decomposing the schema to remove the optional compact variant enables a validator to ensure complaint full disclosure. To clarify, a validator can confirm schema compliance both before and after detailed disclosure by using a composed base schema pre-disclosure and a decomposed schema post-disclosure with the undisclosed options removed. These features provide a mechanism for secure schema-validated contractually-bound partial (and/or selective) disclosure of confidential data via ACDCs. 
 
 
+# ACDC Variants
+
+There are several variants of ACDCs determined by the presence/absence of certain fields and/or the value of those fields. 
+At the top level, the presence (absence), of the UUID, `u`, field produces two variants. These are private (public) respectively. In addition, a present but empty UUID, `u`, field produces a private metadata variant.
+
+## Public ACDC
+
+Given that there is no top-level UUID, `u`, field in an ACDC, then knowledge of both the schema of the ACDC and the top-level SAID, `d`, field  may enable the discovery of the remaining contents of the ACDC via a rainbow table attack {{RB}}{{DRB}}. Therefore, although the top-level, `d`, field is a cryptographic digest, it may not securely blind the contents of the ACDC when knowledge of the schema is available.  The field values may be discoverable. Consequently, any cryptographic commitment to the top-level SAID, `d`, field may provide a fixed point of correlation potentially to the ACDC field values themselves in spite of non-disclosure of those field values. Thus an ACDC without a top-level UUID, `u`, field must be considered a ***public*** (non-confidential) ACDC.
+
+## Private ACDC
+
+Given a top-level UUID, `u`, field, whose value has sufficient cryptographic entropy, then the top-level SAID, `d`, field of an ACDC  may provide a secure cryptographic digest that blinds the contents of the ACDC {{Hash}}. An adversary when given both the schema of the ACDC and the top-level SAID, `d`, field, is not able to discover the remaining contents of the ACDC in a computationally feasible manner such as through a rainbow table attack {{RB}}{{DRB}}. Therefore the top-level, UUID, `u`, field may be used to securely blind the contents of the ACDC notwithstanding knowledge of the schema and top-level, SAID, `d`, field.  Moreover, a cryptographic commitment to that that top-level SAID, `d`, field does not provide a fixed point of correlation to the other ACDC field values themselves unless and until there has been a disclosure of those field values. Thus an ACDC with a sufficiently high entropy top-level UUID, `u`, field may be considered a ***private*** (confidential) ACDC. enables a verifiable commitment to the top-level SAID of a private ACDC to be made prior to the disclosure of the details of the ACDC itself without leaking those contents. This is called *partial* disclosure. Furthermore, the inclusion of a UUID, `u`, field in a block also enables *selective* disclosure mechanisms described later in the section on selective disclosure.  
+
+## Metadata ACDC
+
+An empty, top-level UUID, `u`, field appearing in an ACDC indicates that the ACDC is a ***metadata*** ACDC. The purpose of a *metadata* ACDC is to provide a mechanism for a *Discloser* to make cryptographic commitments to the metadata of a yet to be disclosed private ACDC without providing any point of correlation to the actual top-level SAID, `d`, field of that yet to be disclosed ACDC. The top-level SAID, `d`, field, of the metadata ACDC, is cryptographically derived from an ACDC with an empty top-level UUID, `u`, field so its value will necessarily be different from that of an ACDC with a high entropy top-level UUID, `u`, field value. Nonetheless, the *Discloser* may make a non-repudiable cryptographic commitment to the metadata SAID in order to initiate a chain-link confidentiality exchange without leaking correlation to the actual ACDC to be disclosed {{CLC}}. A *Disclosee* (verifier) may validate the other metadata information in the metadata ACDC before agreeing to any restrictions imposed by the future disclosure. The metadata includes the *Issuer*, the *schema*, the provenancing *edges*, and the *rules* (terms-of-use). The top-level attribute section, `a`, field value of a *metadata* ACDC may be empty so that its value is not correlatable across disclosures (presentations). Should the potential *Disclosee* refuse to agree to the rules then the *Discloser* has not leaked the SAID of the actual ACDC or the SAID of the attribute block that would have been disclosed. 
+
+Given the *metadata* ACDC, the potential *Disclosee* is able to verify the *Issuer*, the schema, the provenanced edges, and rules prior to agreeing to the rules.  Similarly, an *Issuer* may use a *metadata* ACDC to get agreement to a contractual waiver expressed in the rule section with a potential *Issuee* prior to issuance. Should the *Issuee* refuse to accept the terms of the waiver then the *Issuer* has not leaked the SAID of the actual ACDC that would have been issued nor the SAID of its attributes block nor the attribute values themselves.
+
+When a *metadata* ACDC is disclosed (presented) only the *Discloser's* signature(s) is attached not the *Issuer's* signature(s). This precludes the *Issuer's* signature(s) from being used as a point of correlation until after the *Disclosee* has agreed to the terms in the rule section. When chain-link confidentiality is used, the *Issuer's* signatures are not disclosed to the *Disclosee* until after the *Disclosee* has agreed to keep them confidential. The *Disclosee* is protected from forged *Discloser* because ultimately verification of the disclosed ACDC will fail if the *Discloser* does not eventually provide verifiable *Issuer's* signatures. Nonetheless, should the potential *Disclosee* not agree to the terms of the disclosure expressed in the rule section then the *Issuer's* signature(s) is not leaked.
+
+# Unpermissioned Exploitation of Data
+
+An important design goal of ACDCs is they support the sharing of provably authentic data while also protecting against the un-permissioned exploitation of that data. Often the term *privacy protection* is used to describe similar properties. But a narrow focus on "privacy protection" may lead to problematic design trade-offs. With ACDCs, the primary design goal is not *data privacy protection* per se but the more general goal of protection from the ***un-permissioned exploitation of data***. In this light, a *given privacy protection* mechanism may be employed to help protect against *unpermissioned exploitation of data* but only when it serves that more general-purpose and not as an end in and of itself. There are three primary mechanisms ACDCs use to protect against *unpermissioned exploitation of data*. These are:  
+
+* Chain-link Confidentiality [[41]]  
+* Partial Disclosure 
+* Selective Disclosure  
+
+
+## Principle of Least Disclosure
+
+ACDCs are designed to satisfy the principle of least disclosure.
+
+> The system should disclose only the minimum amount of information about a given party needed to facilitate a transaction and no more. {{IDSys}}
+
+For example, the *partial disclosure* of portions of an ACDC to enable chain-link confidentiality of the subsequent full disclosure is an application of the principle of least disclosure. Likewise, unbundling only the necessary attributes from a bundled commitment using *selective disclosure* to enable a correlation minimizing disclosure from that bundle is an application of the principle of least disclosure.
+
+## Three Party Exploitation Model
+Unpermission exploitation is characterized using a three-party model. The three parties are as follows:
+
+* First-Party = *Discloser* of data.  
+* Second-Party = *Disclosee* of data received from First Party (*Discloser*).  
+* Third-Party = *Observer* of data disclosed by First Party (*Discloser*) to Second Party (*Disclosee*).  
+
+### Second-Party (Disclosee) Exploitation
+* implicit permissioned correlation.
+    * no contractual restrictions on the use of disclosed data. 
+* explicit permissioned correlation.
+    * use as permitted by contract
+* explicit unpermissioned correlation with other second parties or third parties.
+    * malicious use in violation of contract
+
+### Third-Party (Observer) Exploitation
+* implicit permissioned correlation. 
+    * no contractual restrictions on use of observed data. 
+* explicit unpermissioned correlation via collusion with second parties.
+    * malicious use in violation of second party contract
+
+## Chain-link Confidentiality Exchange
+
+Chain-link confidentiality imposes contractual restrictions and liability on any Disclosee (Second-Party) {{CLC}}. The exchange provides a fair contract consummation mechanism. The steps in a chain-link confidentiality exchange are as follows:
+
+* *Discloser* provides a non-repudiable *Offer* with verifiable metadata (sufficient partial disclosure) which includes any terms or restrictions on use. 
+* *Disclosee* verifies *Offer* against composed schema and metadata adherence to desired data.
+* *Disclosee* provides non-repudiable *Accept* of terms that are contingent on compliant disclosure.
+* *Discloser* provides non-repudiable *Disclosure* with sufficient compliant detail.
+* *Disclosee* verifies *Disclosure* using decomposed schema and adherence of disclosed data to *Offer*.
+
+*Disclosee* may now engage in permissioned use and carries liability as a deterrent against unpermissioned use.
+
+
+# Compact ACDC
+The top-level section field values of a compact ACDC are the SAIDs of each uncompacted top-level section. The section field labels
+are `s`, `a`, `e`, and `r`.
+
+## Compact Public ACDC
+A fully compact public ACDC is shown below. 
+
+
+~~~json
+{
+  "v":  "ACDC10JSON00011c_",
+  "d":  "EBdXt3gIXOf2BBWNHdSXCJnFJL5OuQPyM5K0neuniccM",
+  "i":  "did:keri:EmkPreYpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPM",
+  "ri": "did:keri:EymRy7xMwsxUelUauaXtMxTfPAMPAI6FkekwlOjkggt",
+  "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
+  "a":  "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+  "e":  "ERH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZIl3MOA",
+  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB",
+}
+~~~
+
+
+## Compact Private ACDC
+A fully compact private ACDC is shown below. 
+
+
+~~~json
+{
+  "v":  "ACDC10JSON00011c_",
+  "d":  "EBdXt3gIXOf2BBWNHdSXCJnFJL5OuQPyM5K0neuniccM",
+  "u":  "0ANghkDaG7OY1wjaDAE0qHcg",
+  "i":  "did:keri:EmkPreYpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPM",
+  "ri": "did:keri:EymRy7xMwsxUelUauaXtMxTfPAMPAI6FkekwlOjkggt",
+  "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
+  "a":  "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+  "e":  "ERH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZIl3MOA",
+  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB",
+}
+
+~~~
+
+### Compact Private ACDC Schema
+
+The schema for the compact private ACDC example above is provided below:
+
+~~~json
+{
+  "$id": "EN8i2i5ye0-xGS95pm5cg1j0GmFkarJe0zzsSrrf4XJY",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Compact Private ACDC",
+  "description": "Example JSON Schema for a Compact Private ACDC.",
+  "credentialType": "CompactPrivateACDCExample",
+  "type": "object",
+   "required": 
+  [
+    "v",
+    "d",
+    "u",
+    "i",
+    "ri",
+    "s",
+    "a",
+    "e",
+    "r"
+  ],
+  "properties": 
+  {
+    "v": 
+    {
+      "description": "ACDC version string",
+      "type": "string"
+    },
+    "d": 
+    {
+     "description": "ACDC SAID",
+      "type": "string"
+    },
+    "u": 
+    {
+     "description": "ACDC UUID",
+      "type": "string"
+    },
+    "i": 
+    {
+      "description": "Issuer AID",
+      "type": "string"
+    },
+    "ri": 
+    {
+      "description": "credential status registry AID",
+      "type": "string"
+    },
+    "s": {
+      "description": "schema SAID",
+      "type": "string"
+    },
+    "a": {
+      "description": "attribute SAID",
+      "type": "string"
+    },
+    "e": {
+      "description": "edge SAID",
+      "type": "string"
+    },
+    "r": {
+      "description": "rule SAID",
+      "type": "string"
+    },
+  },
+  "additionalProperties": false
+}
+~~~
+
+
+
 
 # Conventions and Definitions
 
