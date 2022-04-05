@@ -1611,6 +1611,128 @@ The ordered set of *a<sub>i</sub>*  may be also expressed as a list, that is,
 
 *\[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>\]*.
 
+### Composed Schema for Selectively Disclosable Attribute Section
+
+Because the selectively-disclosable attributes are provided by an array (list), the uncompacted variant in the schema uses an array of items and the `anyOf` composition operator to allow one or more of the items to be disclosed without requiring all to be disclosed. Thus both the `oneOf` and `anyOf` composition operators are used. The `oneOf` is used to provide compact partial disclosure of the aggregate, *A*, as the value of the top-level selectively-disclosable attribute section, `A`, field in its compact variant and the nested `anyOf` operator is used to enable selective disclosure in the uncompacted selectively-disclosable variant.
+
+~~~json
+{
+  "A": 
+  {
+    "description": "attribute section",
+    "oneOf":
+    [
+      {
+        "description": "attribute section SAID",
+        "type": "string"
+      },
+      {
+        "description": "attribute details",
+        "type": "array",
+        "uniqueItems": true,
+        "items": 
+        {
+          "anyOf":
+          [
+            {
+              "description": "issuer attribute",
+              "type": "object",
+              "properties":
+              "required":
+              [
+                "d",
+                "u",
+                "i"
+              ],
+              "properties":
+              {
+                "d": 
+                {
+                  "description": "attribute SAID",
+                  "type": "string"
+                },
+                "u": 
+                {
+                  "description": "attribute UUID",
+                  "type": "string"
+                },
+                "i": 
+                {
+                  "description": "issuer SAID",
+                  "type": "string"
+                },
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "score attribute",
+              "type": "object",
+              "properties":
+              "required":
+              [
+                "d",
+                "u",
+                "score"
+              ],
+              "properties":
+              {
+                "d": 
+                {
+                  "description": "attribute SAID",
+                  "type": "string"
+                },
+                "u": 
+                {
+                  "description": "attribute UUID",
+                  "type": "string"
+                },
+                "score": 
+                {
+                  "description": "score value",
+                  "type": "integer"
+                },
+              },
+              "additionalProperties": false
+            },
+            {
+              "description": "name attribute",
+              "type": "object",
+              "properties":
+              "required":
+              [
+                "d",
+                "u",
+                "name"
+              ],
+              "properties":
+              {
+                "d": 
+                {
+                  "description": "attribute SAID",
+                  "type": "string"
+                },
+                "u": 
+                {
+                  "description": "attribute UUID",
+                  "type": "string"
+                },
+                "name": 
+                {
+                  "description": "name value",
+                  "type": "string"
+                },
+              },
+              "additionalProperties": false
+            }
+          ]      
+        }
+      }
+    ]
+    "additionalProperties": false
+  }
+}
+~~~
+
 
 # Conventions and Definitions
 
