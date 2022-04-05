@@ -1605,6 +1605,9 @@ Given that each attribute block's UUID, `u`, field has sufficient cryptographic 
 
 Given a total of *N* elements in the attributes array, let *a<sub>i</sub>* represent the SAID, `d`, field of the attribute at zero-based index *i*. More precisely the set of attributes is expressed as:
 
+*\{a<sub>i</sub> | i ∈ \{0, ..., N-1\}\}*. 
+
+The ordered set of *a<sub>i</sub>*  may be also expressd as a list, that is, 
 
 
 
