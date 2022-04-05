@@ -300,7 +300,7 @@ informative:
     
   JSchId:
     target: "https://json-schema.org/understanding-json-schema/structuring.html#schema-identification"
-    title: JSON Schema Identification
+    title: "JSON Schema Identification"
     
   JSchCx:
     target: "https://json-schema.org/understanding-json-schema/structuring.html#base-uri"
@@ -622,8 +622,8 @@ The top-level section field values of a compact ACDC are the SAIDs of each uncom
 are `s`, `a`, `e`, and `r`.
 
 ## Compact Public ACDC
-A fully compact public ACDC is shown below. 
 
+A fully compact public ACDC is shown below. 
 
 ~~~json
 {
@@ -634,14 +634,14 @@ A fully compact public ACDC is shown below.
   "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
   "a":  "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
   "e":  "ERH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZIl3MOA",
-  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB",
+  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB"
 }
 ~~~
 
 
 ## Compact Private ACDC
-A fully compact private ACDC is shown below. 
 
+A fully compact private ACDC is shown below. 
 
 ~~~json
 {
@@ -653,7 +653,7 @@ A fully compact private ACDC is shown below.
   "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
   "a":  "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
   "e":  "ERH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZIl3MOA",
-  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB",
+  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB"
 }
 
 ~~~
@@ -670,7 +670,7 @@ The schema for the compact private ACDC example above is provided below:
   "description": "Example JSON Schema for a Compact Private ACDC.",
   "credentialType": "CompactPrivateACDCExample",
   "type": "object",
-   "required": 
+  "required": 
   [
     "v",
     "d",
@@ -734,11 +734,13 @@ The schema for the compact private ACDC example above is provided below:
 
 The attribute section in the examples above has been compacted into its SAID. The schema of the compacted attribute section is as follows:
 
+~~~Json
 "a": 
 {
   "description": "attribute section SAID",
   "type": "string"
 },
+~~~
 
 Two variants of an ACDC, namely, namely, ***private (public) attribute*** are defined respectively by the presence (absence) of a UUID, `u`, field in the uncompacted attribute section block. 
 
@@ -809,9 +811,7 @@ The subschema for the public uncompacted attribute section is shown below:
 
 ## Composed Schema for both Public Compact and Uncompacted Attribute Section Variants
 
-
 Through the use of the JSON Schema `oneOf` composition operator the following composed schema will validate against both the compact and un-compacted value of the attribute section field.
-
 
 ~~~json
 "a": 
