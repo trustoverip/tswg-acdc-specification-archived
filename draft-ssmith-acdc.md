@@ -1548,7 +1548,56 @@ Given sufficient cryptographic entropy of the blinding factors, collision resist
 
 Selective disclosure in combination with partial disclosure for chain-link confidentiality provides comprehensive correlation minimization because a discloser may use a non-disclosing metadata ACDC prior to acceptance by the disclosee of the terms of the chain-link confidentiality expressed in the rule section {{CLC}}. Thus only malicious disclosees who violate chain-link confidentiality may correlate between independent disclosures of the value details of distinct members in the list of aggregated blinded commitments. Nonetheless, they are not able to discover any as of yet undisclosed (unblinded) value details.
 
+## Selectively Disclosable Attribute ACDC
 
+In a ***selectively disclosable attribute*** ACDC, the set of attributes is provided as an array of blinded blocks. Each attribute in the set has its own dedicated blinded block. Each block has its own SAID, `d`, field and UUID, `u`, field in addition to its attribute field or fields. When an attribute block has more than one attribute field then the set of fields in that block are not independently selectively disclosable but MUST be disclosed together as a set. Notable is that the field labels of the selectively disclosable attributes are also blinded because they only appear within the blinded block. This prevents un-permissioned correlation via contextualized variants of a field label that appear in a selectively disclosable block. For example, localized or internationalized variants where each variant's field label(s) each use a different language or some other context correlatable information in the field labels themselves.
+
+A selectively-disclosable attribute section appears at the top level using the field label `A`. This is distinct from the field label `a` for a non-selectively-disclosable attribute section. This makes clear (unambiguous) the semantics of the attribute section's associated schema. This also clearly reflects the fact that the value of a compact variant of selectively-disclosable attribute section is an "aggregate" not a SAID. As described previously, the top-level selectively-disclosable attribute aggregate section, `A`, field value is an aggregate of cryptographic commitments used to make a commitment to a set (bundle) of selectively-disclosable attributes. The derivation of its value depends on the type of selective disclosure mechanism employed. For example, the aggregate value could be the cryptographic digest of the concatenation of an ordered set of cryptographic digests, a Merkle tree root digest of an ordered set of cryptographic digests, or a cryptographic accumulator.
+
+The *Issuer* attribute block is absent from an uncompacted untargeted selectively disclosable ACDC as follows:
+
+~~~json
+{
+  "A":
+  [
+    {
+      "d": "ELIr9Bf7V_NHwY1lkgveY4-Frn9y2PY9XgOcLxUderzw",
+      "u": "0AG7OY1wjaDAE0qHcgNghkDa",
+      "score": 96
+    },
+    {
+      "d": "E9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PYgveY4-",
+      "u": "0AghkDaG7OY1wjaDAE0qHcgN",
+      "name": "Jane Doe"
+    }
+  ]
+}
+~~~
+
+The *Issuer* attribute block is present in an uncompacted untargeted selectively disclosable ACDC as follows:
+
+~~~json
+{
+  "A":
+  [
+    {
+      "d": "ErzwLIr9Bf7V_NHwY1lkFrn9y2PYgveY4-9XgOcLxUde",
+      "u": "0AqHcgNghkDaG7OY1wjaDAE0",
+      "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA"
+    },
+    {
+      "d": "ELIr9Bf7V_NHwY1lkgveY4-Frn9y2PY9XgOcLxUderzw",
+     "u": "0AG7OY1wjaDAE0qHcgNghkDa",
+      "score": 96
+    },
+    {
+      "d": "E9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PYgveY4-",
+      "u": "0AghkDaG7OY1wjaDAE0qHcgN",
+      "name": "Jane Doe"
+    }
+  ]
+}
+~~~
 
 
 # Conventions and Definitions
