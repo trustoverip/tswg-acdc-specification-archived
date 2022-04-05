@@ -286,25 +286,25 @@ informative:
         name: Mang Zhao  
     date: 2021-05-24
 
-  TmEd:
+  TMEd:
     target: https://eprint.iacr.org/2020/1244.pdf
     title: Taming the many EdDSAs  
 
   JSchCp:
-    target: https://json-schema.org/understanding-json-schema/reference/combining.html
-    title: Schema Composition in JSON Schema 
+    target: "https://json-schema.org/understanding-json-schema/reference/combining.html"
+    title: "Schema Composition in JSON Schema" 
 
   JSchRE:
-    target: https://json-schema.org/understanding-json-schema/reference/regular_expressions.html
-    title: Regular Expressions in JSON Schema
+    target: "https://json-schema.org/understanding-json-schema/reference/regular_expressions.html"
+    title: "Regular Expressions in JSON Schema"
     
   JSchId:
-    target: https://json-schema.org/understanding-json-schema/structuring.html#schema-identification
-    title: JSON Schema Identification
+    target: "https://json-schema.org/understanding-json-schema/structuring.html#schema-identification"
+    title: "JSON Schema Identification"
     
   JSchCx:
-    target: https://json-schema.org/understanding-json-schema/structuring.html#base-uri
-    title: Complex JSON Schema Structuring
+    target: "https://json-schema.org/understanding-json-schema/structuring.html#base-uri"
+    title: "Complex JSON Schema Structuring"
 
   RC:
     target: https://en.wikipedia.org/wiki/Ricardian_contract
@@ -334,7 +334,7 @@ informative:
     target: https://en.wikipedia.org/wiki/Merkle_tree
     title: Merkle Tree
       
-  2PI:
+  TwoPI:
     target: https://flawed.net.nz/2018/02/21/attacking-merkle-trees-with-a-second-preimage-attack/
     title: Second Pre-image Attack on Merkle Trees 
     
@@ -383,7 +383,7 @@ informative:
     title: Knowledge Graphs 
  
 
-tags: IETF, ACDC, CESR, SAID, KERI
+tags: "IETF, ACDC, CESR, SAID, KERI"
 
 --- abstract
 
@@ -570,7 +570,7 @@ When a *metadata* ACDC is disclosed (presented) only the *Discloser's* signature
 
 An important design goal of ACDCs is they support the sharing of provably authentic data while also protecting against the un-permissioned exploitation of that data. Often the term *privacy protection* is used to describe similar properties. But a narrow focus on "privacy protection" may lead to problematic design trade-offs. With ACDCs, the primary design goal is not *data privacy protection* per se but the more general goal of protection from the ***un-permissioned exploitation of data***. In this light, a *given privacy protection* mechanism may be employed to help protect against *unpermissioned exploitation of data* but only when it serves that more general-purpose and not as an end in and of itself. There are three primary mechanisms ACDCs use to protect against *unpermissioned exploitation of data*. These are:  
 
-* Chain-link Confidentiality [[41]]  
+* Chain-link Confidentiality {{CLC}}  
 * Partial Disclosure 
 * Selective Disclosure  
 
@@ -622,8 +622,8 @@ The top-level section field values of a compact ACDC are the SAIDs of each uncom
 are `s`, `a`, `e`, and `r`.
 
 ## Compact Public ACDC
-A fully compact public ACDC is shown below. 
 
+A fully compact public ACDC is shown below. 
 
 ~~~json
 {
@@ -634,14 +634,14 @@ A fully compact public ACDC is shown below.
   "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
   "a":  "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
   "e":  "ERH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZIl3MOA",
-  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB",
+  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB"
 }
 ~~~
 
 
 ## Compact Private ACDC
-A fully compact private ACDC is shown below. 
 
+A fully compact private ACDC is shown below. 
 
 ~~~json
 {
@@ -653,14 +653,14 @@ A fully compact private ACDC is shown below.
   "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
   "a":  "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
   "e":  "ERH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZIl3MOA",
-  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB",
+  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB"
 }
 
 ~~~
 
 ### Compact Private ACDC Schema
 
-The schema for the compact private ACDC example above is provided below:
+The schema for the compact private ACDC example above is provided below.
 
 ~~~json
 {
@@ -670,7 +670,7 @@ The schema for the compact private ACDC example above is provided below:
   "description": "Example JSON Schema for a Compact Private ACDC.",
   "credentialType": "CompactPrivateACDCExample",
   "type": "object",
-   "required": 
+  "required": 
   [
     "v",
     "d",
@@ -732,13 +732,17 @@ The schema for the compact private ACDC example above is provided below:
 
 # Attribute Section
 
-The attribute section in the examples above has been compacted into its SAID. The schema of the compacted attribute section is as follows:
+The attribute section in the examples above has been compacted into its SAID. The schema of the compacted attribute section is as follows,
 
-"a": 
+~~~Json
 {
-  "description": "attribute section SAID",
-  "type": "string"
-},
+  "a": 
+  {
+    "description": "attribute section SAID",
+    "type": "string"
+  }
+}
+~~~
 
 Two variants of an ACDC, namely, namely, ***private (public) attribute*** are defined respectively by the presence (absence) of a UUID, `u`, field in the uncompacted attribute section block. 
 
@@ -747,15 +751,17 @@ Two other variants of an ACDC, namely, ***targeted (untargeted)*** are defined r
 
 ## Public-Attribute ACDC
 
-Suppose that the un-compacted value of the attribute section as denoted by the attribute section, `a`, field is as follows:
+Suppose that the un-compacted value of the attribute section as denoted by the attribute section, `a`, field is as follows,
 
 ~~~json
-"a":
 {
-  "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
-  "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
-  "score": 96,
-  "name": "Jane Doe"
+  "a":
+  {
+    "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+    "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
+    "score": 96,
+    "name": "Jane Doe"
+  }
 }
 ~~~
 
@@ -766,99 +772,101 @@ Given the absence of a `u` field at the top level of the attributes block, then 
 
 ## Public Uncompacted Attribute Section Schema
 
-The subschema for the public uncompacted attribute section is shown below:
+The subschema for the public uncompacted attribute section is shown below,
 
 ~~~json
-"a": 
 {
-  "description": "attribute section",
-  "type": "object",
-  "required": 
-  [
-    "d",
-    "i",
-    "score",
-    "name"
-  ],
-  "properties": 
+  "a": 
   {
-    "d": 
+    "description": "attribute section",
+    "type": "object",
+    "required": 
+    [
+      "d",
+      "i",
+      "score",
+      "name"
+    ],
+    "properties": 
     {
-      "description": "attribute SAID",
-      "type": "string"
+      "d": 
+      {
+        "description": "attribute SAID",
+        "type": "string"
+      },
+      "i": 
+      {
+        "description": "Issuee AID",
+        "type": "string"
+      },
+      "score": 
+      {
+        "description": "test score",
+        "type": "integer"
+      },
+      "name": 
+      {
+        "description": "test taker full name",
+        "type": "string"
+      }
     },
-    "i": 
-    {
-      "description": "Issuee AID",
-      "type": "string"
-    },
-    "score": 
-    {
-      "description": "test score",
-      "type": "integer"
-    },
-    "name": 
-    {
-      "description": "test taker full name",
-      "type": "string"
-    }
-  },
-  "additionalProperties": false,
+    "additionalProperties": false
+  }
 }
 ~~~
 
 ## Composed Schema for both Public Compact and Uncompacted Attribute Section Variants
 
-
 Through the use of the JSON Schema `oneOf` composition operator the following composed schema will validate against both the compact and un-compacted value of the attribute section field.
 
-
 ~~~json
-"a": 
 {
-  "description": "attribute section",
-  "oneOf":
-  [
-    {
-      "description": "attribute SAID",
-      "type": "string"
-    },
-    {
-      "description": "uncompacted attribute section",
-      "type": "object",
-      "required": 
-      [
-        "d",
-        "i",
-        "score",
-        "name"
-      ],
-      "properties": 
+  "a": 
+  {
+    "description": "attribute section",
+    "oneOf":
+    [
       {
-        "d": 
-        {
-          "description": "attribute SAID",
-          "type": "string"
-        },
-        "i": 
-        {
-          "description": "Issuee AID",
-          "type": "string"
-        },
-        "score": 
-        {
-          "description": "test score",
-          "type": "integer"
-        },
-        "name": 
-        {
-          "description": "test taker full name",
-          "type": "string"
-        }
+        "description": "attribute SAID",
+        "type": "string"
       },
-      "additionalProperties": false
-    }
-  ]
+      {
+        "description": "uncompacted attribute section",
+        "type": "object",
+        "required": 
+        [
+          "d",
+          "i",
+          "score",
+          "name"
+        ],
+        "properties": 
+        {
+          "d": 
+          {
+            "description": "attribute SAID",
+            "type": "string"
+          },
+          "i": 
+          {
+            "description": "Issuee AID",
+            "type": "string"
+          },
+          "score": 
+          {
+            "description": "test score",
+            "type": "integer"
+          },
+          "name": 
+          {
+            "description": "test taker full name",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    ]
+  }
 }
 ~~~
 
@@ -866,20 +874,22 @@ Through the use of the JSON Schema `oneOf` composition operator the following co
 
 ## Private-Attribute ACDC
 
-Consider the following form of an uncompacted private-attribute block:
+Consider the following form of an uncompacted private-attribute block,
 
 ~~~json
-"a":
 {
-  "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
-  "u": "0AwjaDAE0qHcgNghkDaG7OY1",
-  "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
-  "score": 96,
-  "name": "Jane Doe"
+  "a":
+  {
+    "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+    "u": "0AwjaDAE0qHcgNghkDaG7OY1",
+    "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
+    "score": 96,
+    "name": "Jane Doe"
+  }
 }
 ~~~
 
-Given the presence of a top-level UUID, `u`, field of the attribute block whose value has sufficient cryptographic entropy, then the top-level SAID, `d`, field of the attribute block provides a secure cryptographic digest of the contents of the attribute block [47]. An adversary when given both the schema of the attribute block and its SAID, `d`, field, is not able to discover the remaining contents of the attribute block in a computationally feasible manner such as a rainbow table attack {{RB}}{{DRB}}.  Therefore the attribute block's UUID, `u`, field in a compact ACDC enables its attribute block's SAID, `d`, field to securely blind the contents of the attribute block notwithstanding knowledge of the attribute block's schema and SAID, `d` field.  Moreover, a cryptographic commitment to that attribute block's, SAID, `d`, field does not provide a fixed point of correlation to the attribute field values themselves unless and until there has been a disclosure of those field values. 
+Given the presence of a top-level UUID, `u`, field of the attribute block whose value has sufficient cryptographic entropy, then the top-level SAID, `d`, field of the attribute block provides a secure cryptographic digest of the contents of the attribute block {{Hash}}. An adversary when given both the schema of the attribute block and its SAID, `d`, field, is not able to discover the remaining contents of the attribute block in a computationally feasible manner such as a rainbow table attack {{RB}}{{DRB}}.  Therefore the attribute block's UUID, `u`, field in a compact ACDC enables its attribute block's SAID, `d`, field to securely blind the contents of the attribute block notwithstanding knowledge of the attribute block's schema and SAID, `d` field.  Moreover, a cryptographic commitment to that attribute block's, SAID, `d`, field does not provide a fixed point of correlation to the attribute field values themselves unless and until there has been a disclosure of those field values. 
 
 To elaborate, when an ACDC includes a sufficiently high entropy UUID, `u`, field at the top level of its attributes block then the ACDC may be considered a ***private-attributes*** ACDC when expressed in compact form, that is, the attribute block is represented by its SAID, `d`, field and the value of its top-level attribute section, `a`, field is the value of the nested SAID, `d`, field from the uncompacted version of the attribute block. A verifiable commitment may be made to the compact form of the ACDC without leaking details of the attributes. Later disclosure of the uncompacted attribute block may be verified against its SAID, `d`, field that was provided in the compact form as the value of the top-level attribute section, `a`, field.
 
@@ -892,57 +902,59 @@ Through the use of the JSON Schema `oneOf` composition operator the following co
 
 
 ~~~json
-"a": 
 {
-  "description": "attribute section",
-  "oneOf":
-  [
-    {
-      "description": "attribute SAID",
-      "type": "string"
-    },
-    {
-      "description": "uncompacted attribute section",
-      "type": "object",
-      "required": 
-      [
-        "d",
-        "u",
-        "i",
-        "score",
-        "name"
-      ],
-      "properties": 
+  "a": 
+  {
+    "description": "attribute section",
+    "oneOf":
+    [
       {
-        "d": 
-        {
-          "description": "attribute SAID",
-          "type": "string"
-        },
-        "u": 
-        {
-          "description": "attribute UUID",
-          "type": "string"
-        },
-        "i": 
-        {
-          "description": "Issuee AID",
-          "type": "string"
-        },
-        "score": 
-        {
-          "description": "test score",
-          "type": "integer"
-        },
-        "name": 
-        {
-          "description": "test taker full name",
-          "type": "string"
-        }
+        "description": "attribute SAID",
+        "type": "string"
       },
-      "additionalProperties": false,
-    }
-  ]
+      {
+        "description": "uncompacted attribute section",
+        "type": "object",
+        "required": 
+        [
+          "d",
+          "u",
+          "i",
+          "score",
+          "name"
+        ],
+        "properties": 
+        {
+          "d": 
+          {
+            "description": "attribute SAID",
+            "type": "string"
+          },
+          "u": 
+          {
+            "description": "attribute UUID",
+            "type": "string"
+          },
+          "i": 
+          {
+            "description": "Issuee AID",
+            "type": "string"
+          },
+          "score": 
+          {
+            "description": "test score",
+            "type": "integer"
+          },
+          "name": 
+          {
+            "description": "test taker full name",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+      }
+    ]
+  }
 }
 ~~~
 
@@ -952,19 +964,21 @@ As described above in the Schema section of this specification, the `oneOf` sub-
 
 ## Untargeted ACDC
 
-Consider the case where the issuee, `i`, field is absent at the top level of the attribute block as shown below:
+Consider the case where the issuee, `i`, field is absent at the top level of the attribute block as shown below,
 
 ~~~json
-"a":
 {
-  "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
-  "temp": 45,
-  "lat": "N40.3433", 
-  "lon": "W111.7208"
+  "a":
+  {
+    "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+    "temp": 45,
+    "lat": "N40.3433", 
+    "lon": "W111.7208"
+  }
 }
 ~~~
 
-This ACDC has an *Issuer* but no *Issuee*. Therefore, there is no provably controllable *Target* AID. This may be thought of as an undirected verifiable attestation or observation of the data in the attributes block by the *Issuer*. One could say that the attestation is addressed to "whom it may concern". It is therefore an ***untargeted*** ACDC, or equivalently an *unissueed* ACDC. An *untargeted* ACDC enables verifiable authorship by the Issuer of the data in the attributes block but there is no specified counter-party and no verifiable mechanism for delegation of authority.  Consequently, the rule section may only provide contractual obligations of implied counter-parties
+This ACDC has an *Issuer* but no *Issuee*. Therefore, there is no provably controllable *Target* AID. This may be thought of as an undirected verifiable attestation or observation of the data in the attributes block by the *Issuer*. One could say that the attestation is addressed to "whom it may concern". It is therefore an ***untargeted*** ACDC, or equivalently an *unissueed* ACDC. An *untargeted* ACDC enables verifiable authorship by the Issuer of the data in the attributes block but there is no specified counter-party and no verifiable mechanism for delegation of authority.  Consequently, the rule section may only provide contractual obligations of implied counter-parties.
 
 This form of an ACDC provides a container for authentic data only (not authentic data as authorization). But authentic data is still a very important use case. To clarify, an untargeted ACDC enables verifiable authorship of data. An observer such as a sensor that controls an AID may make verifiable non-repudiable measurements and publish them as ACDCs. These may be chained together to provide provenance for or a chain-of-custody of any data.  These ACDCs could be used to provide a verifiable data supply chain for any compliance-regulated application. This provides a way to protect participants in a supply chain from imposters. Such data supply chains are also useful as a verifiable digital twin of a physical supply chain {{Twin}}.
 
@@ -987,7 +1001,7 @@ Likewise, the presence of an issuee, `i`, field, enables the *Issuer* to use the
 
 # Edge Section
 
-In the compact ACDC examples above, the edge section has been compacted into merely the SAID of that section. Suppose that the un-compacted value of the edge section denoted by the top-level edge, `e`, field is as follows:
+In the compact ACDC examples above, the edge section has been compacted into merely the SAID of that section. Suppose that the un-compacted value of the edge section denoted by the top-level edge, `e`, field is as follows,
 
 ~~~json
 "e": 
@@ -1021,7 +1035,7 @@ A main distinguishing feature of a *property graph* (PG) is that both nodes but 
 
 ## Globally Distributed Secure Graph Fragments
 
-Abstractly, an ACDC with one or more edges may be a fragment of a distributed property graph. However, the local label does not enable the direct unique global resolution of a given edge including its properties other than a trivial edge with only one property, its node, `n` field. To enable an edge with additional properties to be globally uniquely resolvable, that edge's block may have a SAID, `d`, field. Because a SAID is a cryptographic digest it will universally and uniquely identify an edge with a given set of properties [[47]]. This allows ACDCs to be used as secure fragments of a globally distributed property graph (PG). This enables a property graph to serve as a global knowledge graph in a secure manner that crosses trust domains {{PGM}}{{Dots}}{{KG}}. This is shown below.
+Abstractly, an ACDC with one or more edges may be a fragment of a distributed property graph. However, the local label does not enable the direct unique global resolution of a given edge including its properties other than a trivial edge with only one property, its node, `n` field. To enable an edge with additional properties to be globally uniquely resolvable, that edge's block may have a SAID, `d`, field. Because a SAID is a cryptographic digest it will universally and uniquely identify an edge with a given set of properties {{Hash}}. This allows ACDCs to be used as secure fragments of a globally distributed property graph (PG). This enables a property graph to serve as a global knowledge graph in a secure manner that crosses trust domains {{PGM}}{{Dots}}{{KG}}. This is shown below.
 
 
 ~~~json
@@ -1039,7 +1053,7 @@ Abstractly, an ACDC with one or more edges may be a fragment of a distributed pr
 
 ## Compact Edge
 
-Given that an individual edge's property block includes a SAID, `d`, field then a compact representation of the edge's property block is provided by replacing it with its SAID. This may be useful for complex edges with many properties. This is called a ***compact edge***. This is shown as follows:
+Given that an individual edge's property block includes a SAID, `d`, field then a compact representation of the edge's property block is provided by replacing it with its SAID. This may be useful for complex edges with many properties. This is called a ***compact edge***. This is shown as follows,
 
 ~~~json
 "e": 
@@ -1089,7 +1103,7 @@ In general, the discovery of the details of an ACDC referenced as a node, `n` fi
 
 # Rule Section
 
-In the compact ACDC examples above, the rule section has been compacted into merely the SAID of that section. Suppose that the un-compacted value of the rule section denoted by the top-level rule, `r`, field is as follows:
+In the compact ACDC examples above, the rule section has been compacted into merely the SAID of that section. Suppose that the un-compacted value of the rule section denoted by the top-level rule, `r`, field is as follows,
 
 ~~~json
 "r": 
@@ -1116,7 +1130,7 @@ Note there are no type fields in the rule section. The type of a contract and th
 
 Each rule section clause may also have its own clause SAID, `d`, field. Clause SAIDs enable reference to individual clauses, not merely the whole contract as given by the rule section's top-level SAID, `d`, field.
 
-An example rule section with clause SAIDs is provided below:
+An example rule section with clause SAIDs is provided below.
 
 ~~~json
 "r": 
@@ -1137,20 +1151,20 @@ An example rule section with clause SAIDs is provided below:
 
 ## Compact Clauses
 
-The use of clause SAIDS enables a compact form of a set of clauses where each clause value is the SAID of the corresponding clause. For example:
+The use of clause SAIDS enables a compact form of a set of clauses where each clause value is the SAID of the corresponding clause. For example,
 
 ~~~json
 "r": 
 {
   "d": "EwY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NA",
   "warrantyDisclaimer":  "EXgOcLxUdYerzwLIr9Bf7V_NAwY1lkFrn9y2PgveY4-9",
-  "liabilityDisclaimer": "EY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NAw",
+  "liabilityDisclaimer": "EY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NAw"
 }
 ~~~
 
 ## Private Clause
 
-The disclosure of some clauses may be pre-conditioned on acceptance of chain-link confidentiality. In this case, some clauses may benefit from partial disclosure. Thus clauses may be blinded by their SAID, `d`, field when the clause block includes a sufficiently high entropy UUID, `u`, field. The use of a clause UUID enables the compact form of a clause to NOT be discoverable merely from the schema for the clause and its SAID via rainbow table attack {{RB}}{{DRB}}. Therefore such a clause may be partially disclosable. These are called ***private clauses***. A private clause example is shown below:
+The disclosure of some clauses may be pre-conditioned on acceptance of chain-link confidentiality. In this case, some clauses may benefit from partial disclosure. Thus clauses may be blinded by their SAID, `d`, field when the clause block includes a sufficiently high entropy UUID, `u`, field. The use of a clause UUID enables the compact form of a clause to NOT be discoverable merely from the schema for the clause and its SAID via rainbow table attack {{RB}}{{DRB}}. Therefore such a clause may be partially disclosable. These are called ***private clauses***. A private clause example is shown below.
 
 ~~~json
 "r": 
@@ -1201,7 +1215,7 @@ In compact form, the discovery of either the rule section as a whole or a given 
   "s":  "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
   "a":  "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
   "e":  "ERH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZIl3MOA",
-  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB",
+  "r":  "Ee71iheqcywJcnjtJtQIYPvAu6DZIl3MORH3dCdoFOLB"
 }
 ~~~
 
@@ -1228,7 +1242,7 @@ In compact form, the discovery of either the rule section as a whole or a given 
     {
       "d": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn",
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
-      "w": "high",
+      "w": "high"
     }
   },
   "r": 
@@ -1237,7 +1251,7 @@ In compact form, the discovery of either the rule section as a whole or a given 
     "warrantyDisclaimer": 
     {
       "d": "EXgOcLxUdYerzwLIr9Bf7V_NAwY1lkFrn9y2PgveY4-9",
-      "l": "Issuer provides this credential on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE",
+      "l": "Issuer provides this credential on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE"
     },
     "liabilityDisclaimer": 
     {
@@ -1493,6 +1507,23 @@ In compact form, the discovery of either the rule section as a whole or a given 
 }
 ~~~
 
+# Selective Disclosure
+
+As explained previously, the primary difference between *partial disclosure* and *selective disclosure* is determined by the correlatability with respect to its encompassing block after *full disclosure* of the detailed field value. A *partially disclosable* field becomes correlatable to its encompassing block after its *full disclosure*. Whereas a *selectively disclosable* field may be excluded from the *full disclosure* of any other selectively disclosable fields in its encompassing block. After selective disclosure, the selectively disclosed fields are not correlatable to the so-far undisclosed but selectively disclosable fields in the same encompassing block. In this sense, *full disclosure* means detailed disclosure of the selectively disclosed attributes not detailed disclosure of all selectively disclosable attributes.
+
+Recall that *partial* disclosure is an essential mechanism needed to support chain-link confidentiality {{CLC}}. The chain-link confidentiality exchange *offer* requires *partial disclosure*, and *full disclosure* only happens after *acceptance* of the *offer*. *Selective* disclosure, on the other hand, is an essential mechanism needed to unbundle in a correlation minimizing way a single commitment by an Issuer to a bundle of fields (i.e. a nested block or array of fields). This allows separating a "stew" of "ingredients" (attributes) into its constituent "ingredients" (attributes) without correlating the constituents via the stew. 
+
+ACDCs, as a standard, benefit from a minimally sufficient approach to selective disclosure that is simple enough to be universally implementable and adoptable. This does not preclude support for other more sophisticated but optional approaches. But the minimally sufficient approach should be universal so that at least one selective disclosure mechanism be made available in all ACDC implementations. To clarify, not all instances of an ACDC must employ the minimal selective disclosure mechanisms as described herein but all ACDC implementations must support any instance of an ACDC that employs the minimal selective disclosure mechanisms as described above.
+
+The ACDC chaining mechanism reduces the need for selective disclosure in some applications. Many non-ACDC verifiable credentials provide bundled precisely because there is no other way to associate the attributes in the bundle. These bundled credentials could be refactored into a graph of ACDCs. Each of which is separately disclosable and verifiable thereby obviating the need for selective disclosure. Nonetheless, some applications require bundled attributes and therefore may benefit from the independent selective disclosure of bundled attributes. This is provided by ***selectively disclosable attribute*** ACDCs.
+
+The use of a revocation registry is an example of a type of bundling, not of attributes in a credential, but uses of a credential in different contexts. Unbundling the usage contexts may be beneficial. This is provided by ***bulk-issued*** ACDCs.
+
+In either case, the basic selective disclosure mechanism is comprised of a single aggregated blinded commitment to a list of blinded commitments to undisclosed values. Membership of any blinded commitment to a value in the list of aggregated blinded commitments may be proven without leaking (disclosing) the unblinded value belonging to any other blinded commitment in the list. This enables provable selective disclosure of the unblinded values. When a non-repudiable digital signature is created on the aggregated blinded commitment then any disclosure of a given value belonging to a given blinded commitment in the list is also non-repudiable. This approach does not require any more complex cryptography than digests and digital signatures. This satisfies the design ethos of minimally sufficient means. The primary drawback of this approach is verbosity. It trades ease and simplicity and adoptability of implementation for size. Its verbosity may be mitigated by replacing the list of blinded commitments with a Merkle tree of those commitments where the Merkle tree root becomes the aggregated blinded commitment.
+
+Given sufficient cryptographic entropy of the blinding factors, collision resistance of the digests, and unforgeability of the digital signatures, either inclusion proof format (list or Merkle tree digest) prevents a potential disclosee or adversary from discovering in a computationally feasible way the values of any undisclosed blinded value details from the combination of the schema of those value details and either the aggregated blinded commitment and/or the list of aggregated blinded commitments {{Hash}}{{HCR}}{{QCHC}}{{Mrkl}}{{TwoPI}}{{MTSec}}. A potential disclosee or adversary would also need both the blinding factor and the actual value details.
+
+Selective disclosure in combination with partial disclosure for chain-link confidentiality provides comprehensive correlation minimization because a discloser may use a non-disclosing metadata ACDC prior to acceptance by the disclosee of the terms of the chain-link confidentiality expressed in the rule section {{CLC}}. Thus only malicious disclosees who violate chain-link confidentiality may correlate between independent disclosures of the value details of distinct members in the list of aggregated blinded commitments. Nonetheless, they are not able to discover any as of yet undisclosed (unblinded) value details.
 
 
 
