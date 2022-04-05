@@ -383,7 +383,7 @@ informative:
     title: Knowledge Graphs 
  
 
-tags: IETF, ACDC, CESR, SAID, KERI
+tags: "IETF, ACDC, CESR, SAID, KERI"
 
 --- abstract
 
@@ -803,7 +803,7 @@ The subschema for the public uncompacted attribute section is shown below:
       "type": "string"
     }
   },
-  "additionalProperties": false,
+  "additionalProperties": false
 }
 ~~~
 
