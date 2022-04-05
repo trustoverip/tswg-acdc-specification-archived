@@ -730,6 +730,261 @@ The schema for the compact private ACDC example above is provided below:
 }
 ~~~
 
+# Attribute Section
+
+The attribute section in the examples above has been compacted into its SAID. The schema of the compacted attribute section is as follows:
+
+"a": 
+{
+  "description": "attribute section SAID",
+  "type": "string"
+},
+
+Two variants of an ACDC, namely, namely, ***private (public) attribute*** are defined respectively by the presence (absence) of a UUID, `u`, field in the uncompacted attribute section block. 
+
+Two other variants of an ACDC, namely, ***targeted (untargeted)*** are defined respectively by the presence (absence) of an issuee, `i`, field in the uncompacted attribute section block. 
+
+
+## Public-Attribute ACDC
+
+Suppose that the un-compacted value of the attribute section as denoted by the attribute section, `a`, field is as follows:
+
+~~~json
+"a":
+{
+  "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+  "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
+  "score": 96,
+  "name": "Jane Doe"
+}
+~~~
+
+The SAID, `d`, field at the top level of the uncompacted attribute block is the same SAID used as the compacted value of the attribute section, `a`, field. 
+
+Given the absence of a `u` field at the top level of the attributes block, then knowledge of both SAID, `d`, field at the top level of an attributes block and the schema of the attributes block may enable the discovery of the remaining contents of the attributes block via a rainbow table attack {{RB}}{{DRB}}. Therefore the SAID, `d`, field of the attributes block, although, a cryptographic digest, does not securely blind the contents of the attributes block given knowledge of the schema. It only provides compactness, not privacy. Moreover, any cryptographic commitment to that SAID, `d`, field provides a fixed point of correlation potentially to the attribute block field values themselves in spite of non-disclosure of those field values via a compact ACDC. Thus an ACDC without a UUID, `u`, field in its attributes block must be considered a ***public-attribute*** ACDC even when expressed in compact form.
+
+
+## Public Uncompacted Attribute Section Schema
+
+The subschema for the public uncompacted attribute section is shown below:
+
+~~~json
+"a": 
+{
+  "description": "attribute section",
+  "type": "object",
+  "required": 
+  [
+    "d",
+    "i",
+    "score",
+    "name"
+  ],
+  "properties": 
+  {
+    "d": 
+    {
+      "description": "attribute SAID",
+      "type": "string"
+    },
+    "i": 
+    {
+      "description": "Issuee AID",
+      "type": "string"
+    },
+    "score": 
+    {
+      "description": "test score",
+      "type": "integer"
+    },
+    "name": 
+    {
+      "description": "test taker full name",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+}
+~~~
+
+## Composed Schema for both Public Compact and Uncompacted Attribute Section Variants
+
+
+Through the use of the JSON Schema `oneOf` composition operator the following composed schema will validate against both the compact and un-compacted value of the attribute section field.
+
+
+~~~json
+"a": 
+{
+  "description": "attribute section",
+  "oneOf":
+  [
+    {
+      "description": "attribute SAID",
+      "type": "string"
+    },
+    {
+      "description": "uncompacted attribute section",
+      "type": "object",
+      "required": 
+      [
+        "d",
+        "i",
+        "score",
+        "name"
+      ],
+      "properties": 
+      {
+        "d": 
+        {
+          "description": "attribute SAID",
+          "type": "string"
+        },
+        "i": 
+        {
+          "description": "Issuee AID",
+          "type": "string"
+        },
+        "score": 
+        {
+          "description": "test score",
+          "type": "integer"
+        },
+        "name": 
+        {
+          "description": "test taker full name",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}
+~~~
+
+
+
+## Private-Attribute ACDC
+
+Consider the following form of an uncompacted private-attribute block:
+
+~~~json
+"a":
+{
+  "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+  "u": "0AwjaDAE0qHcgNghkDaG7OY1",
+  "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
+  "score": 96,
+  "name": "Jane Doe"
+}
+~~~
+
+Given the presence of a top-level UUID, `u`, field of the attribute block whose value has sufficient cryptographic entropy, then the top-level SAID, `d`, field of the attribute block provides a secure cryptographic digest of the contents of the attribute block [47]. An adversary when given both the schema of the attribute block and its SAID, `d`, field, is not able to discover the remaining contents of the attribute block in a computationally feasible manner such as a rainbow table attack {{RB}}{{DRB}}.  Therefore the attribute block's UUID, `u`, field in a compact ACDC enables its attribute block's SAID, `d`, field to securely blind the contents of the attribute block notwithstanding knowledge of the attribute block's schema and SAID, `d` field.  Moreover, a cryptographic commitment to that attribute block's, SAID, `d`, field does not provide a fixed point of correlation to the attribute field values themselves unless and until there has been a disclosure of those field values. 
+
+To elaborate, when an ACDC includes a sufficiently high entropy UUID, `u`, field at the top level of its attributes block then the ACDC may be considered a ***private-attributes*** ACDC when expressed in compact form, that is, the attribute block is represented by its SAID, `d`, field and the value of its top-level attribute section, `a`, field is the value of the nested SAID, `d`, field from the uncompacted version of the attribute block. A verifiable commitment may be made to the compact form of the ACDC without leaking details of the attributes. Later disclosure of the uncompacted attribute block may be verified against its SAID, `d`, field that was provided in the compact form as the value of the top-level attribute section, `a`, field.
+
+Because the *Issuee* AID is nested in the attribute block as that block's top-level, issuee, `i`, field, a presentation exchange (disclosure) could be initiated on behalf of a different AID that has not yet been correlated to the *Issuee* AID and then only correlated to the Issuee AID after the *Disclosee* has agreed to the chain-link confidentiality provisions in the rules section of the private-attributes ACDC {{CLC}}.
+
+
+### Composed Schema for Both Compact and Uncompacted Private-Attribute ACDC
+
+Through the use of the JSON Schema `oneOf` composition operator the following composed schema will validate against both the compact and un-compacted value of the private attribute section, `a`, field.
+
+
+~~~json
+"a": 
+{
+  "description": "attribute section",
+  "oneOf":
+  [
+    {
+      "description": "attribute SAID",
+      "type": "string"
+    },
+    {
+      "description": "uncompacted attribute section",
+      "type": "object",
+      "required": 
+      [
+        "d",
+        "u",
+        "i",
+        "score",
+        "name"
+      ],
+      "properties": 
+      {
+        "d": 
+        {
+          "description": "attribute SAID",
+          "type": "string"
+        },
+        "u": 
+        {
+          "description": "attribute UUID",
+          "type": "string"
+        },
+        "i": 
+        {
+          "description": "Issuee AID",
+          "type": "string"
+        },
+        "score": 
+        {
+          "description": "test score",
+          "type": "integer"
+        },
+        "name": 
+        {
+          "description": "test taker full name",
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+    }
+  ]
+}
+~~~
+
+As described above in the Schema section of this specification, the `oneOf` sub-schema composition operator validates against either the compact SAID of a block or the full block. A validator can use a composed schema that has been committed to by the Issuer to securely confirm schema compliance both before and after detailed disclosure by using the fully composed base schema pre-disclosure and a specific decomposed variant post-disclosure. Decomposing the schema to remove the optional compact variant (i.e. removing the `oneOf` compact option) enables a validator to ensure complaint full disclosure. 
+
+
+
+## Untargeted ACDC
+
+Consider the case where the issuee, `i`, field is absent at the top level of the attribute block as shown below:
+
+~~~json
+"a":
+{
+  "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+  "temp": 45,
+  "lat": "N40.3433", 
+  "lon": "W111.7208"
+}
+~~~
+
+This ACDC has an *Issuer* but no *Issuee*. Therefore, there is no provably controllable *Target* AID. This may be thought of as an undirected verifiable attestation or observation of the data in the attributes block by the *Issuer*. One could say that the attestation is addressed to "whom it may concern". It is therefore an ***untargeted*** ACDC, or equivalently an *unissueed* ACDC. An *untargeted* ACDC enables verifiable authorship by the Issuer of the data in the attributes block but there is no specified counter-party and no verifiable mechanism for delegation of authority.  Consequently, the rule section may only provide contractual obligations of implied counter-parties
+
+This form of an ACDC provides a container for authentic data only (not authentic data as authorization). But authentic data is still a very important use case. To clarify, an untargeted ACDC enables verifiable authorship of data. An observer such as a sensor that controls an AID may make verifiable non-repudiable measurements and publish them as ACDCs. These may be chained together to provide provenance for or a chain-of-custody of any data.  These ACDCs could be used to provide a verifiable data supply chain for any compliance-regulated application. This provides a way to protect participants in a supply chain from imposters. Such data supply chains are also useful as a verifiable digital twin of a physical supply chain {{Twin}}.
+
+A hybrid chain of one or more targeted ACDCs ending in a chain of one or more untargeted ACDCs enables delegated authorized attestations at the tail of that chain. This may be very useful in many regulated supply chain applications such as verifiable authorized authentic datasheets for a given pharmaceutical.
+
+
+## Targeted ACDC
+
+When present at the top level of the attribute section, the issuee, `i`, field value provides the AID of the *Issuee* of the ACDC. This *Issuee* AID is a provably controllable identifier that serves as the *Target* AID. This makes the ACDC a ***targeted*** ACDC or equivalently an *issueed* ACDC. Targeted ACDCs may be used for many different purposes such as an authorization or a delegation directed at the *Issuee* AID, i.e. the *Target*. In other words, a *targeted ACDC* provides a container for authentic data that may also be used as some form of authorization such as a credential that is verifiably bound to the *Issuee* as targeted by the *Issuer*. Furthermore, by virtue of the targeted *Issuee's* provable control over its AID, the *targeted ACDC* may be verifiably presented (disclosed) by the controller of the *Issuee* AID.
+
+For example, the definition of the term ***credential*** is *evidence of authority, status, rights, entitlement to privileges, or the like*. To elaborate, the presence of an attribute section top-level issuee, `i`, field enables the ACDC to be used as a verifiable credential given by the *Issuer* to the *Issuee*. 
+
+One reason the issuee, `i`, field is nested into the attribute section, `a`, block is to enable the *Issuee* AID to be private or partially or selectively disclosable. The *Issuee* may also be called the *Holder* or *Subject* of the ACDC.  But here we use the more semantically precise albeit less common terms of *Issuer* and *Issuee*. The ACDC is issued from or by an *Issuer* and is issued to or for an *Issuee*. This precise terminology does not bias or color the role (function) that an *Issuee* plays in the use of an ACDC. What the presence of *Issuee* AID does provide is a mechanism for control of the subsequent use of the ACDC once it has been issued. To elaborate, because the issuee, `i`, field value is an AID, by definition, there is a provable controller of that AID. Therefore that *Issuee* controller may make non-repudiable commitments via digital signatures on behalf of its AID.  Therefore subsequent use of the ACDC by the *Issuee* may be securely attributed to the *Issuee*.
+
+Importantly the presence of an issuee, `i`, field enables the associated *Issuee* to make authoritative verifiable presentations or disclosures of the ACDC. A designated *Issuee*also better enables the initiation of presentation exchanges of the ACDC between that *Issuee* as *Discloser* and a *Disclosee* (verifier).
+
+In addition, because the *Issuee* is a specified counter-party the *Issuer* may engage in a contract with the *Issuee* that the *Issuee* agrees to by virtue of its non-repudiable signature on an offer of the ACDC prior to its issuance. This agreement may be a pre-condition to the issuance and thereby impose liability waivers or other terms of use on that *Issuee*. 
+
+Likewise, the presence of an issuee, `i`, field, enables the *Issuer* to use the ACDC as a contractual vehicle for conveying an authorization to the *Issuee*.  This enables verifiable delegation chains of authority because the *Issuee* in one ACDC may become the *Issuer* in some other ACDC. Thereby an *Issuer* may delegate authority to an *Issuee* who may then become a verifiably authorized *Issuer* that then delegates that authority (or an attenuation of that authority) to some other verifiably authorized *Issuee* and so forth.  
+
 
 
 
