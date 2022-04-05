@@ -286,7 +286,7 @@ informative:
         name: Mang Zhao  
     date: 2021-05-24
 
-  TmEd:
+  TMEd:
     target: https://eprint.iacr.org/2020/1244.pdf
     title: Taming the many EdDSAs  
 
@@ -1493,6 +1493,283 @@ In compact form, the discovery of either the rule section as a whole or a given 
 }
 ~~~
 
+# Selective Disclosure
+
+As explained previously, the primary difference between *partial disclosure* and *selective disclosure* is determined by the correlatability with respect to its encompassing block after *full disclosure* of the detailed field value. A *partially disclosable* field becomes correlatable to its encompassing block after its *full disclosure*. Whereas a *selectively disclosable* field may be excluded from the *full disclosure* of any other selectively disclosable fields in its encompassing block. After selective disclosure, the selectively disclosed fields are not correlatable to the so-far undisclosed but selectively disclosable fields in the same encompassing block. In this sense, *full disclosure* means detailed disclosure of the selectively disclosed attributes not detailed disclosure of all selectively disclosable attributes.
+
+Recall that *partial* disclosure is an essential mechanism needed to support chain-link confidentiality {{CLC}}. The chain-link confidentiality exchange *offer* requires *partial disclosure*, and *full disclosure* only happens after *acceptance* of the *offer*. *Selective* disclosure, on the other hand, is an essential mechanism needed to unbundle in a correlation minimizing way a single commitment by an Issuer to a bundle of fields (i.e. a nested block or array of fields). This allows separating a "stew" of "ingredients" (attributes) into its constituent "ingredients" (attributes) without correlating the constituents via the stew. 
+
+ACDCs, as a standard, benefit from a minimally sufficient approach to selective disclosure that is simple enough to be universally implementable and adoptable. This does not preclude support for other more sophisticated but optional approaches. But the minimally sufficient approach should be universal so that at least one selective disclosure mechanism be made available in all ACDC implementations. To clarify, not all instances of an ACDC must employ the minimal selective disclosure mechanisms as described herein but all ACDC implementations must support any instance of an ACDC that employs the minimal selective disclosure mechanisms as described above.
+
+The ACDC chaining mechanism reduces the need for selective disclosure in some applications. Many non-ACDC verifiable credentials provide bundled precisely because there is no other way to associate the attributes in the bundle. These bundled credentials could be refactored into a graph of ACDCs. Each of which is separately disclosable and verifiable thereby obviating the need for selective disclosure. Nonetheless, some applications require bundled attributes and therefore may benefit from the independent selective disclosure of bundled attributes. This is provided by ***selectively disclosable attribute*** ACDCs.
+
+The use of a revocation registry is an example of a type of bundling, not of attributes in a credential, but uses of a credential in different contexts. Unbundling the usage contexts may be beneficial. This is provided by ***bulk-issued*** ACDCs.
+
+In either case, the basic selective disclosure mechanism is comprised of a single aggregated blinded commitment to a list of blinded commitments to undisclosed values. Membership of any blinded commitment to a value in the list of aggregated blinded commitments may be proven without leaking (disclosing) the unblinded value belonging to any other blinded commitment in the list. This enables provable selective disclosure of the unblinded values. When a non-repudiable digital signature is created on the aggregated blinded commitment then any disclosure of a given value belonging to a given blinded commitment in the list is also non-repudiable. This approach does not require any more complex cryptography than digests and digital signatures. This satisfies the design ethos of minimally sufficient means. The primary drawback of this approach is verbosity. It trades ease and simplicity and adoptability of implementation for size. Its verbosity may be mitigated by replacing the list of blinded commitments with a Merkle tree of those commitments where the Merkle tree root becomes the aggregated blinded commitment.
+
+Given sufficient cryptographic entropy of the blinding factors, collision resistance of the digests, and unforgeability of the digital signatures, either inclusion proof format (list or Merkle tree digest) prevents a potential disclosee or adversary from discovering in a computationally feasible way the values of any undisclosed blinded value details from the combination of the schema of those value details and either the aggregated blinded commitment and/or the list of aggregated blinded commitments {{Hash}}{{HCR}}{{QCHC}}{{Mrkl}}{{2PI}}{{MTSec}}. A potential disclosee or adversary would also need both the blinding factor and the actual value details.
+
+Selective disclosure in combination with partial disclosure for chain-link confidentiality provides comprehensive correlation minimization because a discloser may use a non-disclosing metadata ACDC prior to acceptance by the disclosee of the terms of the chain-link confidentiality expressed in the rule section {{CLC}}. Thus only malicious disclosees who violate chain-link confidentiality may correlate between independent disclosures of the value details of distinct members in the list of aggregated blinded commitments. Nonetheless, they are not able to discover any as of yet undisclosed (unblinded) value details.
+
+## Selectively Disclosable Attribute ACDC
+
+In a ***selectively disclosable attribute*** ACDC, the set of attributes is provided as an array of blinded blocks. Each attribute in the set has its own dedicated blinded block. Each block has its own SAID, `d`, field and UUID, `u`, field in addition to its attribute field or fields. When an attribute block has more than one attribute field then the set of fields in that block are not independently selectively disclosable but MUST be disclosed together as a set. Notable is that the field labels of the selectively disclosable attributes are also blinded because they only appear within the blinded block. This prevents un-permissioned correlation via contextualized variants of a field label that appear in a selectively disclosable block. For example, localized or internationalized variants where each variant's field label(s) each use a different language or some other context correlatable information in the field labels themselves.
+
+A selectively-disclosable attribute section appears at the top level using the field label `A`. This is distinct from the field label `a` for a non-selectively-disclosable attribute section. This makes clear (unambiguous) the semantics of the attribute section's associated schema. This also clearly reflects the fact that the value of a compact variant of selectively-disclosable attribute section is an "aggregate" not a SAID. As described previously, the top-level selectively-disclosable attribute aggregate section, `A`, field value is an aggregate of cryptographic commitments used to make a commitment to a set (bundle) of selectively-disclosable attributes. The derivation of its value depends on the type of selective disclosure mechanism employed. For example, the aggregate value could be the cryptographic digest of the concatenation of an ordered set of cryptographic digests, a Merkle tree root digest of an ordered set of cryptographic digests, or a cryptographic accumulator.
+
+The *Issuer* attribute block is absent from an uncompacted untargeted selectively disclosable ACDC as follows:
+
+~~~json
+"A":
+[
+  {
+    "d": "ELIr9Bf7V_NHwY1lkgveY4-Frn9y2PY9XgOcLxUderzw",
+    "u": "0AG7OY1wjaDAE0qHcgNghkDa",
+    "score": 96
+  },
+  {
+    "d": "E9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PYgveY4-",
+    "u": "0AghkDaG7OY1wjaDAE0qHcgN",
+    "name": "Jane Doe"
+  }
+]
+~~~
+
+The *Issuer* attribute block is present in an uncompacted untargeted selectively disclosable ACDC as follows:
+
+~~~json
+"A":
+[
+  {
+    "d": "ErzwLIr9Bf7V_NHwY1lkFrn9y2PYgveY4-9XgOcLxUde",
+    "u": "0AqHcgNghkDaG7OY1wjaDAE0",
+    "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA"
+  },
+  {
+    "d": "ELIr9Bf7V_NHwY1lkgveY4-Frn9y2PY9XgOcLxUderzw",
+    "u": "0AG7OY1wjaDAE0qHcgNghkDa",
+    "score": 96
+  },
+  {
+    "d": "E9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PYgveY4-",
+    "u": "0AghkDaG7OY1wjaDAE0qHcgN",
+    "name": "Jane Doe"
+  }
+]
+~~~
+
+### Blinded Attribute Array
+
+Given that each attribute block's UUID, `u`, field has sufficient cryptographic entropy, then each attribute block's SAID, `d`, field provides a secure cryptographic digest of its contents that effectively blinds the attribute value from discovery given only its Schema and SAID. To clarify, the adversary despite being given both the schema of the attribute block and its  SAID, `d`, field, is not able to discover the remaining contents of the attribute block in a computationally feasible manner such as a rainbow table attack {{RB}}{{DRB}}.  Therefore the UUID, `u`, field of each attribute block enables the associated SAID, `d`, field to securely blind the block's contents notwithstanding knowledge of the block's schema and that SAID, `d`, field.  Moreover, a cryptographic commitment to that SAID, `d`, field does not provide a fixed point of correlation to the associated attribute (SAD) field values themselves unless and until there has been specific disclosure of those field values themselves. 
+
+Given a total of *N* elements in the attributes array, let *a<sub>i</sub>* represent the SAID, `d`, field of the attribute at zero-based index *i*. More precisely the set of attributes is expressed as:
+
+\{*a<sub>i</sub> | i ∈ \{0, ..., N-1\}\}*. 
+
+The ordered set of *a<sub>i</sub>*  may be also expressd as a list, that is, 
+
+*[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>]*,
+
+or equivalently 
+
+*[a<sub>i</sub> | i ∈ \{0, ..., N-1\}]*
+
+### Composed Schema for Selectively Disclosable Attribute Section
+
+Because the selectively-disclosable attributes are provided by an array (list), the uncompacted variant in the schema uses an array of items and the `anyOf` composition operator to allow one or more of the items to be disclosed without requiring all to be disclosed. Thus both the `oneOf` and `anyOf` composition operators are used. The `oneOf` is used to provide compact partial disclosure of the aggregate, *A*, as the value of the top-level selectively-disclosable attribute section, `A`, field in its compact variant and the nested `anyOf` operator is used to enable selective disclosure in the uncompacted selectively-disclosable variant.
+
+~~~json
+"A": 
+{
+  "description": "attribute section",
+  "oneOf":
+  [
+    {
+      "description": "attribute section SAID",
+      "type": "string"
+    },
+    {
+      "description": "attribute details",
+      "type": "array",
+      "uniqueItems": true,
+      "items": 
+      {
+        "anyOf":
+        [
+          {
+            "description": "issuer attribute",
+            "type": "object",
+            "properties":
+            "required":
+            [
+              "d",
+              "u",
+              "i"
+            ],
+            "properties":
+            {
+              "d": 
+              {
+                "description": "attribute SAID",
+                "type": "string"
+              },
+              "u": 
+              {
+                "description": "attribute UUID",
+                "type": "string"
+              },
+              "i": 
+              {
+                "description": "issuer SAID",
+                "type": "string"
+              },
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "score attribute",
+            "type": "object",
+            "properties":
+            "required":
+            [
+              "d",
+              "u",
+              "score"
+            ],
+            "properties":
+            {
+              "d": 
+              {
+                "description": "attribute SAID",
+                "type": "string"
+              },
+              "u": 
+              {
+                "description": "attribute UUID",
+                "type": "string"
+              },
+              "score": 
+              {
+                "description": "score value",
+                "type": "integer"
+              },
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "name attribute",
+            "type": "object",
+            "properties":
+            "required":
+            [
+              "d",
+              "u",
+              "name"
+            ],
+            "properties":
+            {
+              "d": 
+              {
+                "description": "attribute SAID",
+                "type": "string"
+              },
+              "u": 
+              {
+                "description": "attribute UUID",
+                "type": "string"
+              },
+              "name": 
+              {
+                "description": "name value",
+                "type": "string"
+              },
+            },
+            "additionalProperties": false
+          }
+        ]      
+      }
+    }
+  ]
+  "additionalProperties": false,
+}
+~~~
+
+### Inclusion Proof via Aggregated List Digest
+
+All the *a<sub>i</sub>* in the list are aggregated into a single aggregate digest denoted *A* by computing the digest of their ordered concatenation. This is expressed as follows:
+
+*A = H(C(a<sub>i</sub> for all i ∈ \{0, ..., N-1\}))* where *H* is the digest (hash) operator and *C* is the concatentation operator.
+
+To be explicit, using the targeted example above, let *a<sub>0</sub>* denote the SAID of the *Issuee* attribute, *a<sub>1</sub>* denote the SAID of the *score* attribute, and *a<sub>2</sub>* denote the SAID of the *name* attribute then the aggregated digest *A* is computed as follows:
+
+*A = H(C(a<sub>0</sub>, a<sub>1</sub>, a<sub>2</sub>))*. 
+
+Equivalently using *+* as the infix concatenation operator, we have, 
+
+*A = H(a<sub>0</sub> + a<sub>1</sub> + a<sub>2</sub>)*
+
+Given sufficient collision resistance of the digest operator, the digest of an ordered concatenation is not subject to a birthday attack on its concatenated elements {{BDC}}{{BDay}}{{QCHC}}{{HCR}}{{Hash}}.
+
+In compact form, the value of the selectively-disclosable top-level attribute section, `A`, field is set to the aggregated value *A*. This aggregate *A* makes a blinded cryptographic commitment to the all the ordered elements in the list,
+
+*[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>]*. 
+
+Moreover because each *a<sub>i</sub>* element also makes a blinded commitment to its block's (SAD) attribute value(s), disclosure of any given *a<sub>i</sub>* element does not expose or disclose any discoverable information detail about either its own or another block's attribute value(s). Therefore one may safely disclose the full list of *a<sub>i</sub>* elements without exposing the blinded block attribute values.
+
+Proof of inclusion in the list consists of checking the list for a matching value. A computationally efficient way to do this is to create a hash table or B-tree of the list and then check for inclusion via lookup in the hash table or B-tree.
+
+To protect against later forgery given a later compromise of the signing keys of the Issuer, the issuer MUST anchor an issuance proof digest seal to the ACDC in its KEL. This seal binds the signing key state to the issuance. There are two cases. In the first case, an issuance/revocation registry is used. In the second case, an issuance/revocation registry is not used. 
+
+When the ACDC is registered using an issuance/revocation TEL (Transaction Event Log) then the issuance proof seal digest is the SAID of the issuance (inception) event in the ACDC's TEL entry. The issuance event in the TEL includes the SAID of the ACDC. This binds the ACDC to the issuance proof seal in the Issuer's KEL through the TEL entry. 
+
+When the ACDC is not registered using an issuance/revocation TEL then the issuance proof seal digest is the SAID of the ACDC itself. 
+
+In either case, this issuance proof seal makes a verifiable binding between the issuance of the ACDC and the key state of the Issuer at the time of issuance. Because aggregated value *A* provided as the attribute section, `A`, field, value is bound to the SAID of the ACDC which is also bound to the key state via the issuance proof seal, the attribute details of each attribute block are also bound to the key state.
+
+The requirement of an anchored issuance proof seal means that the forger Must first successfully publish in the KEL of the issuer an inclusion proof digest seal bound to a forged ACDC. This makes any forgery attempt detectable. To elaborate, the only way to successfully publish such a seal is in a subsequent interaction event in a KEL that has not yet changed its key state via a rotation event. Whereas any KEL that has changed its key state via a rotation must be forked before the rotation. This makes the forgery attempt either both detectable and recoverable via rotation in any KEL that has not yet changed its key state or detectable as duplicity in any KEL that has changed its key state. In any event, the issuance proof seal ensures detectability of any later attempt at forgery using compromised keys. 
+
+Given that aggregate value *A* appears as the compact value of the top-level attribute section, `A`, field, the selective disclosure of the attribute at index *j* may be proven to the disclosee with four items of information. These are:
+
+* The actual detailed disclosed attribute block itself (at index *j*) with all its fields.
+* The list of all attribute block digests, *[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>]* that includes *a<sub>j</sub>*.
+* The ACDC in compact form with selectively-disclosable attribute section, `A`, field value set to aggregate *A*.
+* The signature(s), *s*, of the Issuee on the ACDC's top-level SAID, `d`, field.
+
+The actual detailed disclosed attribute block is only disclosed after the disclosee has agreed to the terms of the rules section. Therefore, in the event the potential disclosee declines to accept the terms of disclosure, then a presentation of the compact version of the ACDC and/or the list of attribute digests, *[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>]*. does not provide any point of correlation to any of the attribute values themselves. The attributes of block *j* are hidden by *a<sub>j</sub>* and the list of attribute digests *[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>]* is hidden by the aggregate *A*. The partial disclosure needed to enable chain-link confidentiality does not leak any of the selectively disclosable details.
+
+The disclosee may then verify the disclosure by:
+* computing *a<sub>j</sub>* on the selectively disclosed attribute block details.
+* confirming that the computed *a<sub>j</sub>* appears in the provided list *[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>]*.
+* computing *A* from the provided list *[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>]*.
+* confirming that the computed *A* matches the value, *A*, of the selectively-disclosable attribute section, `A`, field value in the provided ACDC.
+* computing the top-level SAID, `d`, field of the provided ACDC.
+* confirming the presence of the issuance seal digest in the Issuer's KEL 
+* confirming that the issuance seal digest in the Issuer's KEL is bound to the ACDC top-level SAID, `d`, field either directly or indirectly through a TEL registry entry.
+* verifying the provided signature(s) of the Issuee on the provided top-level SAID, `d` field value.
+
+The last 3 steps that culminate with verifying the signature(s) require determining the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols. 
+
+A private selectively disclosable ACDC provides significant correlation minimization because a presenter may use a metadata ACDC prior to acceptance by the disclosee of the terms of the chain-link confidentiality expressed in the rule section [[41]]. Thus only malicious disclosees who violate chain-link confidentiality may correlate between presentations of a given private selectively disclosable ACDC. Nonetheless, they are not able to discover any undisclosed attributes.
+
+### Inclusion Proof via Merkle Tree Root Digest
+
+The inclusion proof via aggregated list may be somewhat verbose when there are a large number of attribute blocks in the selectively disclosable attribute section. A more efficient approach is to create a Merkle tree of the attribute block digests and let the aggregate, *A*, be the Merkle tree root digest [[48]]. Specifically, set the value of the top-level selectively-disclosable attribute section, `A`, field to the aggregate, *A* whose value is the Merkle tree root digest {{Mrkl}}.
+
+The Merkle tree needs to have appropriate second-pre-image attack protection of interior branch nodes {{2PI}}{{MTSec}}. The discloser then only needs to provide a subset of digests from the Merkle tree to prove that a given digest, *a<sub>j</sub>* contributed to the Merkle tree root digest, *A*. For ACDCs with a small number of attributes the added complexity of the Merkle tree approach may not be worth the savings in verbosity.
+
+### Hierarchical Derivation at Issuance of Selectively Disclosable Attribute ACDCs
+
+The amount of data transferred between the Issuer and Issuee (or recipient in the case of an untargeted ACDC) at issuance of a selectively disclosable attribute ACDC may be minimized by using a hierarchical deterministic derivation function to derive the value of the UUDI, `u`, fields from a shared secret salt {{Salt}}. 
+
+There are several ways that the Issuer may securely share that secret salt. Given that an Ed25519 key pair(s) controls each of the Issuer and Issuee  AIDs, (or recipient AID in the case of an untargeted ACDC) a corresponding X15519 asymmetric encryption key pair(s) may be derived from each controlling Ed25519 key pair(s) {{EdSC}}{{PSEd}}{{TMEd}}. An X25519 public key may be derived from an Ed25519 public key. Likewise, an X25519 private key may be derived from an Ed25519 private key {{KeyEx}}.
+
+In an interactive approach, the Issuer derives a public asymmetric X25519 encryption key from the Issuee's published Ed25519 public key and the Issuee derives a public asymmetric X25519 encryption key from the Issuer's published Ed25519 public key. The two then interact via a Diffie-Hellman (DH) key exchange to create a shared symmetric encryption key {{KeyEx}}{{DHKE}}. The shared symmetric encryption key may be used to encrypt the secret salt or the shared symmetric encryption key itself may be used has high entropy cryptographic material from which the secret salt may be derived. 
+
+In a non-interactive approach, the Issuer derives an X25519 asymmetric public encryption key from the Issuee's (recipient's) public Ed25519 public key. The Issuer then encrypts the secret salt with that public asymmetric encryption key and signs the encryption with the Issuer's private Ed25519 signing key. This is transmitted to the Issuee, who verifies the signature and decrypts the secret salt using the private X25519 decryption key derived from the Issuee's private Ed25519 key. This non-interactive approach is more scalable for AIDs that are controlled with a multi-sig group of signing keys. The Issuer can broadcast to all members of the Issuee's (or recipient's) multi-sig signing group individually asymmetrically encrypted and signed copies of the secret salt.
+
+In addition to the secret salt, the Issuer provides to the Issuee (recipient) a template of the ACDC but with empty UUID, `u`, and SAID, `d`, fields in each block with such fields. Each UUID, `u`, field value is then derived from the shared salt with a path prefix that indexes a specific block. Given the UUID, `u`, field value, the SAID, `d`, field value may then be derived. Likewise, both compact and uncompacted versions of the ACDC may then be generated. The derivation path for the top-level UUID, `u`, field (for private ACDCS), is the string "0" and derivation path the the the zeroth indexed attribute in the attributes array is the string "0/0". Likewise, the next attribute's derivation path is the string "0/1" and so forth. 
+
+In addition to the shared salt and ACDC template, the Issuer also provides its signature(s) on its own generated compact version ACDC. The Issuer may also provide references to the anchoring issuance proof seals. Everything else an Issuee (recipient) needs to make a verifiable presentation/disclosure can be computed at the time of presentation/disclosure by the Issuee. 
 
 
 
