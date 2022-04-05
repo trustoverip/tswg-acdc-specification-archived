@@ -1387,7 +1387,7 @@ In compact form, the discovery of either the rule section as a whole or a given 
           },
           "additionalProperties": false,
         }
-      ],
+      ]
     },
     "e":
     {
@@ -1445,7 +1445,7 @@ In compact form, the discovery of either the rule section as a whole or a given 
           },
           "additionalProperties": false
         }
-      ],
+      ]
     },
     "r": 
     {
