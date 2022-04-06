@@ -1619,15 +1619,15 @@ Because the selectively-disclosable attributes are provided by an array (list), 
 {
   "A": 
   {
-    "description": "attribute section",
+    "description": "selectively disclosable attribute aggregate section",
     "oneOf":
     [
       {
-        "description": "attribute section SAID",
+        "description": "attribute aggregate",
         "type": "string"
       },
       {
-        "description": "attribute details",
+        "description": "selectively disclosable attribute details",
         "type": "array",
         "uniqueItems": true,
         "items": 
