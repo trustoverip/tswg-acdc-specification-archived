@@ -3,8 +3,8 @@
 This is the working area for the individual Internet-Draft, "Authentic Chained Data Containers".
 
 * [Editor's Copy](https://trustoverip.github.io/tswg-acdc-specification/#go.draft-tswg-acdc.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-tswg-acdc)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-tswg-acdc)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-ssmith-acdc)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ssmith-acdc)
 * [Compare Editor's Copy to Individual Draft](https://trustoverip.github.io/tswg-acdc-specification/#go.draft-tswg-acdc.diff)
 
 
