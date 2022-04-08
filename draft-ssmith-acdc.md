@@ -58,6 +58,15 @@ normative:
       org: ProSapien LLC
     date: 2022
     
+  OOBI_ID:
+    target: https://github.com/WebOfTrust/ietf-oobi
+    title: IETF OOBI (Out-Of-Band-Introduction) Internet Draft
+    author:
+      ins: S. Smith
+      name: Samuel M. Smith
+      org: ProSapien LLC
+    date: 2022
+
   PTEL_ID:
     target: https://github.com/WebOfTrust/ietf-ptel
     title: IETF PTEL (Public Transaction Event Log) Internet Draft
@@ -77,7 +86,7 @@ normative:
     date: 2022
  
   IPEX_ID:
-    target: https://github.com/WebOfTrust/keripy/blob/master/ref/Peer2PeerCredentials.md
+    target: https://github.com/WebOfTrust/ietf-ipex
     title: IPEX (Issuance and Presentation EXchange) Internet Draft
     author:
       ins: P. Feairheller
@@ -92,15 +101,6 @@ normative:
       ins: P. Feairheller
       name: Phil Feairheller
       org: GLEIF
-    date: 2022
-    
-  OOBI_ID:
-    target: https://github.com/WebOfTrust
-    title: IETF OOBI Internet Draft
-    author:
-      ins: S. Smith
-      name: Samuel M. Smith
-      org: ProSapien LLC
     date: 2022
 
   JSON:
@@ -142,6 +142,14 @@ normative:
   MGPK:
     target: https://github.com/msgpack/msgpack/blob/master/spec.md
     title: Msgpack Mapping Object Codes
+    
+  RFC3986:
+    target: https://datatracker.ietf.org/doc/html/rfc3986
+    title: "Uniform Resource Identifier (URI): Generic Syntax"
+    
+  RFC8820:
+    target: https://datatracker.ietf.org/doc/html/rfc8820
+    title: URI Design and Ownership
   
 
 informative:  
@@ -500,9 +508,9 @@ To prevent both forms of attack, all schema must be static, i.e. schema MUST be 
 
 To elaborate, the serialization of a static schema may be self-contained. A compact commitment to the detailed static schema may be provided by its SAID. In other words, the SAID of a static schema is a verifiable cryptographic identifier for its SAD. Therefore all ACDC compliant schema must be SADs. In other words, they MUST therefore be *SAIDified*. The associated detailed static schema (uncompacted SAD) is cryptographically bound and verifiable to its SAID. 
 
-The JSON Schema specification allows complex schema references that may include non-local URI references {{JSchId}}{{JSchCx}}. These references may use the `$id` or `$ref` keywords. A relative URI reference provided by a `$ref` keyword is resolved against the *Base URI* provided by the top-level `$id` field. When this top-level *Base URI* is non-local then all relative `$ref` references are therefore also non-local. A non-local URI reference provided by a `$ref` keyword may be resolved without reference to the *Base URI*. 
+The JSON Schema specification allows complex schema references that may include non-local URI references {{JSchId}}{{JSchCx}}{{RFC3986}}{{RFC8820}}. These references may use the `$id` or `$ref` keywords. A relative URI reference provided by a `$ref` keyword is resolved against the *Base URI* provided by the top-level `$id` field. When this top-level *Base URI* is non-local then all relative `$ref` references are therefore also non-local. A non-local URI reference provided by a `$ref` keyword may be resolved without reference to the *Base URI*. 
 
-In general, schema indicated by non-local URI references (`$id` or `$ref`) MUST NOT be used because they are not cryptographically end-verifiable. The value of the underlying schema resource so referenced may change (mutate). To restate, a non-local URI schema resource is not end-verifiable to its URI reference because there is no cryptographic binding between URI and resource. 
+In general, schema indicated by non-local URI references (`$id` or `$ref`) MUST NOT be used because they are not cryptographically end-verifiable. The value of the underlying schema resource so referenced may change (mutate). To restate, a non-local URI schema resource is not end-verifiable to its URI reference because there is no cryptographic binding between URI and resource {{RFC3986}}{{RFC8820}}. 
 
 This does not preclude the use of remotely cached SAIDified schema resources because those resources are end-verifiable to their embedded SAID references. Said another way, a SAIDified schema resource is itself a SAD (Self-Address Data) referenced by its SAID. A URI that includes a SAID may be used to securely reference a remote or distributed SAIDified schema resource because that resource is fixed (immutable, nonmalleable) and verifiable to both the SAID in the reference and the embedded SAID in the resource so referenced. To elaborate, a non-local URI reference that includes an embedded cryptographic commitment such as a SAID is verifiable to the underlying resource when that resource is a SAD. This applies to JSON Schema as a whole as well as bundled sub-schema resources.
 
@@ -512,14 +520,14 @@ There ACDC supported formats for the value of the top-level id, `$id`, field are
 
 * The `sad:` URI scheme may be used to directly indicate a URI resource that safely returns a verifiable SAD. For example `sad:SAID` where *SAID* is replaced with the actual SAID of a SAD that provides a verifiable non-local reference to JSON Schema as indicated by the mime-type of `schema+json`. 
 
-* The IETF KERI OOBI internet draft specification provides a URL syntax that references a SAD resource by its SAID at the service endpoint indicated by that URL {{OOBI_ID}}. Such remote OOBI URLs are also safe because the provided SAD resource is verifiable against the SAID in the OOBI URL. Therefore OOBI URLs are also acceptable non-local URI references for JSON Schema.
+* The IETF KERI OOBI internet draft specification provides a URL syntax that references a SAD resource by its SAID at the service endpoint indicated by that URL {{OOBI_ID}}. Such remote OOBI URLs are also safe because the provided SAD resource is verifiable against the SAID in the OOBI URL. Therefore OOBI URLs are also acceptable non-local URI references for JSON Schema {{OOBI_ID}}{{RFC3986}}{{RFC8820}}.
 
-* The `did:` URI scheme may be used safely to prefix non-local URI references that act to namespace SAIDs expressed as DID URIs or DID URLs.  DID resolvers resolve DID URLs for a given DID method such as `did:keri` {{DIDK_ID}} and may return DID docs or DID doc metadata with SAIDified schema or service endpoints that return SAIDified schema. A verifiable non-local reference in the form of DID URL that includes the schema SAID is resolved safely when it dereferences to the SAD of that SAID. For example, the resolution result returns an ACDC JSON Schema whose id, `$id`, field includes the SAID and returns a resource with JSON Schema mime-type of `schema+json`.
+* The `did:` URI scheme may be used safely to prefix non-local URI references that act to namespace SAIDs expressed as DID URIs or DID URLs.  DID resolvers resolve DID URLs for a given DID method such as `did:keri` {{DIDK_ID}} and may return DID docs or DID doc metadata with SAIDified schema or service endpoints that return SAIDified schema or OOBIs that return SAIDified schema {{RFC3986}}{{RFC8820}}{{OOBI_ID}}. A verifiable non-local reference in the form of DID URL that includes the schema SAID is resolved safely when it dereferences to the SAD of that SAID. For example, the resolution result returns an ACDC JSON Schema whose id, `$id`, field includes the SAID and returns a resource with JSON Schema mime-type of `schema+json`.
 
 
 To clarify, ACDCs MUST NOT use complex JSON Schema references which allow *dynamically generated *schema resources to be obtained from online JSON Schema Libraries {{JSchId}}{{JSchCx}}. The latter approach may be difficult or impossible to secure because a cryptographic commitment to the base schema that includes complex schema (non-relative URI-based) references only commits to the non-relative URI reference and not to the actual schema resource which may change (is dynamic, mutable, malleable). To restate, this approach is insecure because a cryptographic commitment to a complex (non-relative URI-based) reference is NOT equivalent to a commitment to the detailed associated schema resource so referenced if it may change.
 
-ACDCs MUST use static JSON Schema (i.e. *SAIDifiable* schema). These may include internal relative references to other parts of a fully self-contained static (*SAIDified*) schema or references to static (*SAIDified*) external schema parts. As indicated above, these references may be bare SAIDs, DID URIs or URLs (`did:` scheme), SAD URIs (`sad:` scheme), or OOBI URLs. Recall that a commitment to a SAID with sufficient collision resistance makes an equivalent secure commitment to its encapsulating block SAD. Thus static schema may be either fully self-contained or distributed in parts but the value of any reference to a part must be verifiably static (immutable, nonmalleable) by virtue of either being relative to the self-contained whole or being referenced by its SAID. The static schema in whole or in parts may be attached to the ACDC itself or provided via a highly available cache or data store. To restate, this approach is securely end-verifiable (zero-trust) because a cryptographic commitment to the SAID of a SAIDified schema is equivalent to a commitment to the detailed associated schema itself (SAD).
+ACDCs MUST use static JSON Schema (i.e. *SAIDifiable* schema). These may include internal relative references to other parts of a fully self-contained static (*SAIDified*) schema or references to static (*SAIDified*) external schema parts. As indicated above, these references may be bare SAIDs, DID URIs or URLs (`did:` scheme), SAD URIs (`sad:` scheme), or OOBI URLs {{OOBI_ID}}. Recall that a commitment to a SAID with sufficient collision resistance makes an equivalent secure commitment to its encapsulating block SAD. Thus static schema may be either fully self-contained or distributed in parts but the value of any reference to a part must be verifiably static (immutable, nonmalleable) by virtue of either being relative to the self-contained whole or being referenced by its SAID. The static schema in whole or in parts may be attached to the ACDC itself or provided via a highly available cache or data store. To restate, this approach is securely end-verifiable (zero-trust) because a cryptographic commitment to the SAID of a SAIDified schema is equivalent to a commitment to the detailed associated schema itself (SAD).
 
 ## Schema Dialect
 
@@ -1223,7 +1231,7 @@ An alternate simplified compact form uses the value of the legal, `l`, field as 
 
 ## Clause Discovery
 
-In compact form, the discovery of either the rule section as a whole or a given clause begins with the provided SAID. Because the SAID, `d`, field of any block is a cryptographic digest with high collision resistance it provides a universally unique identifier to the referenced block details (whole rule section or individual clause). The discovery of a service endpoint URL that provides database access to a copy of the rule section or to any of its clauses may be bootstrapped via an OOBI (Out-Of-Band-Introduction) that links the service endpoint URL to the SAID of the respective block. Alternatively, the issuer may provide as an attachment at issuance a copy of the referenced contract associated with the whole rule section or any clause. In either case, after a successful issuance exchange, the Issuee or holder of any ACDC will have either a copy or a means of obtaining a copy of any referenced contracts in whole or in part of all ACDCs so issued. That Issuee or recipient will then have everything it needs to subsequently make a successful presentation or disclosure to a Disclosee. This is the essence of percolated discovery.
+In compact form, the discovery of either the rule section as a whole or a given clause begins with the provided SAID. Because the SAID, `d`, field of any block is a cryptographic digest with high collision resistance it provides a universally unique identifier to the referenced block details (whole rule section or individual clause). The discovery of a service endpoint URL that provides database access to a copy of the rule section or to any of its clauses may be bootstrapped via an OOBI (Out-Of-Band-Introduction) that links the service endpoint URL to the SAID of the respective block {{OOBI_ID}}. Alternatively, the issuer may provide as an attachment at issuance a copy of the referenced contract associated with the whole rule section or any clause. In either case, after a successful issuance exchange, the Issuee or holder of any ACDC will have either a copy or a means of obtaining a copy of any referenced contracts in whole or in part of all ACDCs so issued. That Issuee or recipient will then have everything it needs to subsequently make a successful presentation or disclosure to a Disclosee. This is the essence of percolated discovery.
 
 # Informative Example of an ACDC
 
