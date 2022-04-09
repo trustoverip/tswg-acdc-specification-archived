@@ -471,13 +471,27 @@ The purpose of the UUID, `u`, field in any block is to provide sufficient entrop
 
 A UUID, `u` field may optionally appear in any block (field map) at any level of an ACDC. Whenever a block in an ACDC includes a UUID, `u`, field then it's associated SAID, `d`, field makes a blinded commitment to the contents of that block. The UUID, `u`, field is the blinding factor. This makes that block securely partially-disclosable or even selectively-disclosable notwithstanding disclosure of the associated schema of the block. The block contents can only be discovered given disclosure of the included UUID field. Likewise when a UUID, `u`, field appears at the top level of an ACDC then that top-level SAID, `d`, field makes a blinded commitment to the contents of the whole ACDC itself. Thus the whole ACDC, not merely some block within the ACDC, may be disclosed in a privacy-preserving (correlation minimizing) manner. 
 
-## Full, Partial, and Selective Disclosure
+## Graduated Disclosure and Contractually Protected Disclosure
+
+ACDC leverages several closely related mechanisms for what can be called ***graduated disclosure***. *Graduated disclosure* enables adherence to the principle of least disclosure which is expressed as follows:
+
+> The system should disclose only the minimum amount of information about a given party needed to facilitate a transaction and no more. {{IDSys}}
+
+To clarify, *graduated disclosure* enables a potential Discloser to follow the principle of *least disclosure* by providing the least amount of information i.e. partial, incomplete, or uncorrelatable information needed to further a transaction. 
+
+The important nuance to understand is that one type of transaction is a transaction that specifically enables further disclosure. In other words, disclose enough to enable more disclosure which in turn may enable even more disclosure. This is the essence of *graduated disclosure*.
+
+*Graduated disclosure* enables what we call ***contractually protected disclosure***. In a contractually protected disclosure, the potential Discloser first makes an offer using the least (partial) disclosure of some information about other information to be disclosed (full disclosure) contingent on the potential Disclosee first agreeing to the contractual terms provided in the offer. The contractual terms could, for example, limit the further disclosure of the yet to be disclosed information. But those contractual terms may include provisions that protect against liability or other concerns not merely further disclosure. A special case of a *contractually protected disclosure* is a ***chain-link confidential disclosure*** {{CLC}}.
+
+### Types of Graduated Disclosure
+
+ACDCs employ three specific closely related types of *graduated disclosure*. These are ***compact disclosure***, ***partial disclosure***, and ***selective disclosure***. The mechanism for *compact disclosure* is a cryptographic digest of the content expressed in the form of a SAID of that content. Both partial and selective disclosure rely on the compact disclosure of content that is also cryptographically blinded or hidden. Content in terms of an ACDC means a block of content (field map or array).
 
 The difference between ***partial disclosure*** and ***selective disclosure*** of a given field map is determined by the correlatability of the disclosed field(s) after ***full disclosure*** of the detailed field value with respect to its enclosing block (map or array of fields). A *partially disclosable* field becomes correlatable after *full disclosure*. Whereas a *selectively disclosable* field may be excluded from the *full disclosure* of any other *selectively disclosable* fields in the *selectively disclosable* block (array). After such *selective disclosure*, the selectively disclosed fields are not correlatable to the so-far undisclosed but selectively disclosable fields in that block. 
 
 When used in the context of *selective disclosure*, *full disclosure* means detailed disclosure of the selectively disclosed attributes not detailed disclosure of all selectively disclosable attributes. Whereas when used in the context of *partial disclosure*, *full disclosure* means detailed disclosure of the field map that was so far only partially disclosed.
 
-*Partial disclosure* is an essential mechanism needed to support both performant exchange of information and chain-link confidentiality on exchanged information {{CLC}}. The exchange of only the SAID of a given field map is a type of *partial disclosure*. Another type of *partial disclosure* is the disclosure of validatable metadata about a detailed field map e.g. the schema of a field map. 
+*Partial disclosure* is an essential mechanism needed to support both performant exchange of information and contractually protected disclosure such as chain-link confidentiality on exchanged information {{CLC}}. The exchange of only the SAID of a given field map is a type of *partial disclosure*. Another type of *partial disclosure* is the disclosure of validatable metadata about a detailed field map e.g. the schema of a field map. 
 
 The SAID of a field map provides a *compact* cryptographically equivalent commitment to the yet to be undisclosed field map details.  A later exchange of the uncompacted field map detail provides *full disclosure*. Any later *full disclosure* is verifiable to an earlier *partial disclosure*. Partial disclosure via compact SAIDs enables the scalable repeated verifiable exchange of SAID references to cached full disclosures. Multiple SAID references to cached fully disclosed field maps may be transmitted compactly without redundant retransmission of the full details each time a new reference is transmitted. Likewise, *partial disclosure* via SAIDs also supports the bow-tie model of Ricardian contracts {{RC}}. Similarly, the schema of a field map is metadata about the structure of the field map this is validatable given the full disclosure of the field map. The details of*compact* and/or confidential exchange mechanisms that leverage partial disclosure are explained later. 
 
@@ -578,18 +592,24 @@ When a *metadata* ACDC is disclosed (presented) only the *Discloser's* signature
 
 # Unpermissioned Exploitation of Data
 
-An important design goal of ACDCs is they support the sharing of provably authentic data while also protecting against the un-permissioned exploitation of that data. Often the term *privacy protection* is used to describe similar properties. But a narrow focus on "privacy protection" may lead to problematic design trade-offs. With ACDCs, the primary design goal is not *data privacy protection* per se but the more general goal of protection from the ***un-permissioned exploitation of data***. In this light, a *given privacy protection* mechanism may be employed to help protect against *unpermissioned exploitation of data* but only when it serves that more general-purpose and not as an end in and of itself. There are three primary mechanisms ACDCs use to protect against *unpermissioned exploitation of data*. These are:  
+An important design goal of ACDCs is they support the sharing of provably authentic data while also protecting against the un-permissioned exploitation of that data. Often the term *privacy protection* is used to describe similar properties. But a narrow focus on "privacy protection" may lead to problematic design trade-offs. With ACDCs, the primary design goal is not *data privacy protection* per se but the more general goal of protection from the ***un-permissioned exploitation of data***. In this light, a *given privacy protection* mechanism may be employed to help protect against *unpermissioned exploitation of data* but only when it serves that more general-purpose and not as an end in and of itself. 
+
+## Graduated Disclosure and the Principle of Least Disclosure
+
+As described previously, ACDCs employ *graduated disclosure* mechanisms that satisfy the principle of least disclosure. Requoted here the principle of least disclosure is as follows:
+
+> The system should disclose only the minimum amount of information about a given party needed to facilitate a transaction and no more. {{IDSys}}
+
+For example, compact disclosure, partial disclosure, and selective disclosure are all graduated disclosure mechanisms. Contractually protected disclosure leverages graduated disclosure so that contractual protections can be put into place using the least disclosure necessary to that end. This minimizes the leakage of information that can be correlated. One type of contractually protected disclosure is chain-link confidentiality {{CLC}}.
+
+## Exploitation Protection Mechanisms
+
+ACDCS employ several mechanisms to protect against *unpermissioned exploitation of data*. These are:  
 
 * Chain-link Confidentiality {{CLC}}  
 * Partial Disclosure 
 * Selective Disclosure  
 
-
-## Principle of Least Disclosure
-
-ACDCs are designed to satisfy the principle of least disclosure.
-
-> The system should disclose only the minimum amount of information about a given party needed to facilitate a transaction and no more. {{IDSys}}
 
 For example, the *partial disclosure* of portions of an ACDC to enable chain-link confidentiality of the subsequent full disclosure is an application of the principle of least disclosure. Likewise, unbundling only the necessary attributes from a bundled commitment using *selective disclosure* to enable a correlation minimizing disclosure from that bundle is an application of the principle of least disclosure.
 
