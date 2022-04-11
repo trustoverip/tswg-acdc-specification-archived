@@ -1184,7 +1184,7 @@ Many aggregating operators used for automated reasoning such as weighted average
 
 ### Special Unary Operators
 
-Two special unary operators are defined for ACDCs. These are:
+Two special unary operators are defined for ACDCs. These are,
 
 Issuer-To-Issuee, `I2I`, constraint operator
 and 
@@ -1203,7 +1203,7 @@ If both the `I2I` and `NI2I` operators appear in an operator, `o`, field list th
 When the operator, `o`,  field is missing in an edge-group block.
 The default value for the operator, `o`, field  is `AND`.
 
-When the operator, `o`, field is missing or empty in an edge block, or is present but does not include either the `I2I` or `NI2I` operators Then:
+When the operator, `o`, field is missing or empty in an edge block, or is present but does not include either the `I2I` or `NI2I` operators Then,
 
 If the node pointed to by the edge is a targeted ACDC i.e. has an Issuee, by default it is assumed that the `I2I` operator is appended to the operator, `o`, field's effective list value.  
 
