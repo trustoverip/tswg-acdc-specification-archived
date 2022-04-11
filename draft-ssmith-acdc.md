@@ -432,6 +432,8 @@ An ACDC may be abstractly modeled as a nested `key: value` mapping. To avoid con
 |`e`| Edge| Either the SAID of a block of edges or the block itself.| 
 |`r`| Rule | Either the SAID a block of rules or the block itself. | 
 |`n`| Node| SAID of another ACDC as the terminating point of a directed edge that connects the encapsulating ACDC node to the specified ACDC node as a fragment of a distributed property graph (PG).| 
+|`o`| Operator| Either unary operator on edge or m-ary operator on edge-group in edge section. Enables expressing of edge logic on edge subgraph.| 
+|`w`| Weight| Edge weight property that enables default property for directed weighted edges and operators on directed weighted edges.| 
 |`l`| Legal Language| Text of Ricardian contract clause.|  
 
 
@@ -1137,6 +1139,241 @@ When an edge sub-block has only one field that is its node, `n`, field then the 
   }
 }
 ~~~
+
+## Operations on Edges and Edge-Groups
+
+When the top-level edge section, `e`, field includes more than one edge there is a need or opportunity to define the logic for evaluating those edges with respect to validating the ACDC itself with respect to the validity of the other ACDCs it is connected two. More than one edge creates a provenance tree not simply a provenance chain. The obvious default for a chain is that all links in the chain must be valid in order for the chain itself to be valid, or more precisely for the tail of the chain to be valid. If any links between the head and the tail are broken (invalid) then the tail is not valid. This default logic may not be so useful in all cases when a given ACDC is the tail of multiple parallel chains (i.e. a branching node in a tree of chains). Therefore provided herein is the syntax for exactly specifying the operations to perform on each edge and groups of edges in its edge section.
+
+### Label Types  
+There are three types of labels:
+
+* Reserved Field Labels (Metadata).
+  `d` for SAID of block
+  `o` for operator
+  `n` for Node SAID (another ACDC)
+  `w` for weight
+
+* Edge Field Map Labels (Single Edges)
+   any value except reserved values above
+
+* Edge-Group Field Map Labels (Aggregates of Edges)
+  any value except reserved values above
+
+### Block Types
+
+There are two types of field-maps or blocks that may appears as  values of fields within an edge section, `e`, field either at the top level or nested:
+
+* Edge-Group. An _**edge-group**_ MUST NOT have a node,  `n`,  metadata field. Its non-metadata field values may include other (sub) edge-group blocks, edge blocks or other properties.
+
+* Edge. An _**edge**_ MUST have a node, `n`,  metadata field. Its non-metadata field values MUST NOT include edge-group blocks or other edge blocks but may include other types of properties. From a graph perspective, _edge_ blocks terminate at their node, `n`, field and are not themselves nestable. An _edge_ block is a  leaf with respect to any nested _edge-group_ blocks in which the edge appears. It is therefore  also a leaf with respect to its enclosing top-level edge section, `e`, field.  The ACDC node that an edge points to may have its own edge-groups or edges in that node's own top-level edge section.
+
+The top-level edge section, `e`, field value is always an _edge-group_ block.
+
+With respect to the granularity of a property graph consisting of ACDCs as nodes, nested edge-groups within a given top-level edge field, `e`, field of a given ACDC constitute a  sub-graph whose nodes are edge-groups not ACDCs. One of the attractive features of property graphs (PGs) is their support for different edge and node types which enables nested sub-graphs such as is being employed here to support the expression of complex logical or aggregative operations on groups of edges (as subnodes) within the top-level edge section, `e`, field of an ACDC (as supernode).
+
+### Operator, `o`,  Field
+
+The meaning of the operator, `o`, metadata field label depends on which type of block it appears in.
+
+* When appearing in an edge-group block then the operator, `o`, field value is an aggregating (m-ary) operator, such as, `OR`, `AND`, `AVG`, `NAND`, `NOR`  etc. Its operator applies to all the edges  or edge-groups that appear in that edge-group block.
+
+* When appearing in an edge block then the operator, `o`,  field value is a unary operator like `NOT`.  When more than one unary operator applies to a given edge then the value of the operator, `o`, field is a list of those unary operators.
+
+### Weight, `w`, field.
+Many aggregating operators used for automated reasoning such as weighted average, `WAVG`, or ranking aggregation, depends on each edge having a weight. To simplify the semantics for such operators, the weight, `w`, field is the reserved field label for weighting. Other fields could provide other types of weights but having a default simplifies the default definitions of those weighted operators. 
+
+### Special Unary Operators
+
+Two special unary operators are defined for ACDCs. These are:
+
+Issuer-To-Issuee, `I2I`, constraint operator
+and 
+Not-Issuer-To-Issuee, `NI2I`, constraint operator
+
+Many ACDC chains use targeted ACDCs (i.e. have Issuees). A chain of Issuer-To-Issuee targeted ACDCs in which each Issuee becomes the Issuer of the next ACDC in the chain can be used to provide a chain-of-authority. A common use case of a chain-of-authority is a delegation chain for authorization.  
+
+The `I2I` unary operator when present means that that the Issuee of the node that the edge points to MUST be the Issuer of the current ACDC in which the edge resides. This also means therefore that the ACDC node pointed to by the edge must also be a targeted ACDC.
+
+The `NI2I` unary operator when present removes or nullifies any requirement expressed by the dual `I2I` operator descibed above. In other words any requirement that the Issuee of the node the edge points to MUST be the Issuer of the current ACDC in which the edge resides is not applicable. To clarify, when operative (present), the `NI2I` operator means that a targeted ACDC as node of the associated edge may still be valid even when the Issuee of that node's ACDC is not the Issuer of the ACDC in which the edge appears. Furthermore, the ACDC node pointed to by the edge may or may not be a targeted ACDC.
+
+If both the `I2I` and `NI2I` operators appear in an operator, `o`, field list then the last one appearing in the list is the operative one.
+
+### Defaults for missing operators
+
+When the operator, `o`,  field is missing in an edge-group block.
+The default value for the operator, `o`, field  is `AND`.
+
+When the operator, `o`, field is missing or empty in an edge block, or is present but does not include either the `I2I` or `NI2I` operators Then:
+
+If the node pointed to by the edge is a targeted ACDC i.e. has an Issuee, by default it is assumed that the `I2I` operator is appended to the operator, `o`, field's effective list value.  
+
+If the node pointed to by the edge-block is a non-targeted ACDC i.e. does not have an Issuee, by default, it is assumed that the `NI2I` operator is appended to the operator, `o`, field's effective list value.  
+
+### Examples
+
+#### Defaults
+~~~json
+{
+  "e": 
+  {
+    "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLx,UdY",
+    "boss":
+    {
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+      "power": "high"
+    }
+   "baby":
+    {
+      "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
+      "power": "low"
+    }
+  }
+}
+~~~
+
+### Explicit AND
+~~~json
+{
+  "e": 
+  {
+    "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLx,UdY",
+    "o": "AND",
+    "boss":
+    {
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+      "power": "high"
+    }
+   "baby":
+    {
+      "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
+      "o": "NOT",
+      "power": "low"
+    }
+  }
+}
+~~~
+
+### Unary I2I
+
+~~~json
+{
+  "e": 
+  {
+    "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLx,UdY",
+    "o": "AND",
+    "boss":
+    {
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+       "power": "high"
+    }
+    "baby":
+    {
+      "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
+      "o": "I2I",
+      "power": "low"
+    }
+  }
+}
+~~~
+
+### Unary NI2I
+
+~~~json
+{
+  "e": 
+  {
+    "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLx,UdY",
+    "o": "OR",
+    "boss":
+    {
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+      "o": "NI2I",
+      "power": "high"
+    }
+    "baby":
+    {
+      "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
+      "o": "I2I",
+      "power": "low"
+    }
+  }
+}
+~~~
+
+### Nested Edge-Group
+
+~~~json
+{
+  "e": 
+  {
+    "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLx,UdY",
+    "o": "AND",
+    "boss":
+    {
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+      "o": ["NI2I", "NOT"],
+      "power": "high"
+    }
+    "baby":
+    {
+      "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
+      "o": "I2I",
+      "power": "low"
+    }
+    "food":
+    {
+      "o": "OR",
+      "power": "med",
+      "plum":
+      {
+        "n": "EQIYPvAu6DZAIl3AORH3dCdoFOLe71iheqcywJcnjtJt",
+        "o": "NI2I"
+      }
+      "pear":
+      {
+        "n": "EJtQIYPvAu6DZAIl3AORH3dCdoFOLe71iheqcywJcnjt",
+        "o": "NI2I"
+      }
+    }
+  }
+}
+~~~
+
+### vLEI ECR issued by QVI example
+
+When an ECR vLEI is issued by the QVI it is not chained, Issuer-to-Issuee, via the LE credential. A more accurate way of expressing the chaining would be to use the `AND` operator to include both the LE and QVI credentials as edges in the ECR and also to apply the unary `NI2I` to the LE credential instead of only chaining the ECR to the LE and not chaining to ECR to the QVI at all.
+
+In the following example: The top-level edge-block uses the default of `AND` and the `qvi` edge uses the default of `I2I` because it points to a targeted ACDC.  The `le` edge, on the other hand, points to a targeted ACDC. It uses the unary operator, `NI2I` in its operator, `o`, field so that it will be accepted it even though its targeted Issuee is not the Issuer of the current credential.  
+
+~~~json
+{
+  "e": 
+  {
+    "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLx,UdY",
+    "qvi":
+    {
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA"
+    }
+    "le":
+    {
+      "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
+      "o": "NI2I",
+    }
+  }
+}
+~~~
+
+
+
+### Commentary
+
+This provides a simple but highly expressive syntax for applying (m-ary) aggregating operators to nestable groups of edges and unary operators to edges individually within those groups. This is a general approach with high expressive power. It satisfies many business logic requirements similar to that of SGL. 
+
+Certainly, an even more expressive syntax could be developed. The proposed syntax, however, is simple, compact, has intelligent defaults, and is sufficiently general in scope to satisfy all the currently contemplated use cases.
+
+The intelligent defaults for the operator, `o`, field, including the default application of the  `I2I` or `NI2I` unary operator, means that in most current use cases the operator, `o`, field does not even need to be present.
+
+
 
 ## Node Discovery
 
