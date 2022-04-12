@@ -1192,16 +1192,16 @@ Not-Issuer-To-Issuee, `NI2I`, constraint operator
 
 Many ACDC chains use targeted ACDCs (i.e. have Issuees). A chain of Issuer-To-Issuee targeted ACDCs in which each Issuee becomes the Issuer of the next ACDC in the chain can be used to provide a chain-of-authority. A common use case of a chain-of-authority is a delegation chain for authorization.  
 
-The `I2I` unary operator when present means that that the Issuee of the node that the edge points to MUST be the Issuer of the current ACDC in which the edge resides. This also means therefore that the ACDC node pointed to by the edge must also be a targeted ACDC.
+The `I2I` unary operator when present means that the Issuee of the node that the edge points to MUST be the Issuer of the current ACDC in which the edge resides. This also means therefore that the ACDC node pointed to by the edge must also be a targeted ACDC.
 
-The `NI2I` unary operator when present removes or nullifies any requirement expressed by the dual `I2I` operator descibed above. In other words any requirement that the Issuee of the node the edge points to MUST be the Issuer of the current ACDC in which the edge resides is not applicable. To clarify, when operative (present), the `NI2I` operator means that a targeted ACDC as node of the associated edge may still be valid even when the Issuee of that node's ACDC is not the Issuer of the ACDC in which the edge appears. Furthermore, the ACDC node pointed to by the edge may or may not be a targeted ACDC.
+The `NI2I` unary operator when present removes or nullifies any requirement expressed by the dual `I2I` operator described above. In other words, any requirement that the Issuee of the node the edge points to MUST be the Issuer of the current ACDC in which the edge resides is not applicable. To clarify, when operative (present), the `NI2I` operator means that a targeted ACDC as a node of the associated edge may still be valid even when the Issuee of that node's ACDC is not the Issuer of the ACDC in which the edge appears. Furthermore, the ACDC node pointed to by the edge may or may not be a targeted ACDC.
 
 If both the `I2I` and `NI2I` operators appear in an operator, `o`, field list then the last one appearing in the list is the operative one.
 
 ### Defaults for missing operators
 
-When the operator, `o`,  field is missing in an edge-group block.
-The default value for the operator, `o`, field  is `AND`.
+When the operator, `o`, field is missing in an edge-group block.
+The default value for the operator, `o`, field is `AND`.
 
 When the operator, `o`, field is missing or empty in an edge block, or is present but does not include either the `I2I` or `NI2I` operators Then,
 
