@@ -1186,11 +1186,11 @@ Many aggregating operators used for automated reasoning such as weighted average
 
 Two special unary operators are defined for ACDCs. These are,
 
-Issuer-To-Issuee, `I2I`, constraint operator
+Issuee-To-Issuer, `I2I`, constraint operator
 and 
-Not-Issuer-To-Issuee, `NI2I`, constraint operator
+Not-Issuee-To-Issuer, `NI2I`, constraint operator
 
-Many ACDC chains use targeted ACDCs (i.e. have Issuees). A chain of Issuer-To-Issuee targeted ACDCs in which each Issuee becomes the Issuer of the next ACDC in the chain can be used to provide a chain-of-authority. A common use case of a chain-of-authority is a delegation chain for authorization.  
+Many ACDC chains use targeted ACDCs (i.e. have Issuees). A chain of Issuer-To-Issuee-To-Issuer targeted ACDCs in which each Issuee becomes the Issuer of the next ACDC in the chain can be used to provide a chain-of-authority. A common use case of a chain-of-authority is a delegation chain for authorization.  
 
 The `I2I` unary operator when present means that the Issuee of the node that the edge points to MUST be the Issuer of the current ACDC in which the edge resides. This also means therefore that the ACDC node pointed to by the edge must also be a targeted ACDC.
 
