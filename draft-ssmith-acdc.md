@@ -1161,11 +1161,11 @@ There are three types of labels:
 
 ### Block Types
 
-There are two types of field-maps or blocks that may appears as  values of fields within an edge section, `e`, field either at the top level or nested:
+There are two types of field-maps or blocks that may appear as  values of fields within an edge section, `e`, field either at the top level or nested:
 
 * Edge-Group. An _**edge-group**_ MUST NOT have a node,  `n`,  metadata field. Its non-metadata field values may include other (sub) edge-group blocks, edge blocks or other properties.
 
-* Edge. An _**edge**_ MUST have a node, `n`,  metadata field. Its non-metadata field values MUST NOT include edge-group blocks or other edge blocks but may include other types of properties. From a graph perspective, _edge_ blocks terminate at their node, `n`, field and are not themselves nestable. An _edge_ block is a  leaf with respect to any nested _edge-group_ blocks in which the edge appears. It is therefore  also a leaf with respect to its enclosing top-level edge section, `e`, field.  The ACDC node that an edge points to may have its own edge-groups or edges in that node's own top-level edge section.
+* Edge. An _**edge**_ MUST have a node, `n`,  metadata field. Its non-metadata field values MUST NOT include edge-group blocks or other edge blocks but may include other types of properties. From a graph perspective, _edge_ blocks terminate at their node, `n`, field and are not themselves nestable. An _edge_ block is a  leaf with respect to any nested _edge-group_ blocks in which the edge appears. It is therefore also a leaf with respect to its enclosing top-level edge section, `e`, field.  The ACDC node that an edge points to may have its own edge-groups or edges in that node's own top-level edge section.
 
 The top-level edge section, `e`, field value is always an _edge-group_ block.
 
@@ -1175,7 +1175,7 @@ With respect to the granularity of a property graph consisting of ACDCs as nodes
 
 The meaning of the operator, `o`, metadata field label depends on which type of block it appears in.
 
-* When appearing in an edge-group block then the operator, `o`, field value is an aggregating (m-ary) operator, such as, `OR`, `AND`, `AVG`, `NAND`, `NOR`  etc. Its operator applies to all the edges  or edge-groups that appear in that edge-group block.
+* When appearing in an edge-group block then the operator, `o`, field value is an aggregating (m-ary) operator, such as, `OR`, `AND`, `AVG`, `NAND`, `NOR`  etc. Its operator applies to all the edges or edge-groups that appear in that edge-group block.
 
 * When appearing in an edge block then the operator, `o`,  field value is a unary operator like `NOT`.  When more than one unary operator applies to a given edge then the value of the operator, `o`, field is a list of those unary operators.
 
