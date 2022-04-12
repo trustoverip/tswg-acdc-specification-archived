@@ -696,7 +696,7 @@ The schema for the compact private ACDC example above is provided below.
 
 ~~~json
 {
-  "$id": "EN8i2i5ye0-xGS95pm5cg1j0GmFkarJe0zzsSrrf4XJY",
+  "$id": "EBdXt3gIXOf2BBWNHdSXCJnFJL5OuQPyM5K0neuniccM",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Compact Private ACDC",
   "description": "Example JSON Schema for a Compact Private ACDC.",
@@ -1070,7 +1070,7 @@ A main distinguishing feature of a *property graph* (PG) is that both nodes but 
 
 ## Globally Distributed Secure Graph Fragments
 
-Abstractly, an ACDC with one or more edges may be a fragment of a distributed property graph. However, the local label does not enable the direct unique global resolution of a given edge including its properties other than a trivial edge with only one property, its node, `n` field. To enable an edge with additional properties to be globally uniquely resolvable, that edge's block may have a SAID, `d`, field. Because a SAID is a cryptographic digest it will universally and uniquely identify an edge with a given set of properties {{Hash}}. This allows ACDCs to be used as secure fragments of a globally distributed property graph (PG). This enables a property graph to serve as a global knowledge graph in a secure manner that crosses trust domains {{PGM}}{{Dots}}{{KG}}. This is shown below.
+Abstractly, an ACDC with one or more edges may be a fragment of a distributed property graph. However, the local label does not enable the direct unique global resolution of a given edge including its properties other than a trivial edge with only one property, its node, `n` field. To enable an edge with additional properties to be globally uniquely resolvable, that edge's block MUST have a SAID, `d`, field. Because a SAID is a cryptographic digest it will universally and uniquely identify an edge with a given set of properties {{Hash}}. This allows ACDCs to be used as secure fragments of a globally distributed property graph (PG). This enables a property graph to serve as a global knowledge graph in a secure manner that crosses trust domains {{PGM}}{{Dots}}{{KG}}. This is shown below.
 
 
 ~~~json
@@ -1221,7 +1221,7 @@ If the node pointed to by the edge-block is a non-targeted ACDC i.e. does not ha
     {
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
       "power": "high"
-    }
+    },
    "baby":
     {
       "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
@@ -1242,7 +1242,7 @@ If the node pointed to by the edge-block is a non-targeted ACDC i.e. does not ha
     {
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
       "power": "high"
-    }
+    },
    "baby":
     {
       "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
@@ -1265,7 +1265,7 @@ If the node pointed to by the edge-block is a non-targeted ACDC i.e. does not ha
     {
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
        "power": "high"
-    }
+    },
     "baby":
     {
       "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
@@ -1289,7 +1289,7 @@ If the node pointed to by the edge-block is a non-targeted ACDC i.e. does not ha
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
       "o": "NI2I",
       "power": "high"
-    }
+    },
     "baby":
     {
       "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
@@ -1313,13 +1313,13 @@ If the node pointed to by the edge-block is a non-targeted ACDC i.e. does not ha
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
       "o": ["NI2I", "NOT"],
       "power": "high"
-    }
+    },
     "baby":
     {
       "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
       "o": "I2I",
       "power": "low"
-    }
+    },
     "food":
     {
       "o": "OR",
@@ -1328,7 +1328,7 @@ If the node pointed to by the edge-block is a non-targeted ACDC i.e. does not ha
       {
         "n": "EQIYPvAu6DZAIl3AORH3dCdoFOLe71iheqcywJcnjtJt",
         "o": "NI2I"
-      }
+      },
       "pear":
       {
         "n": "EJtQIYPvAu6DZAIl3AORH3dCdoFOLe71iheqcywJcnjt",
