@@ -1490,9 +1490,59 @@ An alternate simplified compact form uses the value of the legal, `l`, field as 
 
 In compact form, the discovery of either the rule section as a whole or a given clause begins with the provided SAID. Because the SAID, `d`, field of any block is a cryptographic digest with high collision resistance it provides a universally unique identifier to the referenced block details (whole rule section or individual clause). The discovery of a service endpoint URL that provides database access to a copy of the rule section or to any of its clauses may be bootstrapped via an OOBI (Out-Of-Band-Introduction) that links the service endpoint URL to the SAID of the respective block {{OOBI_ID}}. Alternatively, the issuer may provide as an attachment at issuance a copy of the referenced contract associated with the whole rule section or any clause. In either case, after a successful issuance exchange, the Issuee or holder of any ACDC will have either a copy or a means of obtaining a copy of any referenced contracts in whole or in part of all ACDCs so issued. That Issuee or recipient will then have everything it needs to subsequently make a successful presentation or disclosure to a Disclosee. This is the essence of percolated discovery.
 
-# Informative Example of an ACDC
+# Disclosure-Specific (Bespoke) Issued ACDCs
 
-## Public Compact Variant
+The ACDC chaining enables disclosure-specific issuance of bespoke ACDCs. A given Discloser of an ACDC issued by some Issuer may want to augment the disclosure with additional contractual obligations or additional information sourced by the Discloser where those augmentations are specific to a given context such as a specific Disclosee. Instead of complicating the presentation exchange to accommodate such disclosure-specific augmentations, a given Disloser issues its own bespoke ACDC that includes the other ACDC of the other Issuer by reference via an edge in the bespoke ACDC. This means that the normal validation logic and tooling for a chained ACDC can be applied without complicating the presentation exchange logic. This approach enables the bespoke ACDC to identify (name) the Disclosee directly as the Issuee of the bespoke ACDC. This enables contractual legal language in the rule section of the bespoke ACDC that reference the Issuee of that ACDC as a named party. Signing the agreement to the offer of that bespoke ACDC consummates a contract between named Issuer and named Issuee. This approach means that custom or bespoke presentations do not need additional complexity or extensions. Extensibility comes from reusing the tooling for issuing ACDCs to issue a bespoke or disclosure-specific ACDC. If the only purpose of the bespoke ACDC is to augment the contractual obligations the attribute section, `a`, field value may be empty or it may include properties whose only purpose is to support the bespoke contractual language.
+
+## Example Bespoke Issued ACDC
+
+Consider the following disclosure-specific ACDC. The Issuer is the Discloser, the Issuee is the Disclosee. The rule section includes a context-specific (anti) assimilation clause that limits the use of the information to a single one-time usage purpose, that is in this case, admittance to a restaurant.  The ACDC includes an edge that references some other ACDC that may for example be a coupon or gift card. The attribute section includes the date and place of admittance.
+
+~~~json
+{
+  "v":  "ACDC10JSON00011c_",
+  "d":  "EBdXt3gIXOf2BBWNHdSXCJnFJL5OuQPyM5K0neuniccM",
+  "i":  "did:keri:EmkPreYpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPM",
+  "s":  "EGGeIZ8a8FWS7a646jrVPTzlSkUPqs4reAXRZOkogZ2A",
+  "a":  
+  {
+    "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
+    "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
+    "date": "2020-08-22T17:50:09.988921+00:00",
+    "place": "GoodFood Restaurant, 953 East Sheridan Ave, Cody WY 82414 USA"
+  },
+  "e": 
+  {
+    "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLxUdY",
+    "other":
+    {
+      "d": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn",
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+    }
+  },
+  "r": 
+  {
+    "d": "EwY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NA",
+    "Assimilation": 
+    {
+      "d": "EXgOcLxUdYerzwLIr9Bf7V_NAwY1lkFrn9y2PgveY4-9",
+      "l": "Issuee hereby explicitly and unambiguously agrees to NOT assimilate, aggregate, correlate, or otherwise use in combination with other information available to the Issuee, the information, in whole or in part, referenced by this container or any containers recursively referenced by the edge section, for any purpose other than that expressly permitted by the Purpose clause."
+    },
+    "Purpose": 
+    {
+      "d": "EY1lkFrn9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NAw",
+      "l": "One-time admittance of Issuer by Issuee to eat at place on date as specified in attribute section."
+    }
+  }
+}
+~~~
+
+
+
+# Informative Examples
+
+## Public ACDC with Compact and Uncompated Variants
+### Public Compact Variant
 
 ~~~json
 {
@@ -1507,7 +1557,7 @@ In compact form, the discovery of either the rule section as a whole or a given 
 }
 ~~~
 
-## Public Uncompacted Variant
+### Public Uncompacted Variant
 
 ~~~json
 {
@@ -1550,11 +1600,11 @@ In compact form, the discovery of either the rule section as a whole or a given 
 }
 ~~~
 
-## Composed Schema that Supports both Public Compact and Uncompacted Variants
+### Composed Schema that Supports both Public Compact and Uncompacted Variants
 
 ~~~json
 {
-  "$id": "EN8i2i5ye0-xGS95pm5cg1j0GmFkarJe0zzsSrrf4XJY",
+  "$id": "E46jrVPTzlSkUPqGGeIZ8a8FWS7a6s4reAXRZOkogZ2A",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Public ACDC",
   "description": "Example JSON Schema Public ACDC.",
