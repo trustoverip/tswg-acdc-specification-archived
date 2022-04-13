@@ -1508,7 +1508,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
   {
     "d": "EgveY4-9XgOcLxUderzwLIr9Bf7V_NHwY1lkFrn9y2PY",
     "i": "did:keri:EpZfFk66jpf3uFv7vklXKhzBrAqjsKAn2EDIPmkPreYA",
-    "date": "2020-08-22T17:50:09.988921+00:00",
+    "date": "2022-08-22T17:50:09.988921+00:00",
     "place": "GoodFood Restaurant, 953 East Sheridan Ave, Cody WY 82414 USA"
   },
   "e": 
