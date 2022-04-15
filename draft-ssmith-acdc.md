@@ -102,6 +102,17 @@ normative:
       name: Phil Feairheller
       org: GLEIF
     date: 2022
+    
+  RFC6901: 
+    target: https://datatracker.ietf.org/doc/html/rfc6901 
+    title: JavaScript Object Notation (JSON) Pointer 
+    author: 
+      -
+        name: Paul C. Bryan 
+      -
+        name: Kris Zyp 
+      -
+        name: Mark Nottingham date: 2003
 
   JSON:
     target: https://www.json.org/json-en.html
@@ -389,6 +400,10 @@ informative:
   KG:
     target: https://arxiv.org/pdf/2003.02320.pdf
     title: Knowledge Graphs 
+
+  Abuse:
+    target: https://github.com/WebOfTrustInfo/rwot9-prague/blob/master/final-documents/alice-attempts-abuse-verifiable-credential.md
+    title: Alice Attempts to Abuse a Verifiable Credential
  
 
 tags: "IETF, ACDC, CESR, SAID, KERI"
@@ -401,7 +416,7 @@ An authentic chained data container (ACDC)  {{ACDC_ID}}{{ACDC_WP}}{{VCEnh}} is a
 
 # Introduction
 
-One primary purpose of the ACDC protocol is to provide granular provenanced proof-of-authorship (authenticity) of their contained data via a tree or chain of linked ACDCs (technically a directed acyclic graph or DAG). Similar to the concept of a chain-of-custody, ACDCs provide a verifiable chain of proof-of-authorship of the contained data. With a little additional syntactic sugar, this primary facility of chained (treed) proof-of-authorship (authenticity) is extensible to a chained (treed) verifiable authentic proof-of-authority (proof-of-authorship-of-authority). A proof-of-authority may be used to provide verifiable authorizations or permissions or rights or credentials. A chained (treed) proof-of-authority enables delegation of authority and delegated authorizations. These proofs of authorship and/or authority provide provenance of an ACDC itself and by association any data that is so conveyedzx.
+One primary purpose of the ACDC protocol is to provide granular provenanced proof-of-authorship (authenticity) of their contained data via a tree or chain of linked ACDCs (technically a directed acyclic graph or DAG). Similar to the concept of a chain-of-custody, ACDCs provide a verifiable chain of proof-of-authorship of the contained data. With a little additional syntactic sugar, this primary facility of chained (treed) proof-of-authorship (authenticity) is extensible to a chained (treed) verifiable authentic proof-of-authority (proof-of-authorship-of-authority). A proof-of-authority may be used to provide verifiable authorizations or permissions or rights or credentials. A chained (treed) proof-of-authority enables delegation of authority and delegated authorizations. These proofs of authorship and/or authority provide provenance of an ACDC itself and by association any data that is so conveyed.
 
 The dictionary definition of ***credential*** is *evidence of authority, status, rights, entitlement to privileges, or the like*.  Appropriately structured ACDCs may be used as credentials when their semantics provide verifiable evidence of authority. Chained ACDCs may provide delegated credentials.
 
@@ -471,7 +486,7 @@ The top-level selectively-disclosable attribute aggregate section, `A`, field va
 
 The purpose of the UUID, `u`, field in any block is to provide sufficient entropy to the SAID, `d`, field of the associated block to make computationally infeasible any brute force attacks on that block that attempt to discover the block contents from the schema and the SAID. The UUID, `u`, field may be considered a salty nonce {{Salt}}. Without the entropy provided the UUID, `u`, field, an adversary may be able to reconstruct the block contents merely from the SAID of the block and the schema of the block using a rainbow or dictionary attack on the set of field values allowed by the schema {{RB}}{{DRB}}. The effective security level, entropy, or cryptographic strength of the schema-compliant field values may be much less than the cryptographic strength of the SAID digest. Another way of saying this is that the cardinality of the power set of all combinations of allowed field values may be much less than the cryptographic strength of the SAID. Thus an adversary could successfully discover via brute force the exact block by creating digests of all the elements of the power set which may be small enough to be computationally feasible instead of inverting the SAID itself. Sufficient entropy in the `u` field ensures that the cardinality of the power set allowed by the schema is at least as great as the entropy of the SAID digest algorithm itself.
 
-A UUID, `u` field may optionally appear in any block (field map) at any level of an ACDC. Whenever a block in an ACDC includes a UUID, `u`, field then it's associated SAID, `d`, field makes a blinded commitment to the contents of that block. The UUID, `u`, field is the blinding factor. This makes that block securely partially-disclosable or even selectively-disclosable notwithstanding disclosure of the associated schema of the block. The block contents can only be discovered given disclosure of the included UUID field. Likewise when a UUID, `u`, field appears at the top level of an ACDC then that top-level SAID, `d`, field makes a blinded commitment to the contents of the whole ACDC itself. Thus the whole ACDC, not merely some block within the ACDC, may be disclosed in a privacy-preserving (correlation minimizing) manner. 
+A UUID, `u` field may optionally appear in any block (field map) at any level of an ACDC. Whenever a block in an ACDC includes a UUID, `u`, field then its associated SAID, `d`, field makes a blinded commitment to the contents of that block. The UUID, `u`, field is the blinding factor. This makes that block securely partially disclosable or even selectively disclosable notwithstanding disclosure of the associated schema of the block. The block contents can only be discovered given disclosure of the included UUID field. Likewise when a UUID, `u`, field appears at the top level of an ACDC then that top-level SAID, `d`, field makes a blinded commitment to the contents of the whole ACDC itself. Thus the whole ACDC, not merely some block within the ACDC, may be disclosed in a privacy-preserving (correlation minimizing) manner. 
 
 ## Graduated Disclosure and Contractually Protected Disclosure
 
@@ -483,7 +498,11 @@ To clarify, *graduated disclosure* enables a potential Discloser to follow the p
 
 The important insight is that one type of transaction enabled by least disclosure is a transaction that specifically enables further disclosure. In other words, disclose enough to enable more disclosure which in turn may enable even more disclosure. This is the essence of *graduated disclosure*. This progression of successive least graduated disclosures to enable a transaction that itself enables a farther least graduated disclosure forms a recursive loop of least disclosure enabled transactions. In other words, the principle of least disclosure may be applied recursively.
 
-A type of transaction that leverages *graduated disclosure* to enable further disclosure we call a ***contractually protected disclosure*** transaction. In a contractually protected disclosure, the potential Discloser first makes an offer using the least (partial) disclosure of some information about other information to be disclosed (full disclosure) contingent on the potential Disclosee first agreeing to the contractual terms provided in the offer. The contractual terms could, for example, limit the disclosure to third parties of the yet to be disclosed information. But those contractual terms may also include provisions that protect against liability or other concerns not merely disclosure to third parties. A special case of a *contractually protected disclosure* is a ***chain-link confidential disclosure*** {{CLC}}.
+A type of transaction that leverages *graduated disclosure* to enable further disclosure we call a ***contractually protected disclosure*** transaction. In a contractually protected disclosure, the potential Discloser first makes an offer using the least (partial) disclosure of some information about other information to be disclosed (full disclosure) contingent on the potential Disclosee first agreeing to the contractual terms provided in the offer. The contractual terms could, for example, limit the disclosure to third parties of the yet to be disclosed information. But those contractual terms may also include provisions that protect against liability or other concerns not merely disclosure to third parties. 
+
+One special case of a *contractually protected disclosure* is a ***chain-link confidential disclosure*** {{CLC}}. 
+
+Another special case of *contractually protected disclosure* is a ***contingent-disclosure***. In a *contingent disclosure* some contingency is specified in the rule section that places an obligation by some party to make a disclosure when the contingency is satisfied. This might be recourse given the breach of some other term of the contract. When that contingency is met then the contingent disclosure MUST be made by the party whose responsibility it is to satisfy that disclosure obligation. The responsible party may be the Discloser of the ACDC or it may be some other party such as an escrow agent. The contingent disclosure clause may reference a cryptographic commitment to a private ACDC or private attribute ACDC (partial disclosure) that satisfies via its full disclosure the contingent disclosure requirement. Contingent disclosure may be used to limit the actual disclosure of personally identifying information (PII) to a just-in-time, need-to-know basis (i.e upon the contingency) and not a priori. As long as the Discloser and Disclosee trust the escrow agent and the verifiability of the committment, there is no need to disclose PII about the discloser in order to enable a transaction, but merely an agreement to the terms of the contingency. This enables something called ***latent accountability***. Recourse via PII is latent in the contingent disclosure but is not ever realized (actualized) until recourse is truly needed. The minimizes inadvertent leakage while protecting the Disclosee.
 
 ### Types of Graduated Disclosure
 
@@ -1492,7 +1511,11 @@ In compact form, the discovery of either the rule section as a whole or a given 
 
 # Disclosure-Specific (Bespoke) Issued ACDCs
 
-The ACDC chaining enables disclosure-specific issuance of bespoke ACDCs. A given Discloser of an ACDC issued by some Issuer may want to augment the disclosure with additional contractual obligations or additional information sourced by the Discloser where those augmentations are specific to a given context such as a specific Disclosee. Instead of complicating the presentation exchange to accommodate such disclosure-specific augmentations, a given Disloser issues its own bespoke ACDC that includes the other ACDC of the other Issuer by reference via an edge in the bespoke ACDC. This means that the normal validation logic and tooling for a chained ACDC can be applied without complicating the presentation exchange logic. This approach enables the bespoke ACDC to identify (name) the Disclosee directly as the Issuee of the bespoke ACDC. This enables contractual legal language in the rule section of the bespoke ACDC that reference the Issuee of that ACDC as a named party. Signing the agreement to the offer of that bespoke ACDC consummates a contract between named Issuer and named Issuee. This approach means that custom or bespoke presentations do not need additional complexity or extensions. Extensibility comes from reusing the tooling for issuing ACDCs to issue a bespoke or disclosure-specific ACDC. When the only purpose of the bespoke ACDC is to augment the contractual obligations associated with the disclosure then the attribute section, `a`, field value of the bespoke ACD may be empty or it may include properties whose only purpose is to support the bespoke contractual language.
+The ACDC chaining enables disclosure-specific issuance of bespoke ACDCs. A given Discloser of an ACDC issued by some Issuer may want to augment the disclosure with additional contractual obligations or additional information sourced by the Discloser where those augmentations are specific to a given context such as a specific Disclosee. Instead of complicating the presentation exchange to accommodate such disclosure-specific augmentations, a given Disloser issues its own bespoke ACDC that includes the other ACDC of the other Issuer by reference via an edge in the bespoke ACDC. This means that the normal validation logic and tooling for a chained ACDC can be applied without complicating the presentation exchange logic. Furthermore, attributes in other ACDCs pointed to by edges in the bespoke ACDC may be addressed by attributes in the bespoke ACDC using JSON Pointer or CESR-Proof SAD Path references that are relative to the node SAID in the edge {{RFC6901}}{{Proof_ID}}. 
+
+For example, this approach enables the bespoke ACDC to identify (name) the Disclosee directly as the Issuee of the bespoke ACDC. This enables contractual legal language in the rule section of the bespoke ACDC that reference the Issuee of that ACDC as a named party. Signing the agreement to the offer of that bespoke ACDC consummates a contract between named Issuer and named Issuee. This approach means that custom or bespoke presentations do not need additional complexity or extensions. Extensibility comes from reusing the tooling for issuing ACDCs to issue a bespoke or disclosure-specific ACDC. When the only purpose of the bespoke ACDC is to augment the contractual obligations associated with the disclosure then the attribute section, `a`, field value of the bespoke ACD may be empty or it may include properties whose only purpose is to support the bespoke contractual language.
+
+Similarly, this approach effectively enables a type of *rich presentation* or combined disclosure where multiple ACDCs may be referenced by edges in the bespoke ACDC that each contributes some attribute(s) to the effective set of attributes referenced in the bespoke ACDC. The bespoke ACDC enables the equivalent of a *rich presentation* without requiring any new tooling {{Abuse}}.
 
 ## Example Bespoke Issued ACDC
 
