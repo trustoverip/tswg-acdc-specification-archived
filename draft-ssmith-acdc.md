@@ -112,7 +112,8 @@ normative:
       -
         name: Kris Zyp 
       -
-        name: Mark Nottingham date: 2003
+        name: Mark Nottingham 
+    date: 2003
 
   JSON:
     target: https://www.json.org/json-en.html
