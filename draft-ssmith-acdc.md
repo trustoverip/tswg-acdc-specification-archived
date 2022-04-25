@@ -405,6 +405,10 @@ informative:
   Abuse:
     target: https://github.com/WebOfTrustInfo/rwot9-prague/blob/master/final-documents/alice-attempts-abuse-verifiable-credential.md
     title: Alice Attempts to Abuse a Verifiable Credential
+    
+  SKEM:
+    target: https://eprint.iacr.org/2021/509
+    title: On using the same key pair for Ed25519 and an X25519 based KEM
  
 
 tags: "IETF, ACDC, CESR, SAID, KERI"
@@ -521,9 +525,9 @@ The SAID of a field map provides a *compact* cryptographically equivalent commit
 
 # Schema Section
 
-## Schema is Type
+## Type-is-Schema
 
-Notable is the fact that there are no top-level type fields in an ACDC. This is because the schema, `s`, field itself is the type field. ACDCs follow the design principle of separation of concerns between a data container's actual payload information and the type information of that container's payload. In this sense, type information is metadata, not data. The schema dialect is JSON Schema 2020-12 {{JSch}}{{JSch_202012}}. JSON Schema support for composable schema (sub-schema), conditional schema (sub-schema), and regular expressions in schema enable a validator to ask and answer complex questions about the type of even optional payload elements while maintaining isolation between payload information and type (structure) information about the payload {{JSchCp}}{{JSchRE}}{{JSchId}}{{JSchCx}}. ACDC's use of JSON Schema MUST be in accordance with the ACDC defined profile as defined herein. The exceptions are defined below.
+Notable is the fact that there are no top-level type fields in an ACDC. This is because the schema, `s`, field itself is the type field for the ACDC and its parts. ACDCs follow the design principle of separation of concerns between a data container's actual payload information and the type information of that container's payload. In this sense, type information is metadata, not data. The schema dialect used by ACDCs is JSON Schema 2020-12 {{JSch}}{{JSch_202012}}. JSON Schema supports composable schema (sub-schema), conditional schema (sub-schema), and regular expressions in the schema. Composability enables a validator to ask and answer complex questions about the type of even optional payload elements while maintaining isolation between payload information and type (structure) information about the payload {{JSchCp}}{{JSchRE}}{{JSchId}}{{JSchCx}}. A static but composed schema allows a verifiably immutable set of variants. Although the set is immutable, the variants enable graduated but secure disclosure. ACDC's use of JSON Schema MUST be in accordance with the ACDC defined profile as defined herein. The exceptions are defined below.
 
 ## Schema ID Field Label
 
@@ -532,7 +536,7 @@ The usual field label for SAID fields in ACDCs is `d`. In the case of the schema
 When an id, '$id', field appears in a sub-schema it indicates a bundled sub-schema called a schema resource {{JSchId}}{{JSchCx}}. The value of the id, '$id', field in any ACDC bundled sub-schema resource MUST include the SAID of that sub-schema using one of the formats described below. The sub-schema so bundled MUST be verifiable against its referenced and embedded SAID value. This ensures secure bundling. 
 
 
-## Static Schema
+## Static (Immutable) Schema
 
 For security reasons, the full schema of an ACDC must be completely self-contained and statically fixed (immutable) for that ACDC. By this, we mean that no dynamic schema references or dynamic schema generation mechanisms are allowed. 
 
@@ -658,7 +662,7 @@ Unpermission exploitation is characterized using a three-party model. The three 
 
 ## Chain-link Confidentiality Exchange
 
-Chain-link confidentiality imposes contractual restrictions and liability on any Disclosee (Second-Party) {{CLC}}. The exchange provides a fair contract consummation mechanism. The steps in a chain-link confidentiality exchange are as follows:
+Chain-link confidentiality imposes contractual restrictions and liability on any Disclosee (Second-Party) {{CLC}}. The exchange provides a fair contract consummation mechanism. The essential steps in a chain-link confidentiality exchange are shown below. Other steps may be included in a more comprehensive exchange protocol.
 
 * *Discloser* provides a non-repudiable *Offer* with verifiable metadata (sufficient partial disclosure) which includes any terms or restrictions on use. 
 * *Disclosee* verifies *Offer* against composed schema and metadata adherence to desired data.
@@ -1068,7 +1072,7 @@ In the compact ACDC examples above, the edge section has been compacted into mer
 }
 ~~~
 
-The edge section's top-level SAID, `d`, field is the SAID of the edge block and is the same SAID used as the compacted value of the ACDC's top-level edge, `e`, field. Each edge in the edge section gets its field with its own local label. In the example above, the edge label is `"boss"`. Note that each edge does NOT include a type field. The type of each edge is provided by the schema vis-a-vis the label of that edge. This is in accordance with the design principle of ACDCs that may be succinctly expressed as "schema is type". This approach varies somewhat from many property graphs which often do not have a schema {{PGM}}{{Dots}}{{KG}}. Because ACDCs have a schema for other reasons, however, they leverage that schema to provide edge types with a cleaner separation of concerns.
+The edge section's top-level SAID, `d`, field is the SAID of the edge block and is the same SAID used as the compacted value of the ACDC's top-level edge, `e`, field. Each edge in the edge section gets its field with its own local label. In the example above, the edge label is `"boss"`. Note that each edge does NOT include a type field. The type of each edge is provided by the schema vis-a-vis the label of that edge. This is in accordance with the design principle of ACDCs that may be succinctly expressed as "type-is-schema". This approach varies somewhat from many property graphs which often do not have a schema {{PGM}}{{Dots}}{{KG}}. Because ACDCs have a schema for other reasons, however, they leverage that schema to provide edge types with a cleaner separation of concerns.
 
 Each edge sub-block has one required node, `n`, field. The value of the node, `n`, field is the SAID of the ACDC to which the edge connects. 
 
@@ -1426,7 +1430,7 @@ To elaborate, the rule section's top-level SAID, `d`, field is the SAID of that 
 
 The legal, `l`, field in each block provides the associated legal language.  
 
-Note there are no type fields in the rule section. The type of a contract and the type of each clause is provided by the schema vis-a-vis the label of that clause. This follows the ACDC design principle that may be succinctly expressed as "schema is type". 
+Note there are no type fields in the rule section. The type of a contract and the type of each clause is provided by the schema vis-a-vis the label of that clause. This follows the ACDC design principle that may be succinctly expressed as "type-is-schema". 
 
 Each rule section clause may also have its own clause SAID, `d`, field. Clause SAIDs enable reference to individual clauses, not merely the whole contract as given by the rule section's top-level SAID, `d`, field.
 
@@ -2140,7 +2144,7 @@ The Merkle tree needs to have appropriate second-pre-image attack protection of 
 
 The amount of data transferred between the Issuer and Issuee (or recipient in the case of an untargeted ACDC) at issuance of a selectively disclosable attribute ACDC may be minimized by using a hierarchical deterministic derivation function to derive the value of the UUDI, `u`, fields from a shared secret salt {{Salt}}. 
 
-There are several ways that the Issuer may securely share that secret salt. Given that an Ed25519 key pair(s) controls each of the Issuer and Issuee  AIDs, (or recipient AID in the case of an untargeted ACDC) a corresponding X15519 asymmetric encryption key pair(s) may be derived from each controlling Ed25519 key pair(s) {{EdSC}}{{PSEd}}{{TMEd}}. An X25519 public key may be derived from an Ed25519 public key. Likewise, an X25519 private key may be derived from an Ed25519 private key {{KeyEx}}.
+There are several ways that the Issuer may securely share that secret salt. Given that an Ed25519 key pair(s) controls each of the Issuer and Issuee  AIDs, (or recipient AID in the case of an untargeted ACDC) a corresponding X15519 asymmetric encryption key pair(s) may be derived from each controlling Ed25519 key pair(s) {{EdSC}}{{PSEd}}{{TMEd}}{{SKEM}}. An X25519 public key may be securely derived from an Ed25519 public key {{KeyEx}}{{SKEM}}. Likewise, an X25519 private key may be securely derived from an Ed25519 private key {{KeyEx}}{{SKEM}}.
 
 In an interactive approach, the Issuer derives a public asymmetric X25519 encryption key from the Issuee's published Ed25519 public key and the Issuee derives a public asymmetric X25519 encryption key from the Issuer's published Ed25519 public key. The two then interact via a Diffie-Hellman (DH) key exchange to create a shared symmetric encryption key {{KeyEx}}{{DHKE}}. The shared symmetric encryption key may be used to encrypt the secret salt or the shared symmetric encryption key itself may be used has high entropy cryptographic material from which the secret salt may be derived. 
 
@@ -2171,7 +2175,7 @@ It is important to note that any group of colluding malicious verifiers may alwa
 
 The amount of data transferred between the Issuer and Issuee (or recipient of an untargeted ACDC) at issuance of a set of bulk issued ACDCs may be minimized by using a hierarchical deterministic derivation function to derive the value of the UUID, `u`, fields from a shared secret salt {{Salt}}. 
 
-As described above, there are several ways that the Issuer may securely share a secret salt. Given that the Issuer and Issuee (or recipient when untargeted) AIDs are each controlled by an Ed25519 key pair(s), a corresponding X15519 asymmetric encryption key pair(s) may be derived from the controlling Ed25519 key pair(s) {{EdSC}}{{PSEd}}{{TMEd}}. An X25519 public key may be derived from an Ed25519 public key. Likewise, an X25519 private key may be derived from an Ed25519 private key {{KeyEx}}.
+As described above, there are several ways that the Issuer may securely share a secret salt. Given that the Issuer and Issuee (or recipient when untargeted) AIDs are each controlled by an Ed25519 key pair(s), a corresponding X15519 asymmetric encryption key pair(s) may be derived from the controlling Ed25519 key pair(s) {{EdSC}}{{PSEd}}{{TMEd}}. An X25519 public key may be securely derived from an Ed25519 public key {{KeyEx}}{{SKEM}}. Likewise, an X25519 private key may be securely derived from an Ed25519 private key {{KeyEx}}{{SKEM}}.
 
 In an interactive approach, the Issuer derives a public asymmetric X25519 encryption key from the Issuee's published Ed25519 public key and the Issuee derives a public asymmetric X25519 encryption key from the Issuer's published Ed25519 public key. The two then interact via a Diffie-Hellman (DH) key exchange to create a shared symmetric encryption key {{KeyEx}}{{DHKE}}. The shared symmetric encryption key may be used to encrypt the secret salt or the shared symmetric encryption key itself may be used has high entropy cryptographic material from which the secret salt may be derived. 
 
