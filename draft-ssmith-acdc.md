@@ -444,7 +444,7 @@ An ACDC may be abstractly modeled as a nested `key: value` mapping. To avoid con
 |`v`| Version String| Regexable format: ACDCvvSSSShhhhhh_ that provides protocol type, version, serialization type, size, and terminator. | 
 |`d`| Digest (SAID) | Self-referential fully qualified cryptographic digest of enclosing map. |  
 |`i`| Identifier (AID)| Semantics are determined by the context of its enclosing map. | 
-|`u`| UUID | Random Universally Unique IDentifier as fully qualified high entropy pseudo-random string, a salted nonce. |  
+|`u`| UUID | Random Universally Unique IDentifier as fully qualified high entropy pseudo-random string, a salty nonce. |  
 |`ri`| Registry Identifier (AID) | Issuance and/or revocation, transfer, or retraction registry for ACDC. | 
 |`s`| Schema| Either the SAID of a JSON Schema block or the block itself. | 
 |`a`| Attribute| Either the SAID of a block of attributes or the block itself. | 
@@ -1072,11 +1072,46 @@ In the compact ACDC examples above, the edge section has been compacted into mer
 }
 ~~~
 
-The edge section's top-level SAID, `d`, field is the SAID of the edge block and is the same SAID used as the compacted value of the ACDC's top-level edge, `e`, field. Each edge in the edge section gets its field with its own local label. In the example above, the edge label is `"boss"`. Note that each edge does NOT include a type field. The type of each edge is provided by the schema vis-a-vis the label of that edge. This is in accordance with the design principle of ACDCs that may be succinctly expressed as "type-is-schema". This approach varies somewhat from many property graphs which often do not have a schema {{PGM}}{{Dots}}{{KG}}. Because ACDCs have a schema for other reasons, however, they leverage that schema to provide edge types with a cleaner separation of concerns.
+The edge section's top-level SAID, `d`, field is the SAID of the edge block and is the same SAID used as the compacted value of the ACDC's top-level edge, `e`, field. Each edge in the edge section gets its own field with its own local label. The value of the field may be a sub-block or in the simplest case a string. In the example above, the edge label is `"boss"`. Note that each edge does NOT include a type field. The type of each edge is provided by the schema vis-a-vis the label of that edge. This is in accordance with the design principle of ACDCs that may be succinctly expressed as "type-is-schema". This approach varies somewhat from many property graphs which often do not have a schema {{PGM}}{{Dots}}{{KG}}. Because ACDCs have a schema for other reasons, however, they leverage that schema to provide edge types with a cleaner separation of concerns. Notwithstanding, this separation, an edge sub-block may include a constraint on the type of the ACDC to which that edge points by including the SAID of the schema of the pointed-to ACDC as a property of that edge.
 
-Each edge sub-block has one required node, `n`, field. The value of the node, `n`, field is the SAID of the ACDC to which the edge connects. 
+## Edge Sub-block Reserved Fields
 
-A main distinguishing feature of a *property graph* (PG) is that both nodes but edges may have a set of properties {{PGM}}{{Dots}}{{KG}}. These might include modifiers that influence how the connected node is to be used such as a weight. Weighted directed edges represent degrees of confidence or likelihood. These types of PGs are commonly used for machine learning or reasoning under uncertainty. The following example adds a weight property to the edge sub-block as indicated by the weight, `w`, field.
+A main distinguishing feature of a *property graph* (PG) is that both nodes and edges may have a set of properties {{PGM}}{{Dots}}{{KG}}. These might include modifiers that influence how the connected node is to be combined or place a constraint on the allowed type(s) of connected nodes. 
+
+There several reserved field labels for edge sub-blocks. These are detailed in the table below.
+are the node, `n`, SAID, `d`, schema, `s`, weight, `w`, and operator, `o`, field labels. Each edge sub-block may have other non-reserved field labels as needed for a particular edge type.
+
+| Label | Title | Description |  
+|:-:|:--|:--|  
+|`d`| Digest (SAID) | Optional, self-referential fully qualified cryptographic digest of enclosing edge map. |  
+|`u`| UUID | Optional random Universally Unique IDentifier as fully qualified high entropy pseudo-random string, a salty nonce. |  
+|`s`| Schema| Optional SAID of the JSON Schema block of the far node ACDC. | 
+|`n`| Node| Required SAID of the far ACDC as the terminating point of a directed edge that connects the edge's encapsulating near ACDC to the specified far ACDC as a fragment of a distributed property graph (PG).| 
+|`o`| Operator| Optional as either a unary operator on edge or an m-ary operator on edge-group in edge section. Enables expression of the edge logic on edge subgraph.| 
+|`w`| Weight| Optional edge weight property that enables default property for directed weighted edges and operators that use weights.| 
+ 
+
+The node, `n`, field is required. The SAID, `d`, UUID, `u`, schema, `s`, operator, `o`, and weight, `w`,  fields are optional. To clarify, each edge sub-block MUST have a node, `n`, field and  MAY have any combination of SAID, `d`, UUID, `u`, schema, `s`, operator, `o`, or  weight, `w`, fields. 
+
+### SAID Field
+
+When present, the SAID, `d`, field MUST appear as the first field in the edge sub-block. When present,the value of the SAID, `d` field MUST be the SAID of its enclosing edge sub-block. 
+
+### UUID Field
+
+A UUID, `u`, field MUST not appear unless there is also a SAID, `d` field. When present the UUID, `u`, field must appear immediately after as the SAID, `d`, field in the edge sub-block. When present, the value of the UUID, `u` is a pseudorandom string with approximately 128 bits of cryptographic entropy. The UUID, `u`, field acts as a salty nonce to hide the values of the edge sub-block in spite of knowledge of the edge sub-blocks SAID, `d`, field and its, the edge's, actual near schema (not its far node schema field).
+
+### Node Field
+
+When the edge sub-block does NOT include a SAID, `d`, field then the node, `n`, field MUST appear as the first field in the edge sub-block, i.e. it follows the SAID, `d`, field which is first. When the edge sub-block does include a SAID, `d`, field then the node, `n`, field MUST appear as the second field in the edge sub-block.
+
+The value of the required node, `n`, field is the SAID of the ACDC to which the edge connects i.e. the node, `n`, field indicated, designates, references, or "point to" another ACDC. The edge is directed *from* the *near* node that is the ACDC in which the edge sub-block resides and is directed *to* the *far* node that is the ACDC indicated by the node, `n`, field of that edge sub-block. In order for the edge (chain) to be valid, the ACDC validator MUST confirm that the SAID of the provided *far* ACDC matches the node, `n`, field value given in the edge sub-block in *near* ACDC and MUST confirm that the provided *far* ACDC satisfies its own schema.
+
+### Schema Field
+
+When present, the schema, `s` field must appear immediately following the node `n`, field in the edge sub-block. When present, the value of the schema, `s` field MUST be the SAID of the top-level schema, `s`, field of the ACDC indicated by the edge's far node, `n`, field. When the schema, `s`, field is present in a edge sub-block, in order for the edge (chain) to be valid, the ACDC validator, after validating that the provided *far* ACDC indicated by the node, `n`, field satisfies its (the far ACDC's) own schema, MUST also confirm that the value of the edge's schema, `s`, field matches the SAID of the far ACDC's schema as indicated by its top-level schema, `s`, field.
+
+The following example adds both SAID, `d`, and schema, `s`, fields (edge properties) to the edge sub-block.
 
 ~~~json
 {
@@ -1085,12 +1120,22 @@ A main distinguishing feature of a *property graph* (PG) is that both nodes but 
     "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLxUdY",
     "boss":
     {
+      "d": "E2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn9y",
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
-      "w": "high"
+      "s": "ELIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLxUdYerzw"
     }
   }
 }
 ~~~
+
+
+### Operator Field
+
+When present, the operator, `o` field must appear immediately following all of the SAID, `d`, node, `n`, or schema, `s`, fields in the edge sub-block. The function of the operator field is explained in a later section.
+
+### Weight Field
+
+When present, the weight, `w` field must appear immediately following all of the SAID, `d`, node, `n`, schema, `s`, or operator, `o`, fields in the edge sub-block. The function of the weight field is explained in a later section.
 
 ## Globally Distributed Secure Graph Fragments
 
@@ -1169,12 +1214,14 @@ When an edge sub-block has only one field that is its node, `n`, field then the 
 When the top-level edge section, `e`, field includes more than one edge there is a need or opportunity to define the logic for evaluating those edges with respect to validating the ACDC itself with respect to the validity of the other ACDCs it is connected two. More than one edge creates a provenance tree not simply a provenance chain. The obvious default for a chain is that all links in the chain must be valid in order for the chain itself to be valid, or more precisely for the tail of the chain to be valid. If any links between the head and the tail are broken (invalid) then the tail is not valid. This default logic may not be so useful in all cases when a given ACDC is the tail of multiple parallel chains (i.e. a branching node in a tree of chains). Therefore provided herein is the syntax for exactly specifying the operations to perform on each edge and groups of edges in its edge section.
 
 ### Label Types  
-There are three types of labels:
+There are three types of labels in edge sub-blocks:
 
 * Reserved Field Labels (Metadata).
   `d` for SAID of block
+  `u` for UUID (salty nonce)
+  `n` for node SAID (far ACDC)
+  `s` for schema SAID ( far ACDC)
   `o` for operator
-  `n` for Node SAID (another ACDC)
   `w` for weight
 
 * Edge Field Map Labels (Single Edges)
@@ -1204,7 +1251,25 @@ The meaning of the operator, `o`, metadata field label depends on which type of 
 * When appearing in an edge block then the operator, `o`,  field value is a unary operator like `NOT`.  When more than one unary operator applies to a given edge then the value of the operator, `o`, field is a list of those unary operators.
 
 ### Weight, `w`, field.
-Many aggregating operators used for automated reasoning such as weighted average, `WAVG`, or ranking aggregation, depends on each edge having a weight. To simplify the semantics for such operators, the weight, `w`, field is the reserved field label for weighting. Other fields could provide other types of weights but having a default simplifies the default definitions of those weighted operators. 
+
+Weighted directed edges represent degrees of confidence or likelihood. PGs with weighted directed edges are commonly used for machine learning or reasoning under uncertainty. The weight, `w` field provides a reserved label for the primary weight. To elaborate, many aggregating operators used for automated reasoning such as the weighted average, `WAVG`, operator or ranking aggregation operators, depend on each edge having a weight. To simplify the semantics for such operators, the weight, `w`, field is the reserved field label for weighting. Other fields with other labels could provide other types of weights but having a default label, namely `w`, simplifies the default definitions of weighted operators. 
+
+The following example adds a weight property to the edge sub-block as indicated by the weight, `w`, field.
+
+~~~json
+{
+  "e": 
+  {
+    "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLxUdY",
+    "boss":
+    {
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+      "w": "high"
+    }
+  }
+}
+~~~
+
 
 ### Special Unary Operators
 
@@ -1608,6 +1673,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
     {
       "d": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn",
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+      "s": "EiheqcywJcnjtJtQIYPvAu6DZAIl3MORH3dCdoFOLe71",
       "w": "high"
     }
   },
@@ -1764,6 +1830,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
               [
                 "d",
                 "n",
+                's',
                 "w"
               ],
               "properties":
@@ -1775,8 +1842,14 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
                 },
                 "n": 
                 {
-                  "description": "node SAID",
+                  "description": "far node SAID",
                   "type": "string"
+                },
+                "s": 
+                {
+                  "description": "far node schema SAID",
+                  "type": "string",
+                  "const": ""EiheqcywJcnjtJtQIYPvAu6DZAIl3MORH3dCdoFOLe71"
                 },
                 "w": 
                 {
