@@ -1084,8 +1084,7 @@ The edge section's top-level SAID, `d`, field is the SAID of the edge block and 
 
 A main distinguishing feature of a *property graph* (PG) is that both nodes and edges may have a set of properties {{PGM}}{{Dots}}{{KG}}. These might include modifiers that influence how the connected node is to be combined or place a constraint on the allowed type(s) of connected nodes.
 
-There several reserved field labels for edge sub-blocks. These are detailed in the table below.
-are the node, `n`, SAID, `d`, schema, `s`, weight, `w`, and operator, `o`, field labels. Each edge sub-block may have other non-reserved field labels as needed for a particular edge type.
+There are several reserved field labels for edge sub-blocks. These are detailed in the table below. Each edge sub-block may have other non-reserved field labels as needed for a particular edge type.
 
 | Label | Title | Description |
 |:-:|:--|:--|
