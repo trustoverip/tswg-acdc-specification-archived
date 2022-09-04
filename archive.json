@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-07-10T01:06:03.887337+00:00",
+  "timestamp": "2022-09-04T01:04:32.002149+00:00",
   "repo": "trustoverip/tswg-acdc-specification",
   "labels": [
     {
@@ -2120,6 +2120,32 @@
       "mergeCommit": {
         "oid": "a4b9313353f01d98d4982ceb6dad65c9d84c429b"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 65,
+      "id": "PR_kwDOGxcvRc4-Tb-R",
+      "title": "fix grammar",
+      "url": "https://github.com/trustoverip/tswg-acdc-specification/pull/65",
+      "state": "OPEN",
+      "author": "trentlarson",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixed the first sentence.\r\nRemoved the incomplete sentence since it seems to be covered by the paragraph after the table.",
+      "createdAt": "2022-09-02T21:07:43Z",
+      "updatedAt": "2022-09-02T21:07:43Z",
+      "baseRepository": "trustoverip/tswg-acdc-specification",
+      "baseRefName": "main",
+      "baseRefOid": "a4b9313353f01d98d4982ceb6dad65c9d84c429b",
+      "headRepository": "trentlarson/tswg-acdc-specification",
+      "headRefName": "patch-1",
+      "headRefOid": "572ad48e956fb2f61deadb84d77ce65809d2b4b1",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
