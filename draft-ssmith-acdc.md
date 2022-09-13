@@ -1965,6 +1965,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
 }
 ~~~
 
+
 # Selective Disclosure
 
 As explained previously, the primary difference between *partial disclosure* and *selective disclosure* is determined by the correlatability with respect to its encompassing block after *full disclosure* of the detailed field value. A *partially disclosable* field becomes correlatable to its encompassing block after its *full disclosure*. Whereas a *selectively disclosable* field may be excluded from the *full disclosure* of any other selectively disclosable fields in its encompassing block. After selective disclosure, the selectively disclosed fields are not correlatable to the so-far undisclosed but selectively disclosable fields in the same encompassing block. In this sense, *full disclosure* means detailed disclosure of the selectively disclosed attributes not detailed disclosure of all selectively disclosable attributes.
@@ -2300,7 +2301,7 @@ Suppose there are *M* ACDCs in a bulk issued set. Using zero-based indexing for 
 Let *c<sub>k</sub> = v<sub>k</sub> + d<sub>k</sub>*,  denote the blinding concatenation where *+* is the infix concatenation operator.
 Then the blinded digest, *b<sub>k</sub>*, is given by,
 *b<sub>k</sub> = H(c<sub>k</sub>) = H(v<sub>k</sub> + d<sub>k</sub>)*,
-where *H* is the digest operator.
+where *H* is the digest operator. Blinding is performed by a digest of the concatenation of the binding factor, *v<sub>k</sub>*,  with the SAID, *d<sub>k</sub>* instead of XORing the two. An XOR of two elements whose bit count is much greater than 2 is not vulnerable to a birthday table attack  {{BDay}}{{DRB}}{{BRC}}. In order to XOR, however, the two must be of the same length. Different SAIDs MAY be of different lengths, however, and MAY therefore require different length blinding factors. Because concatenation is length independent it is simpler to implement.
 
 The aggregation of blinded digests, *B*, is given by,
 *B = H(C(b<sub>k</sub> for all k in \{0, ..., M-1\}))*,
@@ -2335,7 +2336,9 @@ A *Discloser* may make a basic provable non-repudiable selective disclosure of a
 * The ACDC in compact form (at index *k*) where *d<sub>k</sub>* as the value of its top-level SAID, `d`, field.
 * The blinding factor, *v<sub>k</sub>* from which *b<sub>k</sub> = H(v<sub>k</sub> + d<sub>k</sub>)* may be computed.
 * The list of all blinded SAIDs, *\[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>\]* that includes *b<sub>k</sub>*.
-* The signature(s), *s<sub>k</sub>*, of the Issuee on the ACDC's top level SAID, *d<sub>k</sub>*, field.
+* The signature, *s<sub>B</sub>*, of the Issuee on the aggregate, *B*.
+
+Thus only one signature must be generated and provided by the Issuer to the Disclosee as recipient of the Issuance that the initial Disclosee when it becomes a later Discloser needs to provide to a subsequent Disclosee. The disadvantage of this approach is that the signature *s<sub>B</sub>*, of the Issuee on the aggregate, *B*, is a point of correlation, but not any more so than *B* itself. To remove *B* as a point of correlation requires using *independent TEL bulk-issued ACDCs* described in the section so named below.
 
 A *Disclosee* may then verify the disclosure by:
 
@@ -2344,15 +2347,15 @@ A *Disclosee* may then verify the disclosure by:
 * confirming that the computed *b<sub>k</sub>* appears in the provided list *\[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>\]*.
 * computing the aggregate *B* from the provided list *\[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>\]*..
 * confirming the presence of an issuance seal digest in the Issuer's KEL that makes a commitment to the aggregate, *B*, either directly or indirectly through a TEL registry entry.
-* verifying the provided signature(s), *s<sub>k</sub>*, of the Issuee on the provided top level SAID, *d<sub>k</sub>*, field.
+* verifying the provided signature, *s<sub>B</sub>*, of the Issuee on the computed aggregate *B*.
 
-The last 3 steps that culminate with verifying the signature(s) require determining the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols.
+The last 3 steps that culminate with verifying the signature require determining the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols.
 
-The requirement of an anchored issuance proof seal means that the forger Must first successfully publish in the KEL of the issuer an inclusion proof digest seal bound to a set of forged bulk issued ACDCs. This makes any forgery attempt detectable. To elaborate, the only way to successfully publish such a seal is in a subsequent interaction event in a KEL that has not yet changed its key state via a rotation event. Whereas any KEL that has changed its key state via a rotation must be forked before the rotation. This makes the forgery attempt either both detectable and recoverable via rotation in any KEL that has not yet changed its key state or detectable as duplicity in any KEL that has changed its key state. In any event, the issuance proof seal makes any later attempt at forgery using compromised keys detectable.
+The requirement of an anchored issuance proof seal of the aggregate *B* means that the forger MUST first successfully publish in the KEL of the issuer an inclusion proof digest seal bound to a set of forged bulk issued ACDCs. This makes any forgery attempt detectable. To elaborate, the only way to successfully publish such a seal is in a subsequent interaction event in a KEL that has not yet changed its key state via a rotation event. Whereas any KEL that has changed its key state via a rotation must be forked before the rotation. This makes the forgery attempt either both detectable and recoverable via rotation in any KEL that has not yet changed its key state or detectable as duplicity in any KEL that has changed its key state. In any event, the issuance proof seal makes any later attempt at forgery using compromised keys detectable.
 
 ### Inclusion Proof via Merkle Tree
 
-The inclusion proof via aggregated list may be somewhat verbose when there are a very large number of bulk issued ACDCs in a given set. A more efficient approach is to create a Merkle tree of the blinded SAID digests, *b<sub>k</sub>* and set the aggregate *B* value as the Merkle tree root {{Mrkl}}.
+The inclusion proof via aggregated list may be somewhat verbose when there are a very large number of bulk issued ACDCs in a given set. A more efficient approach is to create a Merkle tree of the blinded SAID digests, *b<sub>k</sub>* and set the aggregate *B* value as the Merkle tree root digest {{Mrkl}}.
 
 The Merkle tree needs to have appropriate second-pre-image attack protection of interior branch nodes {{TwoPI}}{{MTSec}}. The discloser then only needs to provide a subset of digests from the Merkle tree to prove that a given digest, *b<sub>k</sub>* contributed to the Merkle tree root digest. For a small numbered bulk issued set of ACDCs, the added complexity of the Merkle tree approach may not be worth the savings in verbosity.
 
@@ -2367,11 +2370,11 @@ One solution to this problem is for the *Issuee* to use a unique AID for the cop
 
 ## Independent TEL Bulk-Issued ACDCs
 
-Recall that the purpose of using the aggregate *B* for a bulk-issued set from which the TEL identifier is derived is to enable a set of bulk issued ACDCs to share a single public TEL that provides dynamic revocation but without enabling un-permissioned correlation to any other members of the bulk set by virtue of the shared TEL. This enables the issuance/revocation/transfer state of all copies of a set of bulk-issued ACDCs to be provided by a single TEL which minimizes the storage and compute requirements on the TEL registry while providing selective disclosure to prevent un-permissioned correlation via the public TEL.
+Recall that the purpose of using the aggregate *B* for a bulk-issued set from which the TEL identifier is derived is to enable a set of bulk issued ACDCs to share a single public TEL and/or a single anchoring seal in the Issuer's KEL without enabling un-permissioned correlation to any other members of the bulk set by virtue of the shared aggregate *B* used for either the TEL or anchoring seal in the KEL. When using a TEL this enables the issuance/revocation/transfer state of all copies of a set of bulk-issued ACDCs to be provided by a single TEL which minimizes the storage and compute requirements on the TEL registry while providing selective disclosure to prevent un-permissioned correlation via the public TEL. When using an anchoring seal, this enables one signature to provide proof of inclusion in the bulk issued aggregate *B*.
 
-However, in some applications where chain-link confidentiality does not sufficiently deter malicious provable correlation by Disclosees (Second-Party verifiers), an Issuee may benefit from using ACDC with independent TELs but that are still bulk-issued.
+However, in some applications where chain-link confidentiality does not sufficiently deter malicious provable correlation by Disclosees (Second-Party verifiers), an Issuee may benefit from using ACDC with independent TELs or independent aggregates *B* but that are still bulk-issued.
 
-In this case, the bulk issuance process must be augmented so that each uniquely identified copy of the ACDC gets its own TEL entry in the registry. Each Disclosee (verifier) of a full presentation/disclosure of a given copy of the ACDC only receives proof of one uniquely identified TEL and can NOT provably correlate the TEL state of one presentation to any other presentation because the ACDC SAID, the TEL identifier, and the signature of the issuer on the SAID of a given copy will all be different for each copy. There is therefore no point of provable correlation permissioned or otherwise.
+In this case, the bulk issuance process must be augmented so that each uniquely identified copy of the ACDC gets its own TEL entry (or equivalently its own aggregate *B*) in the registry. Each Disclosee (verifier) of a full presentation/disclosure of a given copy of the ACDC only receives proof of one uniquely identified TEL and can NOT provably correlate the TEL state of one presentation to any other presentation because the ACDC SAID, the TEL identifier, and the signature of the issuer on each aggregate *B* will be different for each copy. There is therefore no point of provable correlation permissioned or otherwise. One could for example modulate this apprach by having a set of smaller bulk issued sets that are more contextualized than one large bulk issued set.
 
 The obvious drawbacks of this approach (independent unique TELs for each private ACDC) are that the size of the registry database increases as a multiple of the number of copies of each bulk-issued ACDC and every time an Issuer must change the TEL state of a given set of copies it must change the state of multiple TELs in the registry. This imposes both a storage and computation burden on the registry. The primary advantage of this approach, however, is that each copy of a private ACDC has a uniquely identified TEL. This minimizes un-permissioned Third-Party exploitation via provable correlation of TEL identifiers even with colluding Second-Party verifiers. They are limited to statistical correlation techniques.
 
