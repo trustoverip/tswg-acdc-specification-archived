@@ -1013,7 +1013,7 @@ Through the use of the JSON Schema `oneOf` composition operator the following co
             "type": "string"
           }
         },
-        "additionalProperties": false,
+        "additionalProperties": false
       }
     ]
   }
@@ -1172,7 +1172,7 @@ Given that an individual edge's property block includes a SAID, `d`, field then 
   "e":
   {
     "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLxUdY",
-    "boss": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn",
+    "boss": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn"
   }
 }
 ~~~
@@ -1461,11 +1461,11 @@ In the following example: The top-level edge-block uses the default of `AND` and
     "qvi":
     {
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA"
-    }
+    },
     "le":
     {
       "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
-      "o": "NI2I",
+      "o": "NI2I"
     }
   }
 }
@@ -1629,7 +1629,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
     "other":
     {
       "d": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn",
-      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA"
     }
   },
   "r":
@@ -2084,7 +2084,6 @@ Because the selectively-disclosable attributes are provided by an array (list), 
             {
               "description": "issuer attribute",
               "type": "object",
-              "properties":
               "required":
               [
                 "d",
@@ -2107,14 +2106,13 @@ Because the selectively-disclosable attributes are provided by an array (list), 
                 {
                   "description": "issuer SAID",
                   "type": "string"
-                },
+                }
               },
               "additionalProperties": false
             },
             {
               "description": "score attribute",
               "type": "object",
-              "properties":
               "required":
               [
                 "d",
@@ -2137,14 +2135,13 @@ Because the selectively-disclosable attributes are provided by an array (list), 
                 {
                   "description": "score value",
                   "type": "integer"
-                },
+                }
               },
               "additionalProperties": false
             },
             {
               "description": "name attribute",
               "type": "object",
-              "properties":
               "required":
               [
                 "d",
@@ -2167,14 +2164,14 @@ Because the selectively-disclosable attributes are provided by an array (list), 
                 {
                   "description": "name value",
                   "type": "string"
-                },
+                }
               },
               "additionalProperties": false
             }
           ]
         }
       }
-    ]
+    ],
     "additionalProperties": false
   }
 }
