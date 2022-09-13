@@ -1768,7 +1768,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
         {
           "description": "schema detail",
           "type": "object"
-        },
+        }
       ]
     },
     "a":
@@ -1813,7 +1813,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
               "type": "string"
             }
           },
-          "additionalProperties": false,
+          "additionalProperties": false
         }
       ]
     },
@@ -1849,7 +1849,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
               [
                 "d",
                 "n",
-                's',
+                "s",
                 "w"
               ],
               "properties":
@@ -1868,15 +1868,16 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
                 {
                   "description": "far node schema SAID",
                   "type": "string",
-                  "const": ""EiheqcywJcnjtJtQIYPvAu6DZAIl3MORH3dCdoFOLe71"
+                  "const": "EiheqcywJcnjtJtQIYPvAu6DZAIl3MORH3dCdoFOLe71"
                 },
                 "w":
                 {
                   "description": "edge weight",
                   "type": "string"
+                }
               },
               "additionalProperties": false
-            },
+            }
           },
           "additionalProperties": false
         }
