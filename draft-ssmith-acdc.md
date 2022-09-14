@@ -786,7 +786,7 @@ The schema for the compact private ACDC example above is provided below.
     "r": {
       "description": "rule SAID",
       "type": "string"
-    },
+    }
   },
   "additionalProperties": false
 }
@@ -1013,7 +1013,7 @@ Through the use of the JSON Schema `oneOf` composition operator the following co
             "type": "string"
           }
         },
-        "additionalProperties": false,
+        "additionalProperties": false
       }
     ]
   }
@@ -1084,8 +1084,7 @@ The edge section's top-level SAID, `d`, field is the SAID of the edge block and 
 
 A main distinguishing feature of a *property graph* (PG) is that both nodes and edges may have a set of properties {{PGM}}{{Dots}}{{KG}}. These might include modifiers that influence how the connected node is to be combined or place a constraint on the allowed type(s) of connected nodes.
 
-There several reserved field labels for edge sub-blocks. These are detailed in the table below.
-are the node, `n`, SAID, `d`, schema, `s`, weight, `w`, and operator, `o`, field labels. Each edge sub-block may have other non-reserved field labels as needed for a particular edge type.
+There several reserved field labels for edge sub-blocks. These are detailed in the table below. Each edge sub-block may have other non-reserved field labels as needed for a particular edge type.
 
 | Label | Title | Description |
 |:-:|:--|:--|
@@ -1172,7 +1171,7 @@ Given that an individual edge's property block includes a SAID, `d`, field then 
   "e":
   {
     "d": "EerzwLIr9Bf7V_NHwY1lkFrn9y2PgveY4-9XgOcLxUdY",
-    "boss": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn",
+    "boss": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn"
   }
 }
 ~~~
@@ -1461,11 +1460,11 @@ In the following example: The top-level edge-block uses the default of `AND` and
     "qvi":
     {
       "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA"
-    }
+    },
     "le":
     {
       "n": "EORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZAIl3A",
-      "o": "NI2I",
+      "o": "NI2I"
     }
   }
 }
@@ -1629,7 +1628,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
     "other":
     {
       "d": "E9y2PgveY4-9XgOcLxUdYerzwLIr9Bf7V_NHwY1lkFrn",
-      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA",
+      "n": "EIl3MORH3dCdoFOLe71iheqcywJcnjtJtQIYPvAu6DZA"
     }
   },
   "r":
@@ -1768,7 +1767,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
         {
           "description": "schema detail",
           "type": "object"
-        },
+        }
       ]
     },
     "a":
@@ -1813,7 +1812,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
               "type": "string"
             }
           },
-          "additionalProperties": false,
+          "additionalProperties": false
         }
       ]
     },
@@ -1849,7 +1848,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
               [
                 "d",
                 "n",
-                's',
+                "s",
                 "w"
               ],
               "properties":
@@ -1868,15 +1867,16 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
                 {
                   "description": "far node schema SAID",
                   "type": "string",
-                  "const": ""EiheqcywJcnjtJtQIYPvAu6DZAIl3MORH3dCdoFOLe71"
+                  "const": "EiheqcywJcnjtJtQIYPvAu6DZAIl3MORH3dCdoFOLe71"
                 },
                 "w":
                 {
                   "description": "edge weight",
                   "type": "string"
+                }
               },
               "additionalProperties": false
-            },
+            }
           },
           "additionalProperties": false
         }
@@ -1964,6 +1964,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
   "additionalProperties": false
 }
 ~~~
+
 
 # Selective Disclosure
 
@@ -2082,7 +2083,6 @@ Because the selectively-disclosable attributes are provided by an array (list), 
             {
               "description": "issuer attribute",
               "type": "object",
-              "properties":
               "required":
               [
                 "d",
@@ -2105,14 +2105,13 @@ Because the selectively-disclosable attributes are provided by an array (list), 
                 {
                   "description": "issuer SAID",
                   "type": "string"
-                },
+                }
               },
               "additionalProperties": false
             },
             {
               "description": "score attribute",
               "type": "object",
-              "properties":
               "required":
               [
                 "d",
@@ -2135,14 +2134,13 @@ Because the selectively-disclosable attributes are provided by an array (list), 
                 {
                   "description": "score value",
                   "type": "integer"
-                },
+                }
               },
               "additionalProperties": false
             },
             {
               "description": "name attribute",
               "type": "object",
-              "properties":
               "required":
               [
                 "d",
@@ -2165,14 +2163,14 @@ Because the selectively-disclosable attributes are provided by an array (list), 
                 {
                   "description": "name value",
                   "type": "string"
-                },
+                }
               },
               "additionalProperties": false
             }
           ]
         }
       }
-    ]
+    ],
     "additionalProperties": false
   }
 }
@@ -2260,17 +2258,17 @@ In addition to the shared salt and ACDC template, the Issuer also provides its s
 
 ## Bulk-Issued Private ACDCs
 
-The purpose of bulk issuance is to enable the Issuee to use unique ACDC more efficiently SAIDs to isolate and minimize correlation across different usage contexts of essentially the same ACDC while allowing public commitments to the ACDC SAIDs. A private ACDC may be issued in bulk as a set. In its basic form, the only difference between each ACDC is the top-level SAID, *d*, and UUID, *u* field values. To elaborate, bulk issuance enables the use of un-correlatable copies while minimizing the associated data transfer and storage requirements. Essentially each copy (member) of a bulk issued ACDC set shares a template that both the Issuer and Issuee use to generate a given ACDC in that set without requiring that the Issuer and Issuee exchange and store a unique copy of each member of the set independently. This minimizes the data transfer and storage requirements for both the Issuer and the Issuee.
+The purpose of bulk issuance is to enable the Issuee to more efficiently use ACDCs with unique SAIDs to isolate and minimize correlation across different usage contexts. Each member of a set of bulk-issued ACDCs is essentially the same ACDC but with a unique SAID. This enables public commitments to each of the unqiue ACDC SAIDs without correlating between them. A private ACDC may be effectively issued in bulk as a set. In its basic form, the only difference between each ACDC is the top-level SAID, *d*, and UUID, *u* field values. To elaborate, bulk issuance enables the use of un-correlatable copies while minimizing the associated data transfer and storage requirements involved in the issuance. Essentially each copy (member) of a bulk issued ACDC set shares a template that both the Issuer and Issuee use to generate on-the-fly a given ACDC in that set without requiring that the Issuer and Issuee exchange and store a unique copy of each member of the set independently. This minimizes the data transfer and storage requirements for both the Issuer and the Issuee. The Issuer is only required to provide a single signature for the bulk issued aggregate value *B* defined below. The same signature may be used to provide proof of issuance of any member of the bulk issued set. The signature on *B* and *B* itself are points of correlation but these need only be disclosed after contractually protected disclosure is in place, i.e no permissioned correlation. Thus correlation requires a colluding second party who enagages in unpermissioned correlation.
 
-An ACDC provenance chain is connected via references to the SAIDs given by the top-level SAID, `d`, fields of the ACDCs in that chain.  A given ACDC thereby makes commitments to other ACDCs. Expressed another way, an ACDC may be a node in a directed graph of ACDCs. Each directed edge in that graph emanating from one ACDC includes a reference to the SAID of some other connected ACDC. These edges provide points of correlation to an ACDC via their SAID reference. Private bulk issued ACDCs enable the Issuee to control better the correlatability of presentations using different presentation strategies.
+An ACDC provenance chain is connected via references to the SAIDs given by the top-level SAID, `d`, fields of the ACDCs in that chain.  A given ACDC thereby makes commitments to other ACDCs. Expressed another way, an ACDC may be a node in a directed graph of ACDCs. Each directed edge in that graph emanating from one ACDC includes a reference to the SAID of some other connected ACDC. These edges provide points of correlation to an ACDC via their SAID reference. Private bulk issued ACDCs enable the Issuee to better control the correlatability of presentations using different presentation strategies.
 
 For example, the Issuee could use one copy of a bulk-issued private ACDC per presentation even to the same verifier. This strategy would consume the most copies. It is essentially a one-time-use ACDC strategy. Alternatively, the Issuee could use the same copy for all presentations to the same verifier and thereby only permit the verifier to correlate between presentations it received directly but not between other verifiers. This limits the consumption to one copy per verifier. In yet another alternative, the Issuee could use one copy for all presentations in a given context with a group of verifiers, thereby only permitting correlation among that group.
 
-In this context, we are talking about permissioned correlation. Any verifier that has received a complete presentation of a private ACDC has access to all the fields disclosed by the presentation but the terms of the chain-link confidentiality agreement may forbid sharing those field values outside a given context. Thus an Issuee may use a combination of bulk issued ACDCs with chain-link confidentiality to control permissioned correlation of the contents of an ACDC while allowing the SAID of the ACDC to be more public. The SAID of a private ACDC does not expose the ACDC contents to an un-permissioned third party. Unique SAIDs belonging to bulk issued ACDCs prevent third parties from making a provable correlation between ACDCs via their SAIDs in spite of those SAIDs being public. This does not stop malicious verifiers (as second parties) from colluding and correlating against the disclosed fields but it does limit provable correlation to the information disclosed to a given group of malicious colluding verifiers. To restate unique SAIDs per copy of a set of private bulk issued ACDC prevent un-permissioned third parties from making provable correlations in spite of those SAIDs being public unless they collude with malicious verifiers (second parties).
+In this context, we are talking about permissioned correlation. Any verifier that has received a complete presentation of a private ACDC has access to all the fields disclosed by the presentation but the terms of the chain-link confidentiality agreement may forbid sharing those field values outside a given context. Thus an Issuee may use a combination of bulk issued ACDCs with chain-link confidentiality to control permissioned correlation of the contents of an ACDC while allowing the SAID of the ACDC to be more public. The SAID of a private ACDC does not expose the ACDC contents to an un-permissioned third party. Unique SAIDs belonging to bulk issued ACDCs prevent third parties from making a provable correlation between ACDCs via their SAIDs in spite of those SAIDs being public. This does not stop malicious verifiers (as second parties) from colluding and correlating against the disclosed fields but it does limit provable correlation to the information disclosed to a given group of malicious colluding verifiers. To restate unique SAIDs per copy of a set of private bulk issued ACDC prevent un-permissioned third parties from making provable correlations, in spite of those SAIDs being public, unless they collude with malicious verifiers (second parties).
 
-In some applications, chain-link-confidentiality is insufficient to deter un-permissioned correlation. Some verifiers may be malicious with sufficient malicious incentives to overcome whatever counter incentives the terms of the contractual chain-link confidentiality may impose. In these cases, more aggressive technological anti-correlation mechanisms such as bulk issued ACDCs may be useful. To elaborate, in spite of the fact that chain-link confidentiality terms of use may forbid such malicious correlation, making such correlation more difficult technically may provide better protection than chain-link confidentiality alone [[41]].
+In some applications, chain-link-confidentiality is insufficient to deter un-permissioned correlation. Some verifiers may be malicious with sufficient malicious incentives to overcome whatever counter incentives the terms of the contractual chain-link confidentiality may impose. In these cases, more aggressive technological anti-correlation mechanisms such as bulk issued ACDCs may be useful. To elaborate, in spite of the fact that chain-link confidentiality terms of use may forbid such malicious correlation, making such correlation more difficult technically may provide better protection than chain-link confidentiality alone {{CLC}}.
 
-It is important to note that any group of colluding malicious verifiers may always make a statistical correlation between presentations despite technical barriers to cryptographically provable correlation. In general, there is no cryptographic mechanism that precludes statistical correlation among a set of colluding verifiers because they may make cryptographically unverifiable or unprovable assertions about information presented to them that may be proven as likely true using merely statistical correlation techniques.
+It is important to note that any group of colluding malicious verifiers may always make a statistical correlation between presentations despite technical barriers to cryptographically provable correlation. We call this contextual linkability. In general, there is no cryptographic mechanism that precludes statistical correlation among a set of colluding verifiers because they may make cryptographically unverifiable or unprovable assertions about information presented to them that may be proven as likely true using merely statistical correlation techniques. Linkability due the context of the disclosure itself may defeat any unlinkability guarantees of a cryptographic technique. Thus without contractually protected disclosure, contextual linkability in spite of cryptographic unlinkability may make the complexity of using advanced cryptographic mechanisms to provide unlinkability an exercise in diminishing returns.
 
 
 ## Basic Bulk Issuance
@@ -2300,7 +2298,7 @@ Suppose there are *M* ACDCs in a bulk issued set. Using zero-based indexing for 
 Let *c<sub>k</sub> = v<sub>k</sub> + d<sub>k</sub>*,  denote the blinding concatenation where *+* is the infix concatenation operator.
 Then the blinded digest, *b<sub>k</sub>*, is given by,
 *b<sub>k</sub> = H(c<sub>k</sub>) = H(v<sub>k</sub> + d<sub>k</sub>)*,
-where *H* is the digest operator.
+where *H* is the digest operator. Blinding is performed by a digest of the concatenation of the binding factor, *v<sub>k</sub>*,  with the SAID, *d<sub>k</sub>* instead of XORing the two. An XOR of two elements whose bit count is much greater than 2 is not vulnerable to a birthday table attack  {{BDay}}{{DRB}}{{BDC}}. In order to XOR, however, the two must be of the same length. Different SAIDs MAY be of different lengths, however, and MAY therefore require different length blinding factors. Because concatenation is length independent it is simpler to implement.
 
 The aggregation of blinded digests, *B*, is given by,
 *B = H(C(b<sub>k</sub> for all k in \{0, ..., M-1\}))*,
@@ -2335,7 +2333,9 @@ A *Discloser* may make a basic provable non-repudiable selective disclosure of a
 * The ACDC in compact form (at index *k*) where *d<sub>k</sub>* as the value of its top-level SAID, `d`, field.
 * The blinding factor, *v<sub>k</sub>* from which *b<sub>k</sub> = H(v<sub>k</sub> + d<sub>k</sub>)* may be computed.
 * The list of all blinded SAIDs, *\[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>\]* that includes *b<sub>k</sub>*.
-* The signature(s), *s<sub>k</sub>*, of the Issuee on the ACDC's top level SAID, *d<sub>k</sub>*, field.
+* The signature, *s<sub>B</sub>*, of the Issuee on the aggregate, *B*.
+
+Thus only one signature must be generated and provided by the Issuer to the Disclosee as recipient of the Issuance that the initial Disclosee when it becomes a later Discloser needs to provide to a subsequent Disclosee. The disadvantage of this approach is that the signature *s<sub>B</sub>*, of the Issuee on the aggregate, *B*, is a point of correlation, but not any more so than *B* itself. To remove *B* as a point of correlation requires using *independent TEL bulk-issued ACDCs* described in the section so named below.
 
 A *Disclosee* may then verify the disclosure by:
 
@@ -2344,15 +2344,15 @@ A *Disclosee* may then verify the disclosure by:
 * confirming that the computed *b<sub>k</sub>* appears in the provided list *\[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>\]*.
 * computing the aggregate *B* from the provided list *\[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>\]*..
 * confirming the presence of an issuance seal digest in the Issuer's KEL that makes a commitment to the aggregate, *B*, either directly or indirectly through a TEL registry entry.
-* verifying the provided signature(s), *s<sub>k</sub>*, of the Issuee on the provided top level SAID, *d<sub>k</sub>*, field.
+* verifying the provided signature, *s<sub>B</sub>*, of the Issuee on the computed aggregate *B*.
 
-The last 3 steps that culminate with verifying the signature(s) require determining the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols.
+The last 3 steps that culminate with verifying the signature require determining the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols.
 
-The requirement of an anchored issuance proof seal means that the forger Must first successfully publish in the KEL of the issuer an inclusion proof digest seal bound to a set of forged bulk issued ACDCs. This makes any forgery attempt detectable. To elaborate, the only way to successfully publish such a seal is in a subsequent interaction event in a KEL that has not yet changed its key state via a rotation event. Whereas any KEL that has changed its key state via a rotation must be forked before the rotation. This makes the forgery attempt either both detectable and recoverable via rotation in any KEL that has not yet changed its key state or detectable as duplicity in any KEL that has changed its key state. In any event, the issuance proof seal makes any later attempt at forgery using compromised keys detectable.
+The requirement of an anchored issuance proof seal of the aggregate *B* means that the forger MUST first successfully publish in the KEL of the issuer an inclusion proof digest seal bound to a set of forged bulk issued ACDCs. This makes any forgery attempt detectable. To elaborate, the only way to successfully publish such a seal is in a subsequent interaction event in a KEL that has not yet changed its key state via a rotation event. Whereas any KEL that has changed its key state via a rotation must be forked before the rotation. This makes the forgery attempt either both detectable and recoverable via rotation in any KEL that has not yet changed its key state or detectable as duplicity in any KEL that has changed its key state. In any event, the issuance proof seal makes any later attempt at forgery using compromised keys detectable.
 
 ### Inclusion Proof via Merkle Tree
 
-The inclusion proof via aggregated list may be somewhat verbose when there are a very large number of bulk issued ACDCs in a given set. A more efficient approach is to create a Merkle tree of the blinded SAID digests, *b<sub>k</sub>* and set the aggregate *B* value as the Merkle tree root {{Mrkl}}.
+The inclusion proof via aggregated list may be somewhat verbose when there are a very large number of bulk issued ACDCs in a given set. A more efficient approach is to create a Merkle tree of the blinded SAID digests, *b<sub>k</sub>* and set the aggregate *B* value as the Merkle tree root digest {{Mrkl}}.
 
 The Merkle tree needs to have appropriate second-pre-image attack protection of interior branch nodes {{TwoPI}}{{MTSec}}. The discloser then only needs to provide a subset of digests from the Merkle tree to prove that a given digest, *b<sub>k</sub>* contributed to the Merkle tree root digest. For a small numbered bulk issued set of ACDCs, the added complexity of the Merkle tree approach may not be worth the savings in verbosity.
 
@@ -2367,11 +2367,11 @@ One solution to this problem is for the *Issuee* to use a unique AID for the cop
 
 ## Independent TEL Bulk-Issued ACDCs
 
-Recall that the purpose of using the aggregate *B* for a bulk-issued set from which the TEL identifier is derived is to enable a set of bulk issued ACDCs to share a single public TEL that provides dynamic revocation but without enabling un-permissioned correlation to any other members of the bulk set by virtue of the shared TEL. This enables the issuance/revocation/transfer state of all copies of a set of bulk-issued ACDCs to be provided by a single TEL which minimizes the storage and compute requirements on the TEL registry while providing selective disclosure to prevent un-permissioned correlation via the public TEL.
+Recall that the purpose of using the aggregate *B* for a bulk-issued set from which the TEL identifier is derived is to enable a set of bulk issued ACDCs to share a single public TEL and/or a single anchoring seal in the Issuer's KEL without enabling un-permissioned correlation to any other members of the bulk set by virtue of the shared aggregate *B* used for either the TEL or anchoring seal in the KEL. When using a TEL this enables the issuance/revocation/transfer state of all copies of a set of bulk-issued ACDCs to be provided by a single TEL which minimizes the storage and compute requirements on the TEL registry while providing selective disclosure to prevent un-permissioned correlation via the public TEL. When using an anchoring seal, this enables one signature to provide proof of inclusion in the bulk issued aggregate *B*.
 
-However, in some applications where chain-link confidentiality does not sufficiently deter malicious provable correlation by Disclosees (Second-Party verifiers), an Issuee may benefit from using ACDC with independent TELs but that are still bulk-issued.
+However, in some applications where chain-link confidentiality does not sufficiently deter malicious provable correlation by Disclosees (Second-Party verifiers), an Issuee may benefit from using ACDC with independent TELs or independent aggregates *B* but that are still bulk-issued.
 
-In this case, the bulk issuance process must be augmented so that each uniquely identified copy of the ACDC gets its own TEL entry in the registry. Each Disclosee (verifier) of a full presentation/disclosure of a given copy of the ACDC only receives proof of one uniquely identified TEL and can NOT provably correlate the TEL state of one presentation to any other presentation because the ACDC SAID, the TEL identifier, and the signature of the issuer on the SAID of a given copy will all be different for each copy. There is therefore no point of provable correlation permissioned or otherwise.
+In this case, the bulk issuance process must be augmented so that each uniquely identified copy of the ACDC gets its own TEL entry (or equivalently its own aggregate *B*) in the registry. Each Disclosee (verifier) of a full presentation/disclosure of a given copy of the ACDC only receives proof of one uniquely identified TEL and can NOT provably correlate the TEL state of one presentation to any other presentation because the ACDC SAID, the TEL identifier, and the signature of the issuer on each aggregate *B* will be different for each copy. There is therefore no point of provable correlation permissioned or otherwise. One could for example modulate this apprach by having a set of smaller bulk issued sets that are more contextualized than one large bulk issued set.
 
 The obvious drawbacks of this approach (independent unique TELs for each private ACDC) are that the size of the registry database increases as a multiple of the number of copies of each bulk-issued ACDC and every time an Issuer must change the TEL state of a given set of copies it must change the state of multiple TELs in the registry. This imposes both a storage and computation burden on the registry. The primary advantage of this approach, however, is that each copy of a private ACDC has a uniquely identified TEL. This minimizes un-permissioned Third-Party exploitation via provable correlation of TEL identifiers even with colluding Second-Party verifiers. They are limited to statistical correlation techniques.
 
