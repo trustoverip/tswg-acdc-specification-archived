@@ -171,16 +171,17 @@ Table of Contents
        13.5.1.  Inclusion Proof via Merkle Tree
        13.5.2.  Bulk Issuance of Private ACDCs with Unique Issuee AIDs
      13.6.  Independent TEL Bulk-Issued ACDCs
-   14. Appendix: Performance and Scalability
-   15. Appendix: Cryptographic Strength and Security
-     15.1.  Cryptographic Strength
-     15.2.  Information Theoretic Security and Perfect Security
-   16. Conventions and Definitions
-   17. Security Considerations
-   18. IANA Considerations
-   19. References
-     19.1.  Normative References
-     19.2.  Informative References
+   14. Extensibility
+   15. Appendix: Performance and Scalability
+   16. Appendix: Cryptographic Strength and Security
+     16.1.  Cryptographic Strength
+     16.2.  Information Theoretic Security and Perfect Security
+   17. Conventions and Definitions
+   18. Security Considerations
+   19. IANA Considerations
+   20. References
+     20.1.  Normative References
+     20.2.  Informative References
    Acknowledgments
    Author's Address
 
@@ -3950,7 +3951,11 @@ Table of Contents
    collusion.  Therefore completely independent bulk-issued ACDCs may be
    used.
 
-14.  Appendix: Performance and Scalability
+14.  Extensibility
+
+   ToDo append-to-extend
+
+15.  Appendix: Performance and Scalability
 
    The compact disclosure and distribute property graph fragment
    mechanisms in ACDC can be leveraged to enable high performance at
@@ -3981,9 +3986,9 @@ Table of Contents
    contracts, not merely for contracts, but for all data authenticated,
    authorized, referenced, or conveyed by ACDCs.
 
-15.  Appendix: Cryptographic Strength and Security
+16.  Appendix: Cryptographic Strength and Security
 
-15.1.  Cryptographic Strength
+16.1.  Cryptographic Strength
 
    For crypto-systems with _perfect-security_, the critical design
    parameter is the number of bits of entropy needed to resist any
@@ -4038,7 +4043,7 @@ Table of Contents
    with perfect security and 128 bits of cryptographic strength is
    computationally infeasible to break via brute force attack.
 
-15.2.  Information Theoretic Security and Perfect Security
+16.2.  Information Theoretic Security and Perfect Security
 
    The highest level of cryptographic security with respect to a
    cryptographic secret (seed, salt, or private key) is called
@@ -4056,7 +4061,7 @@ Table of Contents
    of secret sharing [SShr] that uses the same technique as a _one-time-
    pad_.
 
-16.  Conventions and Definitions
+17.  Conventions and Definitions
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
@@ -4068,7 +4073,7 @@ Table of Contents
       deterministically generated out of the content, digest of the
       content
 
-17.  Security Considerations
+18.  Security Considerations
 
    Refer to the body of the specification.  Security considerations are
    included in the context of each section.  The ACDC specification is
@@ -4076,13 +4081,13 @@ Table of Contents
    discussions of the security considerations in the context in which
    those discussions are most understandable and relevant.
 
-18.  IANA Considerations
+19.  IANA Considerations
 
    This document has no IANA actions.
 
-19.  References
+20.  References
 
-19.1.  Normative References
+20.1.  Normative References
 
    [ACDC_ID]  Smith, S., "IETF ACDC (Authentic Chained Data Containers)
               Internet Draft", 2022,
@@ -4162,7 +4167,7 @@ Table of Contents
               Internet Draft", 2022,
               <https://github.com/WebOfTrust/ietf-said>.
 
-19.2.  Informative References
+20.2.  Informative References
 
    [Abuse]    "Alice Attempts to Abuse a Verifiable Credential", n.d.,
               <https://github.com/WebOfTrustInfo/rwot9-
