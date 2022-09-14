@@ -3909,10 +3909,10 @@ Using the aggregate, <em>B</em> of blinded ACDC saids as the TEL registry entry 
 </li>
           <li class="normal" id="section-13.5-25.3">The list of all blinded SAIDs, <em>[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>]</em> that includes <em>b<sub>k</sub></em>.<a href="#section-13.5-25.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-13.5-25.4">The signature, <em>s<sub>B</sub></em>, of the Issuee on the aggregate, <em>B</em>.<a href="#section-13.5-25.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-13.5-25.4">A reference to the anchoring seal in the Issuer's KEL or TEL that references the aggregate <em>B</em>. The event that references the seal or the TEL event that references <em>B</em> must be signed by the issuer so the signature on either event itself is sufficient to prove authorized issuance.<a href="#section-13.5-25.4" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-13.5-26">Thus only one signature must be generated and provided by the Issuer to the Disclosee as recipient of the Issuance that the initial Disclosee when it becomes a later Discloser needs to provide to a subsequent Disclosee. The disadvantage of this approach is that the signature <em>s<sub>B</sub></em>, of the Issuee on the aggregate, <em>B</em>, is a point of correlation, but not any more so than <em>B</em> itself. To remove <em>B</em> as a point of correlation requires using <em>independent TEL bulk-issued ACDCs</em> described in the section so named below.<a href="#section-13.5-26" class="pilcrow">¶</a></p>
+<p id="section-13.5-26">The aggregate <em>B</em> is a point of unpermissioned correlation but not permissioned correlation. To remove <em>B</em> as a point of unpermissioned correlation requires using <em>independent TEL bulk-issued ACDCs</em> described in the section so named below.<a href="#section-13.5-26" class="pilcrow">¶</a></p>
 <p id="section-13.5-27">A <em>Disclosee</em> may then verify the disclosure by:<a href="#section-13.5-27" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-13.5-28.1">computing <em>d<sub>j</sub></em> on the disclosed compact ACDC.<a href="#section-13.5-28.1" class="pilcrow">¶</a>
@@ -3923,12 +3923,10 @@ Using the aggregate, <em>B</em> of blinded ACDC saids as the TEL registry entry 
 </li>
           <li class="normal" id="section-13.5-28.4">computing the aggregate <em>B</em> from the provided list <em>[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>]</em>..<a href="#section-13.5-28.4" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-13.5-28.5">confirming the presence of an issuance seal digest in the Issuer's KEL that makes a commitment to the aggregate, <em>B</em>, either directly or indirectly through a TEL registry entry.<a href="#section-13.5-28.5" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-13.5-28.6">verifying the provided signature, <em>s<sub>B</sub></em>, of the Issuee on the computed aggregate <em>B</em>.<a href="#section-13.5-28.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-13.5-28.5">confirming the presence of an issuance seal digest in the Issuer's KEL that makes a commitment to the aggregate, <em>B</em>, either directly or indirectly through a TEL registry entry. This provides proof of authorized issuance.<a href="#section-13.5-28.5" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-13.5-29">The last 3 steps that culminate with verifying the signature require determining the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols.<a href="#section-13.5-29" class="pilcrow">¶</a></p>
+<p id="section-13.5-29">The last 3 steps that culminate with verifying the anchoring seal also require verifying the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols.<a href="#section-13.5-29" class="pilcrow">¶</a></p>
 <p id="section-13.5-30">The requirement of an anchored issuance proof seal of the aggregate <em>B</em> means that the forger <span class="bcp14">MUST</span> first successfully publish in the KEL of the issuer an inclusion proof digest seal bound to a set of forged bulk issued ACDCs. This makes any forgery attempt detectable. To elaborate, the only way to successfully publish such a seal is in a subsequent interaction event in a KEL that has not yet changed its key state via a rotation event. Whereas any KEL that has changed its key state via a rotation must be forked before the rotation. This makes the forgery attempt either both detectable and recoverable via rotation in any KEL that has not yet changed its key state or detectable as duplicity in any KEL that has changed its key state. In any event, the issuance proof seal makes any later attempt at forgery using compromised keys detectable.<a href="#section-13.5-30" class="pilcrow">¶</a></p>
 <div id="inclusion-proof-via-merkle-tree">
 <section id="section-13.5.1">

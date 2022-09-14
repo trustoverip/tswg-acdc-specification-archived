@@ -3793,16 +3793,16 @@ Table of Contents
    *  The list of all blinded SAIDs, _[b_0, b_1, ...., b_(M-1)]_ that
       includes _b_k_.
 
-   *  The signature, _s_B_, of the Issuee on the aggregate, _B_.
+   *  A reference to the anchoring seal in the Issuer's KEL or TEL that
+      references the aggregate _B_. The event that references the seal
+      or the TEL event that references _B_ must be signed by the issuer
+      so the signature on either event itself is sufficient to prove
+      authorized issuance.
 
-   Thus only one signature must be generated and provided by the Issuer
-   to the Disclosee as recipient of the Issuance that the initial
-   Disclosee when it becomes a later Discloser needs to provide to a
-   subsequent Disclosee.  The disadvantage of this approach is that the
-   signature _s_B_, of the Issuee on the aggregate, _B_, is a point of
-   correlation, but not any more so than _B_ itself.  To remove _B_ as a
-   point of correlation requires using _independent TEL bulk-issued
-   ACDCs_ described in the section so named below.
+   The aggregate _B_ is a point of unpermissioned correlation but not
+   permissioned correlation.  To remove _B_ as a point of unpermissioned
+   correlation requires using _independent TEL bulk-issued ACDCs_
+   described in the section so named below.
 
    A _Disclosee_ may then verify the disclosure by:
 
@@ -3818,15 +3818,13 @@ Table of Contents
 
    *  confirming the presence of an issuance seal digest in the Issuer's
       KEL that makes a commitment to the aggregate, _B_, either directly
-      or indirectly through a TEL registry entry.
+      or indirectly through a TEL registry entry.  This provides proof
+      of authorized issuance.
 
-   *  verifying the provided signature, _s_B_, of the Issuee on the
-      computed aggregate _B_.
-
-   The last 3 steps that culminate with verifying the signature require
-   determining the key state of the Issuer at the time of issuance, this
-   may require additional verification steps as per the KERI, PTEL, and
-   CESR-Proof protocols.
+   The last 3 steps that culminate with verifying the anchoring seal
+   also require verifying the key state of the Issuer at the time of
+   issuance, this may require additional verification steps as per the
+   KERI, PTEL, and CESR-Proof protocols.
 
    The requirement of an anchored issuance proof seal of the aggregate
    _B_ means that the forger MUST first successfully publish in the KEL
