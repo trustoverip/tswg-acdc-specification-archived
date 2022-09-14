@@ -2333,9 +2333,9 @@ A *Discloser* may make a basic provable non-repudiable selective disclosure of a
 * The ACDC in compact form (at index *k*) where *d<sub>k</sub>* as the value of its top-level SAID, `d`, field.
 * The blinding factor, *v<sub>k</sub>* from which *b<sub>k</sub> = H(v<sub>k</sub> + d<sub>k</sub>)* may be computed.
 * The list of all blinded SAIDs, *\[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>\]* that includes *b<sub>k</sub>*.
-* The signature, *s<sub>B</sub>*, of the Issuee on the aggregate, *B*.
+* A reference to the anchoring seal in the Issuer's KEL or TEL that references the aggregate *B*. The event that references the seal or the TEL event that references *B* must be signed by the issuer so the signature on either event itself is sufficient to prove authorized issuance.
 
-Thus only one signature must be generated and provided by the Issuer to the Disclosee as recipient of the Issuance that the initial Disclosee when it becomes a later Discloser needs to provide to a subsequent Disclosee. The disadvantage of this approach is that the signature *s<sub>B</sub>*, of the Issuee on the aggregate, *B*, is a point of correlation, but not any more so than *B* itself. To remove *B* as a point of correlation requires using *independent TEL bulk-issued ACDCs* described in the section so named below.
+The aggregate *B* is a point of unpermissioned correlation but not permissioned correlation. To remove *B* as a point of unpermissioned correlation requires using *independent TEL bulk-issued ACDCs* described in the section so named below.
 
 A *Disclosee* may then verify the disclosure by:
 
@@ -2343,10 +2343,9 @@ A *Disclosee* may then verify the disclosure by:
 * computing *b<sub>k</sub> = H(v<sub>k</sub> + d<sub>k</sub>)*
 * confirming that the computed *b<sub>k</sub>* appears in the provided list *\[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>\]*.
 * computing the aggregate *B* from the provided list *\[b<sub>0</sub>, b<sub>1</sub>, ...., b<sub>M-1</sub>\]*..
-* confirming the presence of an issuance seal digest in the Issuer's KEL that makes a commitment to the aggregate, *B*, either directly or indirectly through a TEL registry entry.
-* verifying the provided signature, *s<sub>B</sub>*, of the Issuee on the computed aggregate *B*.
+* confirming the presence of an issuance seal digest in the Issuer's KEL that makes a commitment to the aggregate, *B*, either directly or indirectly through a TEL registry entry. This provides proof of authorized issuance.
 
-The last 3 steps that culminate with verifying the signature require determining the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols.
+The last 3 steps that culminate with verifying the anchoring seal also require verifying the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols.
 
 The requirement of an anchored issuance proof seal of the aggregate *B* means that the forger MUST first successfully publish in the KEL of the issuer an inclusion proof digest seal bound to a set of forged bulk issued ACDCs. This makes any forgery attempt detectable. To elaborate, the only way to successfully publish such a seal is in a subsequent interaction event in a KEL that has not yet changed its key state via a rotation event. Whereas any KEL that has changed its key state via a rotation must be forked before the rotation. This makes the forgery attempt either both detectable and recoverable via rotation in any KEL that has not yet changed its key state or detectable as duplicity in any KEL that has changed its key state. In any event, the issuance proof seal makes any later attempt at forgery using compromised keys detectable.
 
