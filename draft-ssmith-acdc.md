@@ -437,21 +437,39 @@ An important property of high-strength cryptographic digests is that a verifiabl
 
 An ACDC may be abstractly modeled as a nested `key: value` mapping. To avoid confusion with the cryptographic use of the term *key* we instead use the term *field* to refer to a mapping pair and the terms *field label* and *field value* for each member of a pair. These pairs can be represented by two tuples e.g `(label, value)`. We qualify this terminology when necessary by using the term *field map* to reference such a mapping. *Field maps* may be nested where a given *field value* is itself a reference to another *field map*.  We call this nested set of fields a *nested field map* or simply a *nested map* for short. A *field* may be represented by a framing code or block delimited serialization.  In a block delimited serialization, such as JSON, each *field map* is represented by an object block with block delimiters such as `{}` {{RFC8259}}{{JSON}}{{RFC4627}}. Given this equivalence, we may also use the term *block* or *nested block* as synonymous with *field map* or *nested field map*. In many programming languages, a field map is implemented as a dictionary or hash table in order to enable performant asynchronous lookup of a *field value* from its *field label*. Reproducible serialization of *field maps* requires a canonical ordering of those fields. One such canonical ordering is called insertion or field creation order. A list of `(field, value)` pairs provides an ordered representation of any field map. Most programming languages now support ordered dictionaries or hash tables that provide reproducible iteration over a list of ordered field `(label, value)` pairs where the ordering is the insertion or field creation order. This enables reproducible round trip serialization/deserialization of *field maps*.  ACDCs depend on insertion ordered field maps for canonical serialization/deserialization. ACDCs support multiple serialization types, namely JSON, CBOR, MGPK, and CESR but for the sake of simplicity, we will only use JSON herein for examples {{RFC8259}}{{JSON}}. The basic set of normative field labels in ACDC field maps is defined in the following table.
 
-## Field Label Table
+## Field Label Tables
+
+### Top-Level Fields
+These are reserved field labels at the top level of an ACDC.
 
 | Label | Title | Description |
 |:-:|:--|:--|
 |`v`| Version String| Regexable format: ACDCvvSSSShhhhhh_ that provides protocol type, version, serialization type, size, and terminator. |
 |`d`| Digest (SAID) | Self-referential fully qualified cryptographic digest of enclosing map. |
 |`u`| UUID | Random Universally Unique IDentifier as fully qualified high entropy pseudo-random string, a salty nonce. |
-|`i`| Identifier (AID)| Semantics are determined by the context of its enclosing map. |
-|`ri`| Registry Identifier (AID) | Issuance and/or revocation, transfer, or retraction registry for ACDC. |
+|`i`| Issuer Identifier (AID)| Autonomic IDentifier whose Control authority is established via KERI verifiable key state. |
+|`ri`| Registry Identifier | Issuance and/or revocation, transfer, or retraction registry for ACDC derived from Issuer Identifier. |
 |`s`| Schema| Either the SAID of a JSON Schema block or the block itself. |
 |`a`| Attribute| Either the SAID of a block of attributes or the block itself. |
 |`A`| Attribute Aggregate| Either the Aggregate of a selectively disclosable block of attributes or the block itself. |
 |`e`| Edge| Either the SAID of a block of edges or the block itself.|
 |`r`| Rule | Either the SAID a block of rules or the block itself. |
 |`n`| Node| SAID of another ACDC as the terminating point of a directed edge that connects the encapsulating ACDC node to the specified ACDC node as a fragment of a distributed property graph (PG).|
+|`o`| Operator| Either unary operator on edge or m-ary operator on edge-group in edge section. Enables expressing of edge logic on edge subgraph.|
+|`w`| Weight| Edge weight property that enables default property for directed weighted edges and operators on directed weighted edges.|
+|`l`| Legal Language| Text of Ricardian contract clause.|
+
+
+### Other Fields
+
+These may appear at other levels besides the top-level of an ACDC but are nonetheless reserved.
+
+| Label | Title | Description |
+|:-:|:--|:--|
+|`d`| Digest (SAID) | Self-referential fully qualified cryptographic digest of enclosing map. |
+|`u`| UUID | Random Universally Unique IDentifier as fully qualified high entropy pseudo-random string, a salty nonce. |
+|`i`| Identifier (AID)| Context dependent AID as determined by its enclosing map such as Issuee Identifier. |
+|`n`| Node| SAID of another ACDC as the terminating point (vertex) of a directed edge that connects the encapsulating ACDC node to the specified ACDC node as a fragment of a distributed property graph (PG).|
 |`o`| Operator| Either unary operator on edge or m-ary operator on edge-group in edge section. Enables expressing of edge logic on edge subgraph.|
 |`w`| Weight| Edge weight property that enables default property for directed weighted edges and operators on directed weighted edges.|
 |`l`| Legal Language| Text of Ricardian contract clause.|
@@ -484,12 +502,12 @@ The purpose of the UUID, `u`, field in any block is to provide sufficient entrop
 
 A UUID, `u` field may optionally appear in any block (field map) at any level of an ACDC. Whenever a block in an ACDC includes a UUID, `u`, field then its associated SAID, `d`, field makes a blinded commitment to the contents of that block. The UUID, `u`, field is the blinding factor. This makes that block securely partially disclosable or even selectively disclosable notwithstanding disclosure of the associated schema of the block. The block contents can only be discovered given disclosure of the included UUID field. Likewise when a UUID, `u`, field appears at the top level of an ACDC then that top-level SAID, `d`, field makes a blinded commitment to the contents of the whole ACDC itself. Thus the whole ACDC, not merely some block within the ACDC, may be disclosed in a privacy-preserving (correlation minimizing) manner.
 
-## AID (Autonomic IDentifier) Fields
+## AID (Autonomic IDentifier) and Derived IDentifier Fields
 
-Some fields, such as the `i` and `ri` fields, MUST each have an AID (Autonomic IDentifier) as its value. An AID is a fully qualified Self-Certifying IDentifier (SCID) that follows the KERI protocol {{KERI}}{{KERI_ID}}. A SCID is derived from one or more `(public, private)` key pairs using asymmetric or public-key cryptography to create verifiable digital signatures {{DSig}}. Each AID has a set of one or more controllers who each control a private key. By virtue of their private key(s), the set of controllers may make statements on behalf of the associated AID that is backed by uniquely verifiable commitments via digital signatures on those statements. Any entity may then verify those signatures using the associated set of public keys. No shared or trusted relationship between the controllers and verifiers is required. The verifiable key state for AIDs is established with the KERI protocol {{KERI}}{{KERI_ID}}. The use of AIDS enables ACDCs to be used in a portable but securely attributable, fully decentralized manner in an ecosystem that spans trust domains.
+Some fields, such as the `i`, Issuer identifier field  MUST each have an AID (Autonomic IDentifier) as its value. An AID is a fully qualified Self-Certifying IDentifier (SCID) that follows the KERI protocol {{KERI}}{{KERI_ID}}. A related type of identifier field is the `ri`, registry identifier field. The `ri` field is cryptographically derived from the Issuer identifier field value so has securely attributable control authority via the AID from which it is derived.  A SCID is derived from one or more `(public, private)` key pairs using asymmetric or public-key cryptography to create verifiable digital signatures {{DSig}}. Each AID has a set of one or more controllers who each control a private key. By virtue of their private key(s), the set of controllers may make statements on behalf of the associated AID that is backed by uniquely verifiable commitments via digital signatures on those statements. Any entity may then verify those signatures using the associated set of public keys. No shared or trusted relationship between the controllers and verifiers is required. The verifiable key state for AIDs is established with the KERI protocol {{KERI}}{{KERI_ID}}. The use of AIDS enables ACDCs to be used in a portable but securely attributable, fully decentralized manner in an ecosystem that spans trust domains.
 
 ### Namespaced AIDs
-Because KERI is agnostic about the namespace for any particular AID, different namespace standards may be used to express KERI AIDs within AID fields in an ACDC. The examples below use the W3C DID namespace specification with the `did:keri` method {{DIDK_ID}}. But the examples would have the same validity from a KERI perspective if some other supported namespace was used or no namespace was used at all. The latter case consists of a bare KERI AID (identifier prefix).
+Because KERI is agnostic about the namespace for any particular AID, different namespace standards may be used to express KERI AIDs or identifiers derived from AIDs as the value of thes AID related fields in an ACDC. The examples below use the W3C DID namespace specification with the `did:keri` method {{DIDK_ID}}. But the examples would have the same validity from a KERI perspective if some other supported namespace was used or no namespace was used at all. The latter case consists of a bare KERI AID (identifier prefix) expressed in CESR format {{CESR_ID}}.
 
 ## Selectively Disclosable Attribute Aggregate Field
 
@@ -768,7 +786,7 @@ The schema for the compact private ACDC example above is provided below.
     },
     "ri":
     {
-      "description": "credential status registry AID",
+      "description": "credential status registry ID",
       "type": "string"
     },
     "s": {
@@ -1752,7 +1770,7 @@ Consider the following disclosure-specific ACDC. The Issuer is the Discloser, th
     },
     "ri":
     {
-      "description": "credential status registry AID",
+      "description": "credential status registry ID",
       "type": "string"
     },
     "s":
