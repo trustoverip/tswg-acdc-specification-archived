@@ -4,8 +4,8 @@
 
 TODO Working Group                                              S. Smith
 Internet-Draft                                             ProSapien LLC
-Intended status: Informational                         14 September 2022
-Expires: 18 March 2023
+Intended status: Informational                         15 September 2022
+Expires: 19 March 2023
 
 
                 Authentic Chained Data Containers (ACDC)
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 March 2023.
+   This Internet-Draft will expire on 19 March 2023.
 
 Copyright Notice
 
@@ -72,12 +72,14 @@ Table of Contents
 
    1.  Introduction
    2.  ACDC Fields
-     2.1.  Field Label Table
+     2.1.  Field Label Tables
+       2.1.1.  Top-Level Fields
+       2.1.2.  Other Fields
      2.2.  Compact Labels
      2.3.  Version String Field
      2.4.  SAID (Self-Addressing IDentifier) Fields
      2.5.  UUID (Universally Unique IDentifier) Fields
-     2.6.  AID (Autonomic IDentifier) Fields
+     2.6.  AID (Autonomic IDentifier) and Derived IDentifier Fields
        2.6.1.  Namespaced AIDs
      2.7.  Selectively Disclosable Attribute Aggregate Field
      2.8.  Graduated Disclosure and Contractually Protected Disclosure
@@ -276,7 +278,11 @@ Table of Contents
    normative field labels in ACDC field maps is defined in the following
    table.
 
-2.1.  Field Label Table
+2.1.  Field Label Tables
+
+2.1.1.  Top-Level Fields
+
+   These are reserved field labels at the top level of an ACDC.
 
      +=======+============+=========================================+
      | Label | Title      | Description                             |
@@ -293,12 +299,13 @@ Table of Contents
      |       |            | fully qualified high entropy pseudo-    |
      |       |            | random string, a salty nonce.           |
      +-------+------------+-----------------------------------------+
-     |   i   | Identifier | Semantics are determined by the context |
-     |       | (AID)      | of its enclosing map.                   |
+     |   i   | Issuer     | Autonomic IDentifier whose Control      |
+     |       | Identifier | authority is established via KERI       |
+     |       | (AID)      | verifiable key state.                   |
      +-------+------------+-----------------------------------------+
      |   ri  | Registry   | Issuance and/or revocation, transfer,   |
-     |       | Identifier | or retraction registry for ACDC.        |
-     |       | (AID)      |                                         |
+     |       | Identifier | or retraction registry for ACDC derived |
+     |       |            | from Issuer Identifier.                 |
      +-------+------------+-----------------------------------------+
      |   s   | Schema     | Either the SAID of a JSON Schema block  |
      |       |            | or the block itself.                    |
@@ -337,6 +344,47 @@ Table of Contents
      +-------+------------+-----------------------------------------+
 
                                  Table 1
+
+2.1.2.  Other Fields
+
+   These may appear at other levels besides the top-level of an ACDC but
+   are nonetheless reserved.
+
+     +=======+============+=========================================+
+     | Label | Title      | Description                             |
+     +=======+============+=========================================+
+     |   d   | Digest     | Self-referential fully qualified        |
+     |       | (SAID)     | cryptographic digest of enclosing map.  |
+     +-------+------------+-----------------------------------------+
+     |   u   | UUID       | Random Universally Unique IDentifier as |
+     |       |            | fully qualified high entropy pseudo-    |
+     |       |            | random string, a salty nonce.           |
+     +-------+------------+-----------------------------------------+
+     |   i   | Identifier | Context dependent AID as determined by  |
+     |       | (AID)      | its enclosing map such as Issuee        |
+     |       |            | Identifier.                             |
+     +-------+------------+-----------------------------------------+
+     |   n   | Node       | SAID of another ACDC as the terminating |
+     |       |            | point (vertex) of a directed edge that  |
+     |       |            | connects the encapsulating ACDC node to |
+     |       |            | the specified ACDC node as a fragment   |
+     |       |            | of a distributed property graph (PG).   |
+     +-------+------------+-----------------------------------------+
+     |   o   | Operator   | Either unary operator on edge or m-ary  |
+     |       |            | operator on edge-group in edge section. |
+     |       |            | Enables expressing of edge logic on     |
+     |       |            | edge subgraph.                          |
+     +-------+------------+-----------------------------------------+
+     |   w   | Weight     | Edge weight property that enables       |
+     |       |            | default property for directed weighted  |
+     |       |            | edges and operators on directed         |
+     |       |            | weighted edges.                         |
+     +-------+------------+-----------------------------------------+
+     |   l   | Legal      | Text of Ricardian contract clause.      |
+     |       | Language   |                                         |
+     +-------+------------+-----------------------------------------+
+
+                                 Table 2
 
 2.2.  Compact Labels
 
@@ -474,34 +522,40 @@ Table of Contents
    may be disclosed in a privacy-preserving (correlation minimizing)
    manner.
 
-2.6.  AID (Autonomic IDentifier) Fields
+2.6.  AID (Autonomic IDentifier) and Derived IDentifier Fields
 
-   Some fields, such as the i and ri fields, MUST each have an AID
-   (Autonomic IDentifier) as its value.  An AID is a fully qualified
+   Some fields, such as the i, Issuer identifier field MUST each have an
+   AID (Autonomic IDentifier) as its value.  An AID is a fully qualified
    Self-Certifying IDentifier (SCID) that follows the KERI protocol
-   [KERI][KERI_ID].  A SCID is derived from one or more (public,
-   private) key pairs using asymmetric or public-key cryptography to
-   create verifiable digital signatures [DSig].  Each AID has a set of
-   one or more controllers who each control a private key.  By virtue of
-   their private key(s), the set of controllers may make statements on
-   behalf of the associated AID that is backed by uniquely verifiable
-   commitments via digital signatures on those statements.  Any entity
-   may then verify those signatures using the associated set of public
-   keys.  No shared or trusted relationship between the controllers and
-   verifiers is required.  The verifiable key state for AIDs is
-   established with the KERI protocol [KERI][KERI_ID].  The use of AIDS
-   enables ACDCs to be used in a portable but securely attributable,
-   fully decentralized manner in an ecosystem that spans trust domains.
+   [KERI][KERI_ID].  A related type of identifier field is the ri,
+   registry identifier field.  The ri field is cryptographically derived
+   from the Issuer identifier field value so has securely attributable
+   control authority via the AID from which it is derived.  A SCID is
+   derived from one or more (public, private) key pairs using asymmetric
+   or public-key cryptography to create verifiable digital signatures
+   [DSig].  Each AID has a set of one or more controllers who each
+   control a private key.  By virtue of their private key(s), the set of
+   controllers may make statements on behalf of the associated AID that
+   is backed by uniquely verifiable commitments via digital signatures
+   on those statements.  Any entity may then verify those signatures
+   using the associated set of public keys.  No shared or trusted
+   relationship between the controllers and verifiers is required.  The
+   verifiable key state for AIDs is established with the KERI protocol
+   [KERI][KERI_ID].  The use of AIDS enables ACDCs to be used in a
+   portable but securely attributable, fully decentralized manner in an
+   ecosystem that spans trust domains.
 
 2.6.1.  Namespaced AIDs
 
    Because KERI is agnostic about the namespace for any particular AID,
-   different namespace standards may be used to express KERI AIDs within
-   AID fields in an ACDC.  The examples below use the W3C DID namespace
+   different namespace standards may be used to express KERI AIDs or
+   identifiers derived from AIDs as the value of thes AID related fields
+   in an ACDC.  The examples below use the W3C DID namespace
    specification with the did:keri method [DIDK_ID].  But the examples
    would have the same validity from a KERI perspective if some other
    supported namespace was used or no namespace was used at all.  The
-   latter case consists of a bare KERI AID (identifier prefix).
+   latter case consists of a bare KERI AID (identifier prefix) expressed
+   in CESR format [CESR_ID].
 
 2.7.  Selectively Disclosable Attribute Aggregate Field
 
@@ -1265,7 +1319,7 @@ Table of Contents
        },
        "ri":
        {
-         "description": "credential status registry AID",
+         "description": "credential status registry ID",
          "type": "string"
        },
        "s": {
@@ -1751,7 +1805,7 @@ Table of Contents
     |       |          | edges and operators that use weights.       |
     +-------+----------+---------------------------------------------+
 
-                                 Table 2
+                                 Table 3
 
    The node, n, field is required.  The SAID, d, UUID, u, schema, s,
    operator, o, and weight, w, fields are optional.  To clarify, each
@@ -2065,7 +2119,7 @@ Table of Contents
    |          | the edge-group to be valid     |             |         |
    +----------+--------------------------------+-------------+---------+
 
-                                  Table 3
+                                  Table 4
 
 9.6.6.  Special Unary Operators
 
@@ -2095,7 +2149,7 @@ Table of Contents
    |          | edge points to                  |            |         |
    +----------+---------------------------------+------------+---------+
 
-                                  Table 4
+                                  Table 5
 
    Many ACDC chains use targeted ACDCs (i.e. have Issuees).  A chain of
    Issuer-To-Issuee-To-Issuer targeted ACDCs in which each Issuee
@@ -2688,7 +2742,7 @@ Table of Contents
        },
        "ri":
        {
-         "description": "credential status registry AID",
+         "description": "credential status registry ID",
          "type": "string"
        },
        "s":
