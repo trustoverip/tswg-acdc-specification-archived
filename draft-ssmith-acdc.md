@@ -2388,9 +2388,34 @@ In a blindable state TEL, the state disclosure is interactive. A Disclosee may o
 
 The blind is derived from a secret salt shared between the Issuer and the designated Discloser. The current blind is derived from this salt, and the sequence number of the TEL event is so blinded. To elaborate, the derivation path for the blind is the sequence number of the TEL event, which in combination with the salt, produces a universally unique salty nonce for the blind. Only the Issuer and Discloser have a copy of the secret salt, so only they can derive the current blind. The Issuer provides a service endpoint to which the Discloser can make a signed request to update the blind.  Each new event in the TEL MUST change the blinding factor but MAY or MAY NOT change the actual blinded state. Only the Issuer can change the actual blinded state. Because each updated event in the TEL has a new blinding factor regardless of an actual change of state or not, an observer can not correlate state changes to event updates as long as the Issuer regularly updates the blinding factor by issuing a new TEL event.
 
-Blindable State TEL events use a unique event type, `upd`. The event state is hidden in the `a` field, whose value is the blinded SAID of a field map that holds the TEL state. The field map's SAID is its `d` field. The blinding factor is provided in the field map's `u` field. The SAID of the associated ACDC is in the field map's `i` field. The actual state of the TEL for that ACDC is provided by other fields in the `a`, field map. A simple state could use the `s` field for state or status.
+Blindable State TEL events use a unique event type, `upd`. The event state is hidden in the `a` field, whose value is the blinded SAID of a field map that holds the TEL state. The field map's SAID is its `d` field. The blinding factor is provided in the field map's `u` field. The SAID of the associated ACDC is in the field map's `i` field or else the aggregate value for bulk issued ACDCs. The actual state of the TEL for that ACDC is provided by other fields in the `a`, field map. A simple state could use the `s` field for state or status.
 
 When the `u` field is missing or empty, then the event is not blindable. When the `u` field has sufficient entropy, then the SAID of the enclosing field map effectively blinds the state provided by that map. The discloser must disclose the field map to the Disclosee, who can verify that its SAID matches the SAID in the TEL.  A subsequent update event entered into that TEL will then re-blind the state of the TEL so that any prior Disclosees may no longer verify the current state of the TEL.
+
+### Blindable State TEL Top-Level Fields
+
+|Label|Description|Notes|
+|---|---|---|
+|v| version string | |
+|d| event digest | SAID |
+|s| sequence number of event |  |
+|t| message type  of event | `upd`  |
+|dt| issuer system data/time in iso format | |
+|p| prior event digest | SAID |
+|ri| registry identifier from management TEL | |
+|ra| registry anchor to management TEL | |
+|a| state attributed digest | SAID |
+
+### Blindable State TEL Attribute (state) Fields
+
+|Label|Description|Notes|
+|---|---|---|
+|d| attribute digest | SAID |
+|u| salty nonce blinding factor | UUID |
+|i| namespaced identifier of VC or aggregate when bulk issued | SAID or Aggregate |
+|s| state value | `issued` or `revoked` |
+
+
 
 ## Independent TEL Bulk-Issued ACDCs
 
@@ -2405,6 +2430,7 @@ The obvious drawbacks of this approach (independent unique TELs for each private
 In this case, the set of private ACDCs may or may not share the same Issuee AID because for all intents and purposes each copy appears to be a different ACDC even when issued to the same Issuee. Nonetheless, using unique Issuee AIDs may further reduce correlation by malicious Disclosees (Second-Party verifiers) beyond using independent TELs.
 
 To summarize the main benefit of this approach, in spite of its storage and compute burden, is that in some applications chain-link confidentiality does not sufficiently deter un-permissioned malicious collusion. Therefore completely independent bulk-issued ACDCs may be used.
+
 
 
 # Extensibility
