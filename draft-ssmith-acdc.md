@@ -649,16 +649,18 @@ For example, compact disclosure, partial disclosure, and selective disclosure ar
 
 ## Exploitation Protection Mechanisms
 
-ACDCS employ several mechanisms to protect against *unpermissioned exploitation of data*. These are:
+An ACDC may employ several mechanisms to protect against *unpermissioned exploitation of data*. These are:
 
-* Chain-link Confidentiality {{CLC}}
+* Contractually Protected Disclosure
+    - Chain-link Confidentiality {{CLC}}
+    - Contingent Disclosure
 * Partial Disclosure
 * Selective Disclosure
 
 
 For example, the *partial disclosure* of portions of an ACDC to enable chain-link confidentiality of the subsequent full disclosure is an application of the principle of least disclosure. Likewise, unbundling only the necessary attributes from a bundled commitment using *selective disclosure* to enable a correlation minimizing disclosure from that bundle is an application of the principle of least disclosure.
 
-## Three Party Exploitation Model
+## Three-Party Exploitation Model
 Unpermission exploitation is characterized using a three-party model. The three parties are as follows:
 
 * First-Party = *Discloser* of data.
@@ -675,15 +677,15 @@ Unpermission exploitation is characterized using a three-party model. The three 
 
 ### Third-Party (Observer) Exploitation
 * implicit permissioned correlation.
-    * no contractual restrictions on use of observed data.
+    * no contractual restrictions on the use of observed data.
 * explicit unpermissioned correlation via collusion with second parties.
-    * malicious use in violation of second party contract
+    * malicious use in violation of second-party contract
 
 ## Chain-link Confidentiality Exchange
 
 Chain-link confidentiality imposes contractual restrictions and liability on any Disclosee (Second-Party) {{CLC}}. The exchange provides a fair contract consummation mechanism. The essential steps in a chain-link confidentiality exchange are shown below. Other steps may be included in a more comprehensive exchange protocol.
 
-* *Discloser* provides a non-repudiable *Offer* with verifiable metadata (sufficient partial disclosure) which includes any terms or restrictions on use.
+* *Discloser* provides a non-repudiable *Offer* with verifiable metadata (sufficient partial disclosure), which includes any terms or restrictions on use.
 * *Disclosee* verifies *Offer* against composed schema and metadata adherence to desired data.
 * *Disclosee* provides non-repudiable *Accept* of terms that are contingent on compliant disclosure.
 * *Discloser* provides non-repudiable *Disclosure* with sufficient compliant detail.
@@ -978,7 +980,7 @@ Because the *Issuee* AID is nested in the attribute block as that block's top-le
 
 ### Composed Schema for Both Compact and Uncompacted Private-Attribute ACDC
 
-Through the use of the JSON Schema `oneOf` composition operator the following composed schema will validate against both the compact and un-compacted value of the private attribute section, `a`, field.
+Through the use of the JSON Schema `oneOf` composition operator, the following composed schema will validate against both the compact and un-compacted value of the private attribute section, `a`, field.
 
 
 ~~~json
@@ -1114,7 +1116,7 @@ There several reserved field labels for edge sub-blocks. These are detailed in t
 |`w`| Weight| Optional edge weight property that enables default property for directed weighted edges and operators that use weights.|
 
 
-The node, `n`, field is required. The SAID, `d`, UUID, `u`, schema, `s`, operator, `o`, and weight, `w`,  fields are optional. To clarify, each edge sub-block MUST have a node, `n`, field and  MAY have any combination of SAID, `d`, UUID, `u`, schema, `s`, operator, `o`, or  weight, `w`, fields.
+The node, `n`, field is required. The SAID, `d`, UUID, `u`, schema, `s`, operator, `o`, and weight, `w`,  fields are optional. To clarify, each edge sub-block MUST have a node, `n`, field and  MAY have any combination of SAID, `d`, UUID, `u`, schema, `s`, operator, `o`, or weight, `w`, fields.
 
 ### SAID Field
 
@@ -1122,17 +1124,17 @@ When present, the SAID, `d`, field MUST appear as the first field in the edge su
 
 ### UUID Field
 
-A UUID, `u`, field MUST not appear unless there is also a SAID, `d` field. When present the UUID, `u`, field must appear immediately after as the SAID, `d`, field in the edge sub-block. When present, the value of the UUID, `u` is a pseudorandom string with approximately 128 bits of cryptographic entropy. The UUID, `u`, field acts as a salty nonce to hide the values of the edge sub-block in spite of knowledge of the edge sub-blocks SAID, `d`, field and its, the edge's, actual near schema (not its far node schema field).
+A UUID, `u`, field MUST not appear unless there is also a SAID, `d` field. When present, the UUID, `u`, field must appear immediately after as the SAID, `d`, field in the edge sub-block. When present, the value of the UUID, `u` is a pseudorandom string with approximately 128 bits of cryptographic entropy. The UUID, `u`, field acts as a salty nonce to hide the values of the edge sub-block in spite of knowledge of the edge sub-blocks SAID, `d`, field and its, the edge's, actual near schema (not its far node schema field).
 
 ### Node Field
 
 When the edge sub-block does NOT include a SAID, `d`, field then the node, `n`, field MUST appear as the first field in the edge sub-block, i.e. it follows the SAID, `d`, field which is first. When the edge sub-block does include a SAID, `d`, field then the node, `n`, field MUST appear as the second field in the edge sub-block.
 
-The value of the required node, `n`, field is the SAID of the ACDC to which the edge connects i.e. the node, `n`, field indicated, designates, references, or "point to" another ACDC. The edge is directed *from* the *near* node that is the ACDC in which the edge sub-block resides and is directed *to* the *far* node that is the ACDC indicated by the node, `n`, field of that edge sub-block. In order for the edge (chain) to be valid, the ACDC validator MUST confirm that the SAID of the provided *far* ACDC matches the node, `n`, field value given in the edge sub-block in *near* ACDC and MUST confirm that the provided *far* ACDC satisfies its own schema.
+The value of the required node, `n`, field is the SAID of the ACDC to which the edge connects i.e. the node, `n`, field indicated, designates, references, or "points to" another ACDC. The edge is directed *from* the *near* node that is the ACDC in which the edge sub-block resides and is directed *to* the *far* node that is the ACDC indicated by the node, `n`, field of that edge sub-block. In order for the edge (chain) to be valid, the ACDC validator MUST confirm that the SAID of the provided *far* ACDC matches the node, `n`, field value given in the edge sub-block in *near* ACDC and MUST confirm that the provided *far* ACDC satisfies its own schema.
 
 ### Schema Field
 
-When present, the schema, `s` field must appear immediately following the node `n`, field in the edge sub-block. When present, the value of the schema, `s` field MUST be the SAID of the top-level schema, `s`, field of the ACDC indicated by the edge's far node, `n`, field. When the schema, `s`, field is present in a edge sub-block, in order for the edge (chain) to be valid, the ACDC validator, after validating that the provided *far* ACDC indicated by the node, `n`, field satisfies its (the far ACDC's) own schema, MUST also confirm that the value of the edge's schema, `s`, field matches the SAID of the far ACDC's schema as indicated by its top-level schema, `s`, field.
+When present, the schema, `s` field must appear immediately following the node `n`, field in the edge sub-block. When present, the value of the schema, `s` field MUST be the SAID of the top-level schema, `s`, field of the ACDC indicated by the edge's far node, `n`, field. When the schema, `s`, field is present in an edge sub-block, in order for the edge (chain) to be valid, the ACDC validator, after validating that the provided *far* ACDC indicated by the node, `n`, field satisfies its (the far ACDC's) own schema, MUST also confirm that the value of the edge's schema, `s`, field matches the SAID of the far ACDC's schema as indicated by its top-level schema, `s`, field.
 
 The following example adds both SAID, `d`, and schema, `s`, fields (edge properties) to the edge sub-block.
 
@@ -1330,9 +1332,9 @@ The default value for the operator, `o`, field is `AND`.
 
 When the operator, `o`, field is missing or empty in an edge block, or is present but does not include any of the `I2I`, `NI2I` or `DI2I` operators then,
 
-If the node pointed to by the edge is a targeted ACDC i.e. has an Issuee, by default it is assumed that the `I2I` operator is appended to the operator, `o`, field's effective list value.
+If the node pointed to by the edge is a targeted ACDC, i.e. has an Issuee, by default it is assumed that the `I2I` operator is appended to the operator, `o`, field's effective list value.
 
-If the node pointed to by the edge-block is a non-targeted ACDC i.e. does not have an Issuee, by default, it is assumed that the `NI2I` operator is appended to the operator, `o`, field's effective list value.
+If the node pointed to by the edge block is a non-targeted ACDC i.e., does not have an Issuee, by default, it is assumed that the `NI2I` operator is appended to the operator, `o`, field's effective list value.
 
 ### Examples
 
@@ -1494,9 +1496,9 @@ In the following example: The top-level edge-block uses the default of `AND` and
 
 This provides a simple but highly expressive syntax for applying (m-ary) aggregating operators to nestable groups of edges and unary operators to edges individually within those groups. This is a general approach with high expressive power. It satisfies many business logic requirements similar to that of SGL.
 
-Certainly, an even more expressive syntax could be developed. The proposed syntax, however, is simple, compact, has intelligent defaults, and is sufficiently general in scope to satisfy all the currently contemplated use cases.
+Certainly, an even more expressive syntax could be developed. The proposed syntax, however, is relatively simple and compact. It has intelligent defaults and is sufficiently general in scope to satisfy all the currently contemplated use cases.
 
-The intelligent defaults for the operator, `o`, field, including the default application of the  `I2I` or `NI2I` unary operator, means that in most current use cases the operator, `o`, field does not even need to be present.
+The intelligent defaults for the operator, `o`, field, including the default application of the  `I2I` or `NI2I` unary operator, means that in most current use cases, the operator, `o`, field, does not even need to be present.
 
 
 
@@ -2436,7 +2438,27 @@ To summarize the main benefit of this approach, in spite of its storage and comp
 # Extensibility
 
 ToDo
-append-to-extend
+
+Append-only verifiable data structures have strong security properties that simplify end-verifiability & foster decentralization.
+
+Append-only provides permission-less extensibility by downstream issuers, presenters, and/or verifiers
+
+Each ACDC has a universally-unique content-based identifier with a universally-unique content-based schema identifier.
+
+Fully decentralized name-spacing.
+
+Custom fields are appended via chaining via one or more custom ACDCs defined by custom schema (type-is-schema).
+
+No need for centralized permissioned name-space registries to resolve name-space collisions.
+
+The purposes of a registry now become merely schema discovery or schema blessing for a given context or ecosystem.
+
+The reach of the registry is tuned to the reach of desired interoperability by the ecosystem participants.
+
+Human meaningful labels on SAIDs are local context only.
+
+Versioning is simplified because edges still verify if new schema are backwards compatible. (persistent data structure model).
+
 
 
 
