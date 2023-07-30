@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-09-18T01:13:34.231780+00:00",
+  "timestamp": "2023-07-30T01:20:05.095093+00:00",
   "repo": "trustoverip/tswg-acdc-specification",
   "labels": [
     {
@@ -55,15 +55,15 @@
       "id": "I_kwDOGxcvRc5GV4sY",
       "title": "ACDC Semantic - Why not to use JSON Schema",
       "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mitfik",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Based on the current discussion over the recent ACDC call I wanted to raise an important topic in my opinion related to the proposed specification around the semantic part.\r\n\r\nAs we all agreed the ACDC needs to be end-verifiable, security comes first, this is why any reference needs to be done through SAID (or similar content-addressable identifier) to make sure that the cryptographic commitment would be valid. \r\n\r\nThe current specification suggests solely on JSON Schema, and I would suggest rethinking that since in my opinion this could harm ACDC development and adoption.\r\n\r\nSome of the arguments which are in favor of JSON Schema which I was able to capture are:\r\n- a vast ecosystem of tools and libraries \r\n- adoption vector since JSON Schema is used in many areas\r\n- human-readable\r\n- simple to use\r\n- ... others?\r\n\r\nBut there are some significant issues related to it:\r\n- first of all to make it clear JSON Schema is \"just an IETF draft\" - Expires: June 11, 2021 \r\n  that is not much of the issue for me just wanted to point that out, if someone would like to use that argument as well as adopted specification.\r\n- lack of support for common types\r\n   JSON Schema support just [basic data types](https://json-schema.org/understanding-json-schema/reference/type.html) which makes it hard to model complex data e.g. medical data. It does support `format` annotation but this is just annotation, which means it does not have to be implemented and the implementation can vary. We can treat that as a custom feature in most cases. This means that if we want to have a date, we can not choose from `dd/mm/yy` or `mm/dd/yyyy` even if we would enforce `format` in the validation step, the object, which is optional we would be limited to that what the given tool is implementing, without a way to pass that information all the way down with ACDC.\r\n-  `$schema` keyword \r\n    Alt ought not mandatory it is recommended, the attribute allows to define which version of the schema we are referring to. Unfortunately, it is URL. Sounds familiar? JSON-LD? \r\n    We can't allow using that keyword since we can't assure about the immutability of those objects pointing to the location. So we can skip the completely or enforce to use SAID instead but then most of the validators would fail on that and we need a custom one. Why is important to address that since people would use it since it is out of the box, here is an example from `vLEI`\r\n    ```\r\n    {\r\n        \"$id\": \"ExBYRwKdVGTWFq1M3IrewjKRhKusW9p9fdsdD0aSTWQI\",\r\n        \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r\n        \"title\": \"GLEIF vLEI Credential\",\r\n       ...        \r\n    ```\r\n   In some cases that do no harm, but changing the meaning of the semantic can lead to change the meaning of the data (e.g. change from `boolean` to `string` which could validate as  `true` even if their value would be `false`). If it is allowed to do it wrong people would do so.\r\n - `$id` keyword - Almost the same problem as above, according to the spec the `$id` need to be URI - SAID is not URI per definition, so we would need to create one to stay complaint. As you can guess above vLEI won't validate against standard JSON Schema validator. According to the spec: `The value of $id is a URI-reference without a fragment that resolves against the [Retrieval URI](https://json-schema.org/understanding-json-schema/structuring.html#retrieval-uri). ` Which again leads us to \"JSON-LD\" hell if we won't be based on content-addressable identifiers. Why needs to be URI which is resolved? because `$id` embedded in subschema can use its base URI to resolve against.  \r\n- `$ref` keyword - optional but can be used as a reference to another schema. This allows us to have some sort of composability, but if we won't use content addressable identifiers we lose security. The URI-references in `$ref` resolve against the schema\u2019s [Base URI](https://json-schema.org/understanding-json-schema/structuring.html#base-uri)\r\n- JSON Schema is used in OAS\r\n  The problem is that even OAS is not using JSON schema as it is, they use [extended subset](https://swagger.io/specification/#data-types) (not even subset but extended) of JSON Schema [Specification Wright Draft 00](https://json-schema.org/)., and modified it quite to fit their needs. This means that even if you would like to leverage the JSON schema ecosystem you would exclude OAS (which probably is way bigger) and if you would like to stay compliant with OAS you need to ditch standard spec. I would even argue that OAS would be better than JSON schema but won't solve the problem either.  \r\n\r\nJSON Schema was designed with the mind of the web, this is why is heavily influenced but pattern designs for the location-based network. \r\n\r\nWith ACDC we are going towards a content-based network and this is why we should be careful to pick related specifications to be used since they break a lot of security aspects of our architecture. \r\n\r\nIn addition, ACDC is agnostic to the serialization format, we can have it in JSON, XML, etc. What if I would like to have XML serialization do I still need to use JSON schema to parse my XML ACDC? \r\n\r\nTo summarize it, ACDC should not reference JSON Schema as a main semantic description it does not have any properties which can help with what we need:\r\n- support for complex data types to be able to describe simple but as well very complex data structure,\r\n- immutable objects across whole chain, no URI or URLs, it needs to be mandatory to use content addressable identifiers\r\n- capturing meaning of data (rich layered architecture to be able to achieve that)\r\n- reusability of schema to increase interoperability of the data\r\n\r\nAs you know I am one of the co-authors of OCA (Overlays Capture Architecture) where the last 4 years we spent building an alternative to existing semantic solutions. We did quite some research in that space and tried to aggregate all important characteristics of the semantic which is needed to capture the meaning of data. A few important take away from that effort is that:\r\n- you can NOT convince everyone to name stuff the same way as you do\r\n- you have to go with layered architecture to decouple responsibility to increase interoperability of the objects.\r\n\r\nI am not saying that ACDC should force to use OCA (although that would be nice) but define the specification in a way that would focus on the characteristics of such solution and not a specific implementation. I know that this could make the implementation more complex but through the adoption, we would show which one is the best and people would gravitate towards the best anyway.  \r\n\r\nWe could apply same principle as we have with SAID or SCID where first byte would let you know not only which hashing algorithm it is but as well which type of semantic is behind that. \r\n\r\nIf you would like to learn about such characteristics I recommend to take a look on [OCA](https://the-human-colossus-foundation.github.io/oca-spec/): [https://the-human-colossus-foundation.github.io/oca-spec/](https://the-human-colossus-foundation.github.io/oca-spec/)\r\n\r\n\r\nHappy to hear your opinion about above points.\r\n\r\n\r\n \r\n",
       "createdAt": "2022-03-24T23:05:11Z",
-      "updatedAt": "2022-05-07T18:18:59Z",
-      "closedAt": null,
+      "updatedAt": "2022-12-30T21:45:08Z",
+      "closedAt": "2022-12-30T21:44:45Z",
       "comments": [
         {
           "author": "SmithSamuelM",
@@ -155,6 +155,20 @@
           "body": "@SmithSamuelM \r\n>  I strongly object to the development of standards where the primary (reference) implementation is not at least as open as the standard spec itself.\r\n\r\n@mitfik \r\n> I think we can exclude that argument since OCA spec same as it's main reference implementation is developed under EUPL-1.2 which [definitely](https://joinup.ec.europa.eu/collection/eupl/how-use-eupl#section-2) is FLOSS license\r\n\r\nIt would be helpful to better define terms in order to resolve this argument. Historically the term \"permissive\" was used to refer to freely licensed open source (FLOSS) which usually meant that there were no downstream encumbrances on the use of the software. This typically meant that a user could embed, combine, refactor the software in new software that was proprietary. So for example Apache2, BSD, MIT were \"permissive\" and \"GPL\" or any copyLeft license was not \"permissive\". More recently the OSI (Open Software Initiative) has nuanced thier definitions of the terminology and now used the term \"reciprocal\"  and \"non-reciprocal\" instead of non-permissive and permissive (respectively) to refer to licenses that have downstream encumbrances that prevent use in proprietary software.\r\n\r\nSee the following discussion\r\n[Permissive and Copyleft Are Not Antonyms](https://opensource.org/node/875)\r\n\r\nTherefore we can better characterize the differences as: \r\nApache2 is a **_non-reciprocal_** permissive open source license.\r\nEUPL is a **_reciprocal_** permissive open source license. \r\n\r\n[EUPL Reciprocity](https://joinup.ec.europa.eu/collection/eupl/introduction-eupl-licence)\r\n> The EUPL is a reciprocal (or copyleft) licence, meaning that distributed contributions and improvements (called \"derivatives\") will be provided back or shared with the licensor and all other users. At the same time (and unlike other copyleft licences like the GPL or AGPL), the EUPL is compatible with most other open reciprocal licences and is interoperable.\r\n\r\nTherefore to clarify my argument using more up-to-date OSI terminology, I will restate it. \r\nThe primary reference implementation of an open non-reciprocal  specification should have no more restrictive reciprocity than the specification.\r\n\r\nThe reason is that implementors start with a reference implementation but if the reference implementation is reciprocal then any derivative version of an implementation that is proprietary can't use the reference implementation as a starting point. This poses an adoption barrier that is at the core of the debate between the types of open source software such as copyleft or \"reciprocal\" versus non-copyleft or non-reciprocal. \r\n\r\nTherefore OCA under EUPL is incompatible with ACDC as a normative requirement because ACDC is  fully non-reciprocal and the only implementation of OCA (HCF) is reciprocal.   \r\n\r\nThat is what I meant in the first place but I was clearly using an old definition of  permissive or freely licensed open.  \r\n\r\n",
           "createdAt": "2022-05-07T18:09:30Z",
           "updatedAt": "2022-05-07T18:18:59Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This discussion appears to have been resolved",
+          "createdAt": "2022-12-30T21:44:45Z",
+          "updatedAt": "2022-12-30T21:44:45Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "if more discussion needed can reopen",
+          "createdAt": "2022-12-30T21:45:08Z",
+          "updatedAt": "2022-12-30T21:45:08Z"
         }
       ]
     },
@@ -187,15 +201,15 @@
       "id": "I_kwDOGxcvRc5GpOC7",
       "title": "Possible ambiguity of usage `oneOf` from JSON schema ",
       "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/8",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "blelump",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Sam,\r\n\r\nin the spec https://github.com/SmithSamuelM/Papers/blob/master/whitepapers/ACDC_Spec.md#attribute-section there is a proposal to use `oneOf` JSON schema key attribute. To bring here the context, below is the copy pasted snippet:\r\n```\r\n\"a\": \r\n{\r\n  \"description\": \"attribute section\",\r\n  \"oneOf\":\r\n  [\r\n    {\r\n      \"description\": \"attribute SAID\",\r\n      \"type\": \"string\"\r\n    },\r\n    {\r\n      \"description\": \"uncompacted attribute section\",\r\n      \"type\": \"object\",\r\n      \"required\": \r\n      [\r\n        \"d\",\r\n        \"i\",\r\n        \"score\",\r\n        \"name\"\r\n      ],\r\n      \"properties\": \r\n      {\r\n        \"d\": \r\n        {\r\n          \"description\": \"attribute SAID\",\r\n          \"type\": \"string\"\r\n        },\r\n        \"i\": \r\n        {\r\n          \"description\": \"Issuee AID\",\r\n          \"type\": \"string\"\r\n        },\r\n        \"score\": \r\n        {\r\n          \"description\": \"test score\",\r\n          \"type\": \"integer\"\r\n        },\r\n        \"name\": \r\n        {\r\n          \"description\": \"test taker full name\",\r\n          \"type\": \"string\"\r\n        }\r\n      }\r\n    }\r\n  ]\r\n  \"additionalProperties\": false,\r\n}\r\n```\r\n\r\nI get the reasoning behind the above snippet so it's clear. What may be problematic is the `oneOf` usage by consumers. Imagine a consumer sees such an option and constructs his schema in the following way:\r\n```\r\n\"a\": \r\n{\r\n  \"description\": \"attribute section\",\r\n  \"oneOf\":\r\n  [\r\n    {\r\n      \"description\": \"plane\",\r\n      \"type\": \"object\",\r\n      \"required\":       [...      ],\r\n      \"properties\":       {       ...      },\r\n   },\r\n    {\r\n      \"description\": \"car\",\r\n      \"type\": \"object\",\r\n      \"required\":       [...      ],\r\n      \"properties\":       {       ...      },\r\n    },\r\n    {\r\n      \"description\": \"bike\",\r\n      \"type\": \"object\",\r\n      \"required\":       [...      ],\r\n      \"properties\":       {       ...      },\r\n    },\r\n  ]\r\n  \"additionalProperties\": false,\r\n}\r\n```\r\n\r\nIt is at least problematic to reason whether data is `car`, `plane` or `bike`. The `oneOf` opens context mixing for various data types. ",
       "createdAt": "2022-03-29T17:48:55Z",
-      "updatedAt": "2022-04-14T02:25:51Z",
-      "closedAt": null,
+      "updatedAt": "2022-12-30T21:45:41Z",
+      "closedAt": "2022-12-30T21:45:41Z",
       "comments": [
         {
           "author": "blelump",
@@ -414,15 +428,15 @@
       "id": "I_kwDOGxcvRc5G0MTh",
       "title": "Overlays approach for semantic",
       "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/9",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "mitfik",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Following discussion from #6 I would like to elaborate on a topic of overlays capture architecture and what consequences it has on overall on data architecture. \r\n\r\nAs mentioned in #6 we need to address tree problems:\r\n- data capture\r\n- data processing\r\n- data presentation\r\n\r\nWhat we would like to have is:\r\n- content driven approach (no dynamic links e.g. URL etc.)\r\n- greater interoperability \r\n- allow for multi-issuer schema\r\n- re-usability of the schema\r\n- support for i18n\r\n- stable capture base schema (capture meaning in given context without enforcing too much details)\r\n- composability (being able to combine different schema and reuse them, extend etc.. Dockerfile analogy would be good)\r\n- ontology and language agnostic\r\n\r\nTo address above issues we need:\r\n- minimalistic `capture base` which can preserve context and meaning of that data within given context. To achieve that we need just `attribute identifiers` and its `basic types`. \r\n- separate layers which provides `semantic` (character encoding, format, standards, labels, information, meta information, etc.), `inputs` (conditional, entry codes, units etc.), `transformation` (mapping, masking, subset etc), `presentation` (sensitivity, layout, credential layout etc.), \r\n- content-addressable linking mechanism between `capture base` and any `overlay`\r\n- bundle identifier which can identify `capture base` and any amount of `overlays` used during `data capture` process\r\n\r\n\r\n[OCA](https://oca.colossi.network/) was designed exactly for all above due to the lack of the solutions already existing on the market. To clarify OCA is an `Architecture`, it tells you how to compose objects (and its characteristics) to achieve desire outcome. It could potentially be used with any existing language or serialization formats. \r\n\r\nIn principle `OCA` does not conflict with `JSON schema` by any mean we can easily represent OCA objects using json schema semantic. The problem is much more on the conceptual level - architectural. \r\nJSON schema was not design to deal with all above problems. Enforcing ACDC users use only JSON Schema it could steer authentic data in wrong direction and cause same problems as we experience on the `Web 2.0`. \r\n\r\nFor reference an example of capture base using OCA json serialization:\r\n\r\n```\r\n{\r\n    \"type\": \"spec/capture_base/1.0\",\r\n    \"classification\": \"GICS:45102010\",\r\n    \"attributes\": {\r\n        \"dateOfBirth\": \"Date\",\r\n        \"dateOfExpiry\": \"Date\",\r\n        \"dateOfIssue\": \"Date\",\r\n        \"documentCode\": \"Text\",\r\n        \"documentNumber\": \"Text\",\r\n        \"documentType\": \"Text\",\r\n        \"fullName\": \"Text\",\r\n        \"issuedBy\": \"Text\",\r\n        \"issuingState\": \"Text\",\r\n        \"issuingStateCode\": \"Text\",\r\n        \"nationality\": \"Text\",\r\n        \"optionalData\": \"Text\",\r\n        \"optionalDocumentData\": \"Text\",\r\n        \"optionalPersonalData\": \"Text\",\r\n        \"personalNumber\": \"Text\",\r\n        \"photoImage\": \"Binary\",\r\n        \"placeOfBirth\": \"Text\",\r\n        \"primaryIdentifier\": \"Text\",\r\n        \"secondaryIdentifier\": \"Text\",\r\n        \"sex\": \"Text\",\r\n        \"signatureImage\": \"Binary\"\r\n    },\r\n    \"flagged_attribute\": [\r\n        \"documentNumber\",\r\n        \"fullName\",\r\n        \"primaryIdentifier\",\r\n        \"secondaryIdentifier\",\r\n        \"dateOfBirth\",\r\n        \"personalNumber\",\r\n        \"placeOfBirth\",\r\n        \"optionalPersonalData\",\r\n        \"optionalDocumentData\",\r\n        \"signatureImage\",\r\n        \"photoImage\",\r\n        \"optionalData\"\r\n    ]\r\n}\r\n```\r\nFor references how other layers are linked take a look [here](https://oca.colossi.network/v1.0.0.html#overlays)\r\n\r\nHere is the same capture based represented using `JSON Schema`:\r\n```\r\n{\r\n    \"$id\": \"EPMaG1h2hVxKCZ5_3KoNNwgAyd4Eq8zrxK3xgaaRsz2M\",\r\n    \"description\": \"Capture base - JSON Schema for Passport\",\r\n    \"title\": \"Passport\",\r\n    \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r\n    \"classification\": \"GICS:45102010\",\r\n    \"type\": \"object\",\r\n    \"properties\": {\r\n      \"dateOfBirth\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true,\r\n        \"format\": \"date\"\r\n      },\r\n      \"dateOfExpiry\": {\r\n        \"type\": \"string\",\r\n        \"format\": \"date\"\r\n      },\r\n      \"dateOfIssue\": {\r\n        \"type\": \"string\",\r\n        \"format\": \"date\"\r\n      },\r\n      \"documentCode\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"documentNumber\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true\r\n      },\r\n      \"documentType\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"fullName\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true\r\n      },\r\n      \"issuedBy\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"issuingState\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"issuingStateCode\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"nationality\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"optionalData\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true\r\n      },\r\n      \"optionalDocumentData\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true\r\n      },\r\n      \"optionalPersonalData\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true\r\n      },\r\n      \"personalNumber\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true\r\n      },\r\n      \"photoImage\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true,\r\n        \"format\": \"binary\"\r\n      },\r\n      \"placeOfBirth\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true\r\n      },\r\n      \"primaryIdentifier\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true\r\n      },\r\n      \"secondaryIdentifier\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true\r\n      },\r\n      \"sex\": {\r\n        \"type\": \"string\"\r\n      },\r\n      \"signatureImage\": {\r\n        \"type\": \"string\",\r\n        \"flagged_attribute\": true,\r\n        \"format\": \"binary\"\r\n      }\r\n    }\r\n}\r\n```\r\n\r\nNow since JSON schema does not have build in mechanism for linking objects (e.g. linking translation in separate object, or formatting as separate object) people would define that all inline in one schema. This would cause problems to address issues mentioned at the beginning of that post. \r\n\r\nTo summarize it:\r\n\r\n| Feature | OCA  | JSON Schema |\r\n| ---------| ------------- | ------------- |\r\n| minimalistic `capture base` | Yes | Yes, but not enforced |\r\n| separate layers | Yes  | No  |\r\n| content-addressable linking mechanism | Yes | Partially - only for `$ref`, since does not support layers |\r\n| bundle identifier | Yes | No |\r\n\r\nSemantic problem is more complex then what was mentioned here. But based on Human Colossus research we found that certain characteristic is required to even try to do it right. \r\nThis is why I would suggest to expand on that matter in ACDC specification in a way that we don't limit ACDC to be able to use only `JSON schema` but define characteristic of semantic which is allowed to be used to have authentic data containers which can address mentioned issues.\r\nWe have that agility in all other aspects of ACDC, like crypto for SAID and SCID why not allow to have that on semantic as well? I get the argument that too much flexibility generate adoption issues  but without it we close the doors for huge communities which needs to address above issues and JSON Schema does not help with it. \r\n\r\nTo make that clear I am not looking for OCA adoption vectors - OCA will be fine.  I am more worry about that ACDC would be narrow use case for verifiable credential and won't be adopted outside that space. Since we already know that `JSON Schema` does not solve the problems of the data harmonization overall. The \"data\" world is way bigger then \"verifiable credential\", so I am more after ACDC adoption vectors then anything else.  \r\n\r\nhappy to hear your thoughts on that\r\n\r\n\r\n\r\n",
       "createdAt": "2022-03-31T13:32:47Z",
-      "updatedAt": "2022-04-01T19:09:52Z",
-      "closedAt": null,
+      "updatedAt": "2022-12-30T21:46:00Z",
+      "closedAt": "2022-12-30T21:46:00Z",
       "comments": [
         {
           "author": "SmithSamuelM",
@@ -445,15 +459,15 @@
       "id": "I_kwDOGxcvRc5G5Z4Q",
       "title": "Mentioning GLEIF as major use case for ACDC's",
       "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/10",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "blelump",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Hi Sam,\r\n\r\nin the spec [intro](https://github.com/SmithSamuelM/Papers/blob/master/whitepapers/ACDC_Spec.md#introduction) you mention GLEIF as primary major use case for the proposed spec. Furthermore there are other mentions to VC's, DID's and so on.\r\n\r\n1. Shall the spec favor one use case (GLEIF) specifically by explicitly mentioning it where it'll be primarily applied? The spec itself is definitely more than that and as `major use case` doesn't exclude other use cases, it somehow favor this one. Other than that the lifetime of the spec may be far beyond the aforementioned use case, therefore may not be valid anymore.\r\n2. Shall the spec reflect to other existing techies like VC/DID as opposed to be an alternative approach, proposing it's own way to solve the underlying problem? The adoption of both (VC/DID) is unclear yet, therefore it's not known where and how it'll end up.",
       "createdAt": "2022-04-01T08:35:18Z",
-      "updatedAt": "2022-04-01T13:29:55Z",
-      "closedAt": null,
+      "updatedAt": "2022-12-30T21:46:29Z",
+      "closedAt": "2022-12-30T21:46:29Z",
       "comments": [
         {
           "author": "SmithSamuelM",
@@ -469,15 +483,15 @@
       "id": "I_kwDOGxcvRc5HOB0F",
       "title": "Adding Support for Logical Connectives (Operators) on Edges",
       "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/46",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "SmithSamuelM",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "The Simple Grant Language, https://github.com/evernym/sgl is a Domain Specific Language for granting privileges (authorizations) conveyed by verifiable credentials. It includes logical operations such as AND OR etc connectives.\r\n\r\nACDC supports property graphs (PG) which include edges with properties. A common use case for a property graph is to aggregate edges. For example, weighted edges can be used with many decision making algorithms such as multi-attribute decision making where the aggregation of a set of weighted values is used to calculate the final decision. \r\n\r\nIn general, we can define aggregation operations over a set of edges for general decision making logic on the set of edges. A tree of such aggregations then becomes a hierarchical decision tree.   With such trees we can reproduce much of the logic of a DSL like SGL (simple grant language).  \r\n\r\nOne of the early use cases is to address the logic for validating an ACDC with more than one edge. Does the ACDC only validate if both edges,  validate (\"AND\" logic aggregate) , or does the ACDC validate if either edge validates (\"OR\" logic aggregate).  \r\n\r\nI suggest that the default, is \"AND\" logic aggregate which is the safest. But then how to specifiy some aggregate that is not the default.\r\n\r\nFor these we need to specify the syntax for weighting edges with some common aggregation operators such as AND, OR and maybe even logical negation, NOT. as in a credential is valid only if a chained credential is NOT valid.\r\n\r\nThis issue is a place holder for suggestions for the syntax of aggregation within the edge section of an ACDC.",
       "createdAt": "2022-04-06T16:43:10Z",
-      "updatedAt": "2022-04-11T19:51:16Z",
-      "closedAt": null,
+      "updatedAt": "2022-12-30T21:46:57Z",
+      "closedAt": "2022-12-30T21:46:57Z",
       "comments": [
         {
           "author": "pfeairheller",
@@ -524,6 +538,333 @@
       "updatedAt": "2022-07-09T12:55:31Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 73,
+      "id": "I_kwDOGxcvRc5aSxlq",
+      "title": "Using ZKP such as AnonCreds with ACDCs",
+      "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/73",
+      "state": "OPEN",
+      "author": "SmithSamuelM",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "# Privacy Protection in ACDCs\r\n\r\nThe baseline specification for ACDCs includes some basic privacy protection mechanisms. These are basic in the sense that they do not require any crypto besides cryptographic strength PRNGs, Digests, and Signatures. This is meant to provide a highly adoptable lowest common denominator that all implementations can support using only universally available cryptographic libraries such as libsodium, for example. This highly adoptable baseline does not preclude however extensions to the spec for more sophisticated crypto that supports more sophisticated privacy protection mechanisms. \r\n\r\n## Existing Mechanisms\r\n\r\nThe baseline ACDC spec is heavily influenced by KERI and takes a security-first approach, specifically a strong no-compromise approach to the authenticity of all issuances and presentations of ACDCs, where authenticity is defined to mean secure attribution to a given autonomic identifier. \r\n\r\n### Exploitation Threat Model\r\n\r\nACDC employ a three-party exploitation threat model  with regards  the privacy of the parties in any exchange of data via ACDCs. This is modeled as the disclosure of data from the first party, the Discloser, to the second party, the Disclosee.  There may be one or more third parties that are not party to the disclosure itself. Third parties may exploit by correlating information leaked about the disclosure and/or via the collusion with the second party.\r\n\r\nMore to come.",
+      "createdAt": "2022-12-30T21:57:33Z",
+      "updatedAt": "2022-12-31T19:57:33Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "dhh1128",
+          "authorAssociation": "NONE",
+          "body": "@SmithSamuelM : this looks like great info, but it appears to be truncated, as it ends in the middle of a sentence. Is there more?",
+          "createdAt": "2022-12-31T16:51:39Z",
+          "updatedAt": "2022-12-31T16:51:39Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "There is more to come. I just got interrupted.",
+          "createdAt": "2022-12-31T19:51:33Z",
+          "updatedAt": "2022-12-31T19:51:33Z"
+        }
+      ]
+    },
+    {
+      "number": 74,
+      "id": "I_kwDOGxcvRc5efFrH",
+      "title": "Addition of payload attribute to support ACDCs as a Verifiable Proof for W3C VC Data Model credentials",
+      "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/74",
+      "state": "OPEN",
+      "author": "m00sey",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "For ACDCs to be considered a viable format for a Verifiable Proof the addition of an optional `p` block within the attribute block, comprised of a `d` digest (of the block) field, `c` cargo field, a digest of a W3C VC Data Model compliant credential, and optional schema field `s` schema field.\r\n\r\n```\r\n{\r\n  \"v\": \"ACDC...\",\r\n  ...\r\n  \"a\" : {\r\n  ...\r\n    \"p\": {\r\n      \"d\": \"<Digest of payload block>\",\r\n      \"c\": \"<Digest of payload>\"\r\n      \"s\": \"<SAID of Schema>\"\r\n    }\r\n  }\r\n}\r\n```\r\n\r\npotential schema update:\r\n\r\n```\r\n{\r\n  \"p\": {\r\n    \"oneOf\": [\r\n      {\r\n        \"description\": \"Payload block SAID\",\r\n        \"type\": \"string\"\r\n      },\r\n      {\r\n        \"$id\": \"EDh9sp5cPk0-yo5sFMo6WJS1HMBYIOYCwJrnPvNaH1vI\",\r\n        \"description\": \"Payload block\",\r\n        \"type\": \"object\",\r\n        \"properties\": {\r\n          \"d\": {\r\n            \"description\": \"Payload block SAID\",\r\n            \"type\": \"string\"\r\n          },\r\n          \"c\": {\r\n            \"description\": \"Cargo SAID\",\r\n            \"type\": \"string\"\r\n          },\r\n          \"s\": {\r\n            \"description\": \"SAID of schema of the credential pointed to by this node\",\r\n            \"type\": \"string\"\r\n          }\r\n        }\r\n      }\r\n    ],\r\n    \"additionalProperties\": false,\r\n    \"required\": [\r\n      \"d\",\r\n      \"c\"\r\n    ]\r\n  }\r\n}\r\n```",
+      "createdAt": "2023-02-15T04:44:15Z",
+      "updatedAt": "2023-02-16T03:31:29Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "dhh1128",
+          "authorAssociation": "NONE",
+          "body": "Title is intriguing. Curious for details.",
+          "createdAt": "2023-02-15T08:56:17Z",
+          "updatedAt": "2023-02-15T08:56:17Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "How about `c` for cargo, credential, claims",
+          "createdAt": "2023-02-15T20:47:02Z",
+          "updatedAt": "2023-02-15T20:47:02Z"
+        }
+      ]
+    },
+    {
+      "number": 75,
+      "id": "I_kwDOGxcvRc5ldYMO",
+      "title": "Add missing NOT operator to M-ary section 9.6.5",
+      "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/75",
+      "state": "OPEN",
+      "author": "m00sey",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-05-09T14:48:42Z",
+      "updatedAt": "2023-05-09T14:48:42Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 76,
+      "id": "I_kwDOGxcvRc5ldaEv",
+      "title": "Clairfy 9.6.6 table",
+      "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/76",
+      "state": "OPEN",
+      "author": "m00sey",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-05-09T14:52:34Z",
+      "updatedAt": "2023-05-09T14:52:34Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 77,
+      "id": "I_kwDOGxcvRc5l-GXA",
+      "title": "New Horizontal Scaling and/or Privacy Preserving Mechanism using Issuee delegated AID as presenter.",
+      "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/77",
+      "state": "OPEN",
+      "author": "SmithSamuelM",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "KERI AIDs support delegation to other AIDs. The delegator AID can have delegate or delegatee AIDS. The Delegate inception event is special in that it indicates a Delegator AID and the Delegator AID must anchor a seal in its KEL of the Delegate's inception event in order for a validator to accept the delegate's KEL as valid. \r\n\r\nBecause this delegate and delegator relationship is cryptographically verifiable. Its a strong binding. A validator could in its business logic decide to accept signed presentations of a credential where the presenter who is signing the presentation is not the\r\nthe controller of the named  issuee AID in the credential but the controller of a delegated AID of the named issuee AID (where the Issuee is the Delegator). \r\n\r\nThis presentatin rule could also be added to the ecosystem governance framework for a given type of credential\r\n\r\nFrom an issuer standpoint. we can add a field in the schema or the rules section for that credential by which the issuer indicates that presentation by delegates of Issuees is allowed or not. This needs to be defined.\r\n\r\nBut presentation by delegatees provides both a novel horizontal signing scaling mechanism and  a novel privacy preserving mechanism. In the former case the presentation infrastracture can be horizontally scaled by delegates each with their own signing infrastructure. IN the latter case the Issuer and Third parties could have no knowledge of the delegated AIDs from the original issuance and/or revocation registry. A Given issuee could create a bespoke delegated AID on the fly for the purpose of a given presentation of the credential. This would allow OOB disclosure and presentation by a delegate where the actual credential is the private compact version. This would allow a different form of contextualization of presentations that complements or replaces the bulk -issued mechanism currently in the ACDC specification.",
+      "createdAt": "2023-05-15T20:27:55Z",
+      "updatedAt": "2023-05-15T21:10:33Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "dhh1128",
+          "authorAssociation": "NONE",
+          "body": "Two thumbs up from me. I love this idea!\n\nOn Mon, May 15, 2023, 10:28 PM Samuel Smith ***@***.***>\nwrote:\n\n> KERI AIDs support delegation to other AIDs. The delegator AID can have\n> delegate or delegatee AIDS. The Delegate inception event is special in that\n> it indicates a Delegator AID and the Delegator AID must anchor a seal in\n> its KEL of the Delegate's inception event in order for a validator to\n> accept the delegate's KEL as valid.\n>\n> Because this delegate and delegator relationship is cryptographically\n> verifiable. Its a strong binding. A validator could in its business logic\n> decide to accept signed presentations of a credential where the presenter\n> who is signing the presentation is not the\n> the controller of the named issuee AID in the credential but the\n> controller of a delegated AID of the named issuee AID (where the Issuee is\n> the Delegator).\n>\n> This presentatin rule could also be added to the ecosystem governance\n> framework for a given type of credential\n>\n> From an issuer standpoint. we can add a field in the schema or the rules\n> section for that credential by which the issuer indicates that presentation\n> by delegates of Issuees is allowed or not. This needs to be defined.\n>\n> But presentation by delegatees provides a novel privacy preserving\n> mechanism since the Issuer has no knowledge of the delegated AIDs and a\n> Given issuee could create a bespoke delegated AID on the fly for the\n> purpose of a given presentation of the credential. This would allow OOB\n> disclosure and presentation by a delegate where the actual credential is\n> the private compact version.\n>\n> \u2014\n> Reply to this email directly, view it on GitHub\n> <https://github.com/trustoverip/tswg-acdc-specification/issues/77>, or\n> unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AAQ3JCBADI63OVY2FCWHXRLXGKGVNANCNFSM6AAAAAAYCWD4OA>\n> .\n> You are receiving this because you are subscribed to this thread.Message\n> ID: ***@***.***>\n>\n",
+          "createdAt": "2023-05-15T21:10:33Z",
+          "updatedAt": "2023-05-15T21:10:33Z"
+        }
+      ]
+    },
+    {
+      "number": 78,
+      "id": "I_kwDOGxcvRc5qTkNE",
+      "title": "Consider SADifying Selective Disclosure Blinded Attribute Array",
+      "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/78",
+      "state": "OPEN",
+      "author": "jasoncolburne",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The ACDC specification defines selective disclosure, amongst other mechanisms, to facilitate graduated disclosure and chain link confidentiality. It is defined by the spec to work like this:\r\n\r\nCreate unblinded array of anonymized SADs containing attribute details.\r\nCreate array of SAIDs from SADs.\r\nCreate digest by concatenating all SAIDs and hashing.\r\n\r\nThe first (1) looks like:\r\n```json\r\n\"A\": [\r\n  {\r\n    \"d\": \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\",\r\n    \"u\": \"0AB9VADfPtCQvFqp-u4BxUvy\",\r\n    \"i\": \"ENoxXSSTfy8FDryU0J0av3IdHKqAb6aYBu0fIT5fvqfY\"\r\n  },\r\n  {\r\n    \"d\": \"EGcJzlAaalMxlFSfs2DPB7Tx7n3D7EKAWSXJaheVf_-P\",\r\n    \"u\": \"0ACsCxwKKCg0C9Hb7OX9ajbZ\",\r\n    \"legalName\": \"Jason Colburne\"\r\n  },\r\n  {\r\n    \"d\": \"EOYM0KDlDPODdiUDL7Xp-XRjr9mif7Dv5ovMSGTRxyTA\",\r\n    \"u\": \"0ACbHEmnqeXUJFMf1G2Dj0BU\",\r\n    \"age\": 43\r\n  }\r\n]\r\n```\r\n\r\nThe second becomes:\r\n```json\r\n\"A\": [\r\n  \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\",\r\n  \"EGcJzlAaalMxlFSfs2DPB7Tx7n3D7EKAWSXJaheVf_-P\",\r\n  \"EOYM0KDlDPODdiUDL7Xp-XRjr9mif7Dv5ovMSGTRxyTA\"\r\n]\r\n```\r\n\r\nAnd the third:\r\n```json\r\n\"A\": \"EGsHbUlJ1JSm63A2dzBmrWvLcKVb22_6OD0fL61KuZ3V\"\r\n```\r\n\r\nThe way it works, is that you put (3) in the ACDC, and it proves a commitment to (2). You then show the ACDC schema to interested parties, and give them (2) plus *some* elements from (1). The elements from (2) are committed to, and they provide a further commitment to the disclosed (*some*) elements from (1). This allows one to share *some*, but not all, blinded attributes of an ACDC.\r\n\r\nThe spec suggests a schema like this to provide a verifier the info they need to understand what information is contained in the ACDC:\r\n\r\n```json\r\n    \"A\": {\r\n      \"oneOf\": [\r\n        {\r\n          \"description\": \"Attribute aggregate digest\",\r\n          \"type\": \"string\"\r\n        },\r\n        {\r\n          \"$id\": \"\",\r\n          \"description\": \"Attribute aggregate array\",\r\n          \"type\": \"array\",\r\n          \"minItems\": 1,\r\n          \"maxItems\": 3,\r\n          \"uniqueItems\": true,\r\n          \"items\": {\r\n            \"anyOf\": [\r\n              {\r\n                \"type\": \"object\",\r\n                \"required\": [\"d\", \"u\", \"i\"],\r\n                \"properties\": {\r\n                  \"d\": {\r\n                    \"description\": \"SAID of disclosable data\",\r\n                    \"type\": \"string\"\r\n                  },\r\n                  \"u\": {\r\n                    \"description\": \"Salty nonce\",\r\n                    \"type\": \"string\"\r\n                  },\r\n                  \"i\": {\r\n                    \"description\": \"Issuee AID\",\r\n                    \"type\": \"string\"    \r\n                  }\r\n                },\r\n                \"additionalProperties\": false\r\n              },\r\n              {\r\n                \"type\": \"object\",\r\n                \"required\": [\"d\", \"u\", \"legalName\"],\r\n                \"properties\": {\r\n                  \"d\": {\r\n                    \"description\": \"SAID of disclosable data\",\r\n                    \"type\": \"string\"\r\n                  },\r\n                  \"u\": {\r\n                    \"description\": \"Salty nonce\",\r\n                    \"type\": \"string\"\r\n                  },\r\n                  \"legalName\": {\r\n                    \"description\": \"Legal name\",\r\n                    \"type\": \"string\"    \r\n                  }\r\n                },\r\n                \"additionalProperties\": false\r\n              },\r\n              {\r\n                \"type\": \"object\",\r\n                \"required\": [\"d\", \"u\", \"age\"],\r\n                \"properties\": {\r\n                  \"d\": {\r\n                    \"description\": \"SAID of disclosable data\",\r\n                    \"type\": \"string\"\r\n                  },\r\n                  \"u\": {\r\n                    \"description\": \"Salty nonce\",\r\n                    \"type\": \"string\"\r\n                  },\r\n                  \"age\": {\r\n                    \"description\": \"Age\",\r\n                    \"type\": \"number\"\r\n                  }\r\n                },\r\n                \"additionalProperties\": false\r\n              }\r\n            ]\r\n          }\r\n        }\r\n      ]\r\n    }\r\n```\r\n\r\nHere's the problem. `uniqueItems` thinks objects with the same keys but different values are different, and allows them. This lets a malicious issuer construct this data in a valid ACDC:\r\n\r\n```json\r\n\"A\": [\r\n  {\r\n    \"d\": \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\",\r\n    \"u\": \"0AB9VADfPtCQvFqp-u4BxUvy\",\r\n    \"i\": \"ENoxXSSTfy8FDryU0J0av3IdHKqAb6aYBu0fIT5fvqfY\"\r\n  },\r\n  {\r\n    \"d\": \"EGcJzlAaalMxlFSfs2DPB7Tx7n3D7EKAWSXJaheVf_-P\",\r\n    \"u\": \"0ACsCxwKKCg0C9Hb7OX9ajbZ\",\r\n    \"legalName\": \"Jason Colburne\"\r\n  },\r\n  {\r\n    \"d\": \"EB7_uP-FZ8aoErbInx6BZTZmDb0A5QuFhIQCROlStoMF\",\r\n    \"u\": \"0ADrpl6F7jzxNWPe0K_cqIFj\",\r\n    \"legalName\": \"Harry Potter\"\r\n  }\r\n]\r\n```\r\n\r\nNow a colluding issuee can present differing information to disjoint sets of participants for the same attribute keys.\r\n\r\nA solution: saidify a key/value object of SAIDs rather than using a list. So for (2), use this SAD:\r\n\r\n```json\r\n\"A\": {\r\n  \"d\": \"EAVyu2rAKhx-kV0sVOKMDE4IFHQjmMyllmZfInBygwb0\",\r\n  \"i\": \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\",\r\n  \"legalName\": \"EGcJzlAaalMxlFSfs2DPB7Tx7n3D7EKAWSXJaheVf_-P\",\r\n  \"age\": \"EOYM0KDlDPODdiUDL7Xp-XRjr9mif7Dv5ovMSGTRxyTA\"\r\n}\r\n```\r\n\r\nAnd then (3) becomes:\r\n\r\n```json\r\n\"A\": \"EAVyu2rAKhx-kV0sVOKMDE4IFHQjmMyllmZfInBygwb0\"\r\n```\r\n\r\nThis permits a check to ensure that someone can use a maximum of one value per key.\r\n\r\nDoes this make sense?",
+      "createdAt": "2023-07-01T05:00:09Z",
+      "updatedAt": "2023-07-05T07:33:39Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "jasoncolburne",
+          "authorAssociation": "NONE",
+          "body": "Another solution to this may be to try and correlate the order of the blinded list with the attribute definitions in the `anyOf` clause in the schema - but I dislike that, as it introduces a dependency on the schema for more than just `json-schema` validation.",
+          "createdAt": "2023-07-01T05:31:39Z",
+          "updatedAt": "2023-07-01T05:31:39Z"
+        },
+        {
+          "author": "jasoncolburne",
+          "authorAssociation": "NONE",
+          "body": "Even if the schema disallowed objects with the same keys and different values, I think there would be a problem since the data isn't necessarily disclosed together (the schema can still be validated during disclosure).",
+          "createdAt": "2023-07-01T06:38:55Z",
+          "updatedAt": "2023-07-01T06:45:22Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@jasoncolburne  I must admit I don't understand the attack. I think it might be due to a difference in assumptions about  how a verifier verifies any presentation of the ACDC.\r\n\r\nSo I will state my assumptions and see if that is the source of my misunderstanding.\r\n\r\nA verifier does three verifications. \r\n- a semantic structure verification using JSON Schema\r\n- a cryptographic structure verification using nested hashes (SAIDs) i.e. a hash tree\r\n- a authenticity verification of a signature of the issuer on the top level or root hash of the hash tree which hash tree includes not only `A` but the SAID of the JSON Schema.\r\n\r\nIf any of the three fail then the verification fails. A verifier will never accept as valid a presentation that does not satisfy all three verification.  There may be additional verifications of committments by the presenter of a selective disclosure based on a graduate disclosure where the presenter signs additional commitments. Maybe this is where I misunderstand. But I think you are talking about the Issuer's commitments and verifying those.\r\n\r\nUsing your labeling\r\n\r\n3) is the value of `A` as a string which is the hash of the concatenation of the list of hashes in 2)  where each hash is the SAID of  the blocks in 1).  \r\n\r\nIn order for the verifier to verify any selective disclosure presentation of any combination of blocks drawn from 1, the presenter must provide the list of hashes (SAIDs)  in 2). This enables the verifier to recompute 3). So if even one of the hashes (SAIDs) provided by the presenter is different (or if the order of SAIDs is different) then the verifier will compute a different `A` and the presentation fails. \r\n\r\nIn your example the SAID of the third block in the malicious ACDC is different from the SAID in the third block of the valid ACDC. So when the verifier recomputes `A` it will fail. What am I missing here?\r\n\r\nI believe that where source of ambiguity is a limitation of JSON Schema's uniqueItems property, which as you point out would allow multiple copies of the same sub-schema but the uniqueItems is applied in combination with the anyOf.  I believe that one may not repeat subschema from the anyOf list of subschema.  Admittedly the documentation of anyOf does not make this clear, but it is implied and all the examples I could find imply non-repetition. Your example repeats the subschema with the legalName subschema.  It would be good to verify this property of anyOf.  \r\n\r\nNotwithstanding an anyOf that allows repeated subschema, the computation of `A` forces that each block from 1) have the same SAID, so the verification would fail nonetheless.\r\n\r\nWhat am I missing?",
+          "createdAt": "2023-07-01T13:55:03Z",
+          "updatedAt": "2023-07-01T13:55:03Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The proof process for selective disclosure is outlined in detail in section 13.3.3 of the ACDC Spec. the relevant language is hoisted below:\r\n\r\nGiven that aggregate value *A* appears as the compact value of the top-level attribute section, `A`, field, the selective disclosure of the attribute at index *j* may be proven to the disclosee with four items of information. These are:\r\n\r\n* The actual detailed disclosed attribute block itself (at index *j*) with all its fields.\r\n* The list of all attribute block digests, *\\[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>\\]* that includes *a<sub>j</sub>*.\r\n* The ACDC in compact form with selectively-disclosable attribute section, `A`, field value set to aggregate *A*.\r\n* The signature(s), *s*, of the Issuee on the ACDC's top-level SAID, `d`, field or equivalently a seal of the ACDC's top-level SAID anchored in an event in the KEL of the issuer (which event is signed by the Issuer) or equivalently a seal of the transaction event log entry anchored in an event in the KEL of the issuer which event log entry, in turn, includes the ACDC's top-level SAID.\r\n\r\n\r\nThe actual detailed disclosed attribute block is only disclosed after the disclosee has agreed to the terms of the rules section. Therefore, in the event the potential disclosee declines to accept the terms of disclosure, then a presentation of the compact version of the ACDC and/or the list of attribute digests, *\\[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>\\]*. does not provide any point of correlation to any of the attribute values themselves. The attributes of block *j* are hidden by *a<sub>j</sub>* and the list of attribute digests *\\[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>\\]* is hidden by the aggregate *A*. The partial disclosure needed to enable chain-link confidentiality does not leak any of the selectively disclosable details.\r\n\r\nThe disclosee may then verify the disclosure by:\r\n* computing *a<sub>j</sub>* on the selectively disclosed attribute block details.\r\n* confirming that the computed *a<sub>j</sub>* appears in the provided list *\\[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>\\]*.\r\n* computing *A* from the provided list *\\[a<sub>0</sub>, a<sub>1</sub>, ...., a<sub>N-1</sub>\\]*.\r\n* confirming that the computed *A* matches the value, *A*, of the selectively-disclosable attribute section, `A`, field value in the provided ACDC.\r\n* computing the top-level SAID, `d`, field of the provided ACDC.\r\n* confirming the presence of the issuance seal digest in the Issuer's KEL\r\n* confirming that the issuance seal digest in the Issuer's KEL is bound to the ACDC top-level SAID, `d`, field either directly or indirectly through a TEL registry entry.\r\n* verifying the provided signature(s) of the Issuee on the provided top-level SAID, `d` field value.\r\n\r\nThe last 3 steps that culminate with verifying the signature(s) require determining the key state of the Issuer at the time of issuance, this may require additional verification steps as per the KERI, PTEL, and CESR-Proof protocols.\r\n",
+          "createdAt": "2023-07-01T15:50:16Z",
+          "updatedAt": "2023-07-01T15:58:52Z"
+        },
+        {
+          "author": "henkvancann",
+          "authorAssociation": "NONE",
+          "body": "> \r\n\r\n@jasoncolburne, just for the better understanding: Are we talking about an instance of a double-commitment scheme, which you consider an attack? \r\n\r\n_A commitment scheme allows one to commit to a chosen value while keeping it hidden to others, with the ability to reveal the chosen value later. These are usually characterized by two phases: the commit phase and the reveal phase._\r\n\r\n_If an issuer makes two claims and chooses to reveal one at a later time, this seems to resemble a form of double-commitment scheme, ..._",
+          "createdAt": "2023-07-01T16:08:41Z",
+          "updatedAt": "2023-07-01T16:10:34Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The purpose of the schema is not to verify the cryptographic structure of the presented data, but merely, the semantic structure. It is possible by putting SAIDs as constants into the schema itself to sort of use schema validation to validate some of the cryptographic structure but this may make unreasonable assumptions about how JSON scheming tooling works or will work in the future.   \r\n\r\nIndeed the cryptographic structure validation protects the semantic validation because even if a malicious JSON schema were to validate on its own, it only materially matters if the malicious schema validates in concert with the cryptographic structure validation. So what we care about for an attack is a presentation where the cryptographic structure validation passes but with a malicious schema that also passes not a malicious schema that passes but the cryptographic structure validation fails.\r\n\r\nSeparating the concerns of semantic validation from cryptographic validation and then designing it so that the stronger cryptographic validation protects the weaker semantic one  follows a principle I first learned from Schnierer's book \"practical Crytography\" \r\n\r\nDesign Rule 1. Complexity is the worst enemy of security.   \r\nDesign Rule 2.  Correctness must be a local property\r\n\r\nAdmittedly there is a lot of aethestic judgement in how to apply such rules. But in this case I think of it this way. If I have a security measure that is already computationally infeasible to attack, then bolstering it with some other security measure that is not protecting from a different type of attack is unnecessary complexity and it makes the correctness of the security of the first measure non-local (both are needed).  \r\n\r\nIts like bolting on a wood 2x4 to a steel ibeam. The 2x4 may add some negligible amount of extra strength under load but it does not add enough to justify the complexity of bolting it on. If, on the other hand, the bolt on 2x4's purpose is prettier painted wood trim meant to hide the ugliness of the steel ibeam then any extral structural strength the  trim imbues is purely a side-effect. Instead the greater stength of the the ibeam will protect the structural integrity of the pretty trim (not the other way round).  So attempting to use schema validation (2x4)  to protect structural validation (ibeam) is using schema validation for  the wrong purpose.\r\n\r\n Moreover, layering weaker security measures on top of stronger ones runs the risk that one might rely on the weak measure in corner conditions that then justify weakening the stronger measure which then may backfire in some other corner condition where the two are not mutually protecting. I have fallen for that temptation more than once.\r\n\r\nACDCs depend on a strong non-repudiable proof via digital signature of issuance, which signature makes a cryptographic commitment to the strong cryptographic digest of the field map structure of the ACDC, which includes a strong commitment to the digest of the schema which schema makes a comparatively weak commitment to the semantics of the field structure but that semantic commitment is protected by the stronger field structure proof not the other way around.",
+          "createdAt": "2023-07-01T16:23:38Z",
+          "updatedAt": "2023-07-01T16:29:37Z"
+        },
+        {
+          "author": "dhh1128",
+          "authorAssociation": "NONE",
+          "body": "@jasoncolburne , I see how the situation you constructed allows mischief. But IIUC isn't this a shortcoming of the bad schema design? You assume a schema that allows a credential to have more than one legal name; naturally this would then allow a malicious issuer to put more than one legal name into the cred (presumably colluding with an issuee who later wants to disclose one name but not the other). But is such a schema reasonable?\r\n\r\nAs @SmithSamuelM points out, the verifier should be confirming that the schema matches their requirements -- and unless the requirements in this case are about knowing at least one of the issuee's legal names for some strange reason (e.g., what was it either before or after a name change), it seems like this schema should be rejected, without creating any additional behavior in ACDCs to prevent it.",
+          "createdAt": "2023-07-01T17:44:53Z",
+          "updatedAt": "2023-07-01T17:44:53Z"
+        },
+        {
+          "author": "jasoncolburne",
+          "authorAssociation": "NONE",
+          "body": "> In your example the SAID of the third block in the malicious ACDC is different from the SAID in the third block of the valid ACDC. So when the verifier recomputes A it will fail. What am I missing here?\r\n\r\nI am saying that the colluding issuer issues not the first blinded array, but one corresponding to the double entry. Here is the array the issuer would use to compute the top level digest in my malicious example:\r\n\r\n```json\r\n\"A\": [\r\n  \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\",\r\n  \"EGcJzlAaalMxlFSfs2DPB7Tx7n3D7EKAWSXJaheVf_-P\",\r\n  \"EB7_uP-FZ8aoErbInx6BZTZmDb0A5QuFhIQCROlStoMF\"\r\n]\r\n```\r\n\r\nA verifier that only requests the name and issuee AID (and not the age) has no way that I can see to ensure that a SAID in the blinded array corresponds to a given label in the unblinded attribute array, only that it is in the array or not. For example, how do we know _which_ SAID in the blinded array corresponds to `age` and which to `legalName`?\r\n\r\nI understand that a malicious issuer can issue untrue data at any time, and it's really no different than that, but I feel like simply adding labels prevents the more concerning situation of retaining identifier reputation by presenting valid data _until_ the critical moment when an attack can be mounted from arising entirely?\r\n\r\nThe schema I provided was the example in the spec, and the `anyOf` permits duplication. Unfortunately, I don't see a way to provide one that allows a verifier to verify that the unblinded array actually meets the criteria when all elements are included, if they only request _some_ elements, or if the presenter refuses to present _all_ attributes. Correct me If I'm wrong.\r\n\r\nIn addition to avoiding this mischievious case, SADifying that array would allow me to store it without creating an edge case.\r\n\r\nIn a comment in slack it was mentioned I may be describing Partial Disclosure but when I re-read the section seemed to indicate I was talking about Selective. I just want to be clear that I'm talking about the case where some attributes are unblinded and others remain hidden.\r\n\r\nI've also been trying to frame this in the typical example but in my world it is highly likely that self-issuance will occur which raises the likelihood of this happening.",
+          "createdAt": "2023-07-01T19:33:55Z",
+          "updatedAt": "2023-07-01T19:33:55Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@jasoncolburne  I have to think about this some more and see if I can see where you are coming from or to suggest the appropriate measure. If feels like to me that the selective disclosure might not be the appropriate mechanism for your use case. That better is to make the claims granular one or more closely related claims per acdc that do not need to be selectively disclosed and then just use full disclosure. Then they are already Saidified. Historically selective disclosure is a way to granularize VC ified legacy  credentials like drivers licenses that mix functional attributes with forensic attributes such as authenticators and so need selective disclosure to separate out the forensic attributes from the functional ones.  But where all your use cases are self-issued or individualized ACDCs there is no need to mix functional attributes with forensic ones. They can each reside in their own VC and be \u201ceffectively\u201d selectively disclosed by being chained together  when they need to be disclosed and not chained with they don\u2019t and then the chained ones are partially disclosed in order get contractual protection and then fully disclosed and the unchained ones never show up.",
+          "createdAt": "2023-07-02T02:17:39Z",
+          "updatedAt": "2023-07-02T02:24:11Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@jasoncolburne   I am trying to understand the exploit but some things you said are confusing to me. When you say:\r\n\r\n>  For example, how do we know which SAID in the blinded array corresponds to age and which to legalName?\r\n\r\nClearly when a block is actually presented (disclosed) the label of the field inside the block will either be `age` or `legalName`.  So the verifier will be able to verify that a given disclosed block corresponds to a specific SAID in the blinded array.  So what the other undisclosed blocks hold is immaterial to the verifier. Either the verifier gets a verified block with the labels they need or it doesn\u2019t.  So I frankly don\u2019t understand the attack.\r\n\r\nThe purpose of selective disclosure is not to expose any correlatable information about the undisclosed attributes. The labels themselves in concert with the associated blinded SAID provide correlatable information. Its no longer fully blinded. Not being able to match up a given schema block to a given blinded SAID is a feature.  \r\n\r\nSo as far as I can tell, the exploit is that a given Issuer can issue a set of two or more blocks, where each block in the set shares the same subschema in that the field labels are the same but the values of each block in the set are different. A schema for such a set can hide the fact that there is a such a set by not including in the schema repeated identical subschema.  However any presentation in order to verify must use one of the blocks in the set that were used to create the blinded array in the first place. Is this a correct understanding of what your are saying is the attack?  So what the issuer is hiding is that there is such a set of repeated blocks in the blinded array.\r\n\r\nFrom the standpoint of why selective disclosure has been used historically in VCs, such an array of undetectable repeated blocks (for example using a ZKP for selective disclosure) would be a feature not a fault.  The presenter gets to decide which block to present. Since all are valid issuances they are all valid presentations.  The problem as I see it, is that a self-issuer or colluding malicious issuer may choose to make conflicting, inconsistent, statements about the issuee, and there is no way for the verifier to know that a given ACDC that uses selective disclosure is indeed making conflicting statements.  \r\n\r\nThis is always true for selective disclosure mechanisms that truly make the attributes selectively disclosed uncorrelatable with the attributes not selectively disclosed. That an issuer could issue conflicting or contractory attributes, i.e. duplicitous in a selectively disclosable format is always true. The only way for a verifier to prove that there are no duplicitous attributes is to correlate all the attributes. Making the labels correlatable without disclosing the values is still correlation.  But then if we want to make the labels correlatable, then we are in a situation where selective disclosure is no longer selective and we have a use case that contra-indicates the use of selective disclosure.  Better, as I suggested above to use granular ACDCs where all attributes must be disclosed and use partial disclosure to hide those values until after contractual protection is in place.\r\n\r\n\r\nBy themselves an ACDC  cannot ensure the veracity of the data so conveyed. We must trust the issuer. If the Issuer does not have any counter-incentive to issuing inaccurate or unfounded or duplicitous statements, the ACDC itself does not prevent that.  Only correlation across multiple presentations could expose duplicitous issuances by that issuer.   So selective disclosure from an untrustable issuer is an anti-pattern.",
+          "createdAt": "2023-07-02T14:09:14Z",
+          "updatedAt": "2023-07-02T14:09:14Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@jasoncolburne  I think what you want to use instead of selective disclosure is a two-level partial disclosure with nested oneOf s in the schema.  One of the problems I faced is that the term \u201cselective disclosure\u201d has a well known technical meaning in the SSI community that is different from the english language definition. So I picked the term partial disclosure to indicate a different \u201cselectively disclosure\u201d mechanism.  Nested partial disclosure enables disclosing field labels without disclosing field values.  I can provide an example to be clear.",
+          "createdAt": "2023-07-02T14:45:27Z",
+          "updatedAt": "2023-07-02T14:45:58Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Let me suggest this approach:\r\n\r\nThe fully disclosed data is structure as follows:\r\n\r\n## Full\r\n\r\n```json\r\n\r\n\"a\": \r\n{\r\n  \"d\": \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\",\r\n  \"u\": \"0AB9VADfPtCQvFqp-u4BxUvy\",\r\n \"i\": \"ENoxXSSTfy8FDryU0J0av3IdHKqAb6aYBu0fIT5fvqfY\",\r\n  \"LegalName\":\r\n  {\r\n    \"d\": \"EGcJzlAaalMxlFSfs2DPB7Tx7n3D7EKAWSXJaheVf_-P\",\r\n    \"u\": \"0ACsCxwKKCg0C9Hb7OX9ajbZ\",\r\n    \"value\": \"Jason Colburne\"\r\n  },\r\n  \"age\":\r\n  {\r\n    \"d\": \"EOYM0KDlDPODdiUDL7Xp-XRjr9mif7Dv5ovMSGTRxyTA\",\r\n    \"u\": \"0ACbHEmnqeXUJFMf1G2Dj0BU\",\r\n    \"value\": 43\r\n  }\r\n}\r\n\r\n```\r\n\r\nThe schema has two levels of oneOfs. The first for the whole attributes block `a` and then a oneOF for each of the field blocks so that the following 4 partical disclosures are all valid.\r\n\r\n## Least\r\n\r\n ```json\r\n\"a\": \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\"\r\n```\r\n\r\n## Issuee and field labels\r\n\r\n```json\r\n\"a\": \r\n{\r\n  \"d\": \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\",\r\n  \"u\": \"0AB9VADfPtCQvFqp-u4BxUvy\",\r\n  \"i\": \"ENoxXSSTfy8FDryU0J0av3IdHKqAb6aYBu0fIT5fvqfY\",\r\n  \"LegalName\": \"EGcJzlAaalMxlFSfs2DPB7Tx7n3D7EKAWSXJaheVf_-P\",\r\n  \"age\": \"EOYM0KDlDPODdiUDL7Xp-XRjr9mif7Dv5ovMSGTRxyTA\"\r\n}\r\n```\r\n\r\n## LegalName but not Age\r\n\r\n```json\r\n\"a\": \r\n{\r\n  \"d\": \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\",\r\n  \"u\": \"0AB9VADfPtCQvFqp-u4BxUvy\",\r\n  \"i\": \"ENoxXSSTfy8FDryU0J0av3IdHKqAb6aYBu0fIT5fvqfY\",\r\n  \"LegalName\":\r\n  {\r\n    \"d\": \"EGcJzlAaalMxlFSfs2DPB7Tx7n3D7EKAWSXJaheVf_-P\",\r\n    \"u\": \"0ACsCxwKKCg0C9Hb7OX9ajbZ\",\r\n    \"value\": \"Jason Colburne\"\r\n  },\r\n  \"age\": \"EOYM0KDlDPODdiUDL7Xp-XRjr9mif7Dv5ovMSGTRxyTA\"\r\n}\r\n```\r\n\r\n## Age but not Legal Name\r\n```json\r\n\"a\": \r\n{\r\n  \"d\": \"EJgDHAe0lS3dWPB7yT78O2d1xb_AuNecU8VMjykVTd4F\",\r\n  \"u\": \"0AB9VADfPtCQvFqp-u4BxUvy\",\r\n  \"i\": \"ENoxXSSTfy8FDryU0J0av3IdHKqAb6aYBu0fIT5fvqfY\",\r\n  \"LegalName\": \"EGcJzlAaalMxlFSfs2DPB7Tx7n3D7EKAWSXJaheVf_-P\",\r\n  \"age\":\r\n  {\r\n    \"d\": \"EOYM0KDlDPODdiUDL7Xp-XRjr9mif7Dv5ovMSGTRxyTA\",\r\n    \"u\": \"0ACbHEmnqeXUJFMf1G2Dj0BU\",\r\n    \"value\": 43\r\n  }\r\n}\r\n```\r\n\r\nI think nested partial disclosure accomplishes your use case without any ambiguity in the schema. The field values of undisclosed attributes may remain blinded but the field labels are disclosed.\r\n\r\nThis pattern of nested partial disclosure of blinded sub-blocks may be repeated to any number of levels. Where each level discloses the field labels of the next level down but does not disclose the field values. Or may partially disclose some of the field values while leaving the others blinded. The Issuer can\u2019t play games with the schema because anyOf is not used only oneOF.\r\n\r\nA verifier in an IPEX exchange then just removes oneOfs in the schema in their Apply message to force partial disclosure of the fields they need at any given nested layer.\r\n",
+          "createdAt": "2023-07-02T15:34:37Z",
+          "updatedAt": "2023-07-02T15:42:12Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The one complication of using nested oneOf schema operators is to know how to the compute the SAID of a given block.  We always use the most compact version of the block.\r\n\r\nSee https://github.com/trustoverip/tswg-acdc-specification/issues/79\r\n",
+          "createdAt": "2023-07-02T16:12:16Z",
+          "updatedAt": "2023-07-02T16:12:16Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As I suggested above another way to accomplish \u201cpartial\u201d disclosure is to use blinded edges in a graph of ACDCs.\r\n\r\n",
+          "createdAt": "2023-07-02T16:15:17Z",
+          "updatedAt": "2023-07-02T16:15:17Z"
+        },
+        {
+          "author": "jasoncolburne",
+          "authorAssociation": "NONE",
+          "body": "Thanks for all your thought @SmithSamuelM and yes, I was forgetting that the whole reason to use selective disclosure is to prevent correlation - and nested partial disclosure is a great name, now that I understand your terminology. My mistake is that when it came time to implement I jumped to the end of the docs to understand the algorithms and data structures, and not the purpose/nomenclature. As a result, I thought the primary difference was that selective was composable and partial was all or nothing. In the end we may actually need to use a mix of selective and partial disclosure, our requirements are a moving target.\r\n\r\nMaybe it's obvious from the fact that if correlation is denied one could present differing data to different parties, but I feel like others may make the assumption that selective disclosure disallows this kind of behaviour - specifically when the disclosed data is valid with respect to the same compact ACDC.\r\n\r\nAs we have noted, there is nothing forcing the issuer to create an ACDC that is still valid when fully disclosed (it may never be fully disclosed), and an adversary can construct data that can be presented and validated that is backed by two values for the same key - as long as the two values are never presented together. In some scenarios people may make system design assumptions like 'there is at most one non-revoked driving license ACDC issued to an individual from a motor vehicle authority', and because of this, they may assume that if they encounter an individual, that individual has at most one ACDC and thus at most one assigned `legalName` by a motor vehicle authority. But using the method I described, the individual can present two verifiable legal names. It just takes collusion with the right person employed at the motor vehicle authority.\r\n\r\nI understand that breaking non-correlation with my original suggestion is a bad idea and goes against the intent of selective disclosure, as defined, entirely, but do you think it warrants some sort of warning or example that if one chooses to prevent correlation, it does become impossible to prevent this type of misrepresentation?",
+          "createdAt": "2023-07-03T10:03:49Z",
+          "updatedAt": "2023-07-03T10:19:37Z"
+        },
+        {
+          "author": "jasoncolburne",
+          "authorAssociation": "NONE",
+          "body": "Sorry, didn't mean I came up with nested partial disclosure I just mean those were the same conclusions I came to when asking if we could label the saids (to nest the SADs).",
+          "createdAt": "2023-07-03T10:08:41Z",
+          "updatedAt": "2023-07-03T10:08:41Z"
+        },
+        {
+          "author": "jasoncolburne",
+          "authorAssociation": "NONE",
+          "body": "> A verifier in an IPEX exchange then just removes oneOfs in the schema in their Apply message to force partial disclosure of the fields they need at any given nested layer.\r\n\r\nThis is elegant",
+          "createdAt": "2023-07-03T10:13:26Z",
+          "updatedAt": "2023-07-03T10:13:26Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@jasoncolburne \r\n\r\n> I understand that breaking non-correlation with my original suggestion is a bad idea and goes against the intent of selective disclosure, as defined, entirely, but do you think it warrants some sort of warning or example that if one chooses to prevent correlation, it does become impossible to prevent this type of misrepresentation?\r\n\r\nYes that would be a good caution to add.  Historically selective disclosure mechanism have been the subject of discussion about how to prevent fraud against the verifier given that lack of correlatibility can make it easier for a presenter to share credentials without being detected. This means that some other mechanism must be added to disincentivize sharing of credentials. Hence my comment above that use of selective disclosure from untrusted issuers may be an anti-pattern.",
+          "createdAt": "2023-07-03T13:14:13Z",
+          "updatedAt": "2023-07-03T13:14:13Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "A valid use case for the selective disclosure mechanism in ACDC, in the case where the array of selectively disclosable values has repeated instances of the same sub-schema, is for static threshold proofs. this is a  way to support multiple threshold proofs that do not require disclosure of the actual value without correlating to the other elements of the threshold array.  The primary use case is for a set of legal age thresholds. So for example instead of disclosing the actual age of a person say 43 in order to satisfy a minimum legal age requirement,   the `age` field means at least or age is >= the value in the age field.  So an issuer whould issue a selectively dislosable array of the following age blocks\r\n\r\n13, 18, 21,  for someone  age 43 and for someone age 70 the following\r\n\r\n13, 18, 21, 55, 60, 65\r\n\r\nThe non-correlatability of the elements of the seletively disclosable array means a verifier checking say social media age of 13 would not know that the presenter was some other age. So all the legal age tests that a given person satisfied could be included in the selectively disclosable array while minimizing the ability of verifiers to deduce that actual age.\r\n\r\nOne would have to trust that the Issuer was trustable in not constructing a malicious array. which for legal age requirement would be a government issuer shich would be the only legally trustable issuer.\r\n\r\n\r\nanother applications would be for a credential to have repeated values but where each label was internationalized for languages. Then a given presentation would not have to be verbose by exposing all the field labels in a nested partial disclosure but only disclose the one element in the array that was the language of choice.",
+          "createdAt": "2023-07-03T13:27:47Z",
+          "updatedAt": "2023-07-03T13:33:22Z"
+        },
+        {
+          "author": "jasoncolburne",
+          "authorAssociation": "NONE",
+          "body": "Great examples, thank you. We anticipate a mix of trusted and untrusted issuers and various use cases so this will be helpful in framing as we decide on a case by case basis which method is appropriate.\r\n\r\nFor posterity here is a schema I made for nested partial disclosure that uses the examples in this thread (edges and rules omitted):\r\n\r\n```json\r\n{\r\n  \"$id\": \"EECobeq1Pbe-BHZxovIg3ND8vkN183xdkTp0LG3OK9dm\",\r\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\r\n  \"title\": \"Nested Partial Disclosure\",\r\n  \"description\": \"A demonstration of Nested Partial Disclosure\",\r\n  \"credentialType\": \"Demonstration\",\r\n  \"version\": \"1.0.0\",\r\n  \"type\": \"object\",\r\n  \"required\": [\r\n    \"v\",\r\n    \"d\",\r\n    \"i\",\r\n    \"s\",\r\n    \"ri\",\r\n    \"a\"\r\n  ],\r\n  \"properties\": {\r\n    \"v\": {\r\n      \"description\": \"Credential Version\",\r\n      \"type\": \"string\"\r\n    },\r\n    \"d\": {\r\n      \"description\": \"Credential SAID\",\r\n      \"type\": \"string\"\r\n    },\r\n    \"u\": {\r\n      \"description\": \"One time use nonce - optional\",\r\n      \"type\": \"string\"\r\n    },\r\n    \"i\": {\r\n      \"description\": \"Issuer AID\",\r\n      \"type\": \"string\"\r\n    },\r\n    \"ri\": {\r\n      \"description\": \"Credential Registry Identifier\",\r\n      \"type\": \"string\"\r\n    },\r\n    \"s\": {\r\n      \"description\": \"Schema SAID\",\r\n      \"type\": \"string\"\r\n    },\r\n    \"a\": {\r\n      \"oneOf\": [\r\n        {\r\n          \"description\": \"Attributes section SAID\",\r\n          \"type\": \"string\"\r\n        },\r\n        {\r\n          \"$id\": \"EGjNHiyvgu7Yc3HGbu4tKD3AAaiNWjiGd8eOM8ALlNuz\",\r\n          \"description\": \"Attributes section\",\r\n          \"type\": \"object\",\r\n          \"required\": [\r\n            \"d\",\r\n            \"dt\",\r\n            \"i\",\r\n            \"u\",\r\n            \"legalName\",\r\n            \"age\"\r\n          ],\r\n          \"properties\": {\r\n            \"d\": {\r\n              \"description\": \"Attributes SAID\",\r\n              \"type\": \"string\"\r\n            },\r\n            \"dt\": {\r\n              \"description\": \"Date and time of issuance in ISO8601 format\",\r\n              \"type\": \"string\",\r\n              \"format\": \"date-time\"\r\n            },\r\n            \"i\": {\r\n              \"description\": \"Issuee AID\",\r\n              \"type\": \"string\"\r\n            },\r\n            \"u\": {\r\n              \"description\": \"Salty Nonce\",\r\n              \"type\": \"string\"\r\n            },\r\n            \"legalName\": {\r\n              \"oneOf\": [\r\n                {\r\n                  \"description\": \"Blinded legal name SAID\",\r\n                  \"type\": \"string\"\r\n                },\r\n                {\r\n                  \"type\": \"object\",\r\n                  \"required\": [\r\n                    \"d\",\r\n                    \"u\",\r\n                    \"value\"\r\n                  ],\r\n                  \"properties\": {\r\n                    \"d\": {\r\n                      \"description\": \"SAID of disclosable data\",\r\n                      \"type\": \"string\"\r\n                    },\r\n                    \"u\": {\r\n                      \"description\": \"Salty nonce\",\r\n                      \"type\": \"string\"\r\n                    },\r\n                    \"value\": {\r\n                      \"description\": \"Unblinded legal name\",\r\n                      \"type\": \"string\"\r\n                    }\r\n                  },\r\n                  \"additionalProperties\": false\r\n                }\r\n              ]\r\n            },\r\n            \"age\": {\r\n              \"oneOf\": [\r\n                {\r\n                  \"description\": \"Blinded age SAID\",\r\n                  \"type\": \"string\"\r\n                },\r\n                {\r\n                  \"type\": \"object\",\r\n                  \"required\": [\r\n                    \"d\",\r\n                    \"u\",\r\n                    \"value\"\r\n                  ],\r\n                  \"properties\": {\r\n                    \"d\": {\r\n                      \"description\": \"SAID of disclosable data\",\r\n                      \"type\": \"string\"\r\n                    },\r\n                    \"u\": {\r\n                      \"description\": \"Salty nonce\",\r\n                      \"type\": \"string\"\r\n                    },\r\n                    \"value\": {\r\n                      \"description\": \"Unblinded age\",\r\n                      \"type\": \"string\"\r\n                    }\r\n                  },\r\n                  \"additionalProperties\": false\r\n                }\r\n              ]\r\n            }\r\n          },\r\n          \"additionalProperties\": false\r\n        }\r\n      ]\r\n    }\r\n  },\r\n  \"additionalProperties\": false\r\n}\r\n```",
+          "createdAt": "2023-07-05T07:32:23Z",
+          "updatedAt": "2023-07-05T07:33:39Z"
+        }
+      ]
+    },
+    {
+      "number": 79,
+      "id": "I_kwDOGxcvRc5qYGVn",
+      "title": "Most compact version",
+      "url": "https://github.com/trustoverip/tswg-acdc-specification/issues/79",
+      "state": "OPEN",
+      "author": "SmithSamuelM",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The algorithm for computing the \u201cmost\u201d compact version of a field map in an ACDC in order to compute its SAID is as follows.\r\n\r\nRecursively ascending the document tree of nested blocks.\r\n\r\nIf a block has a SAID field `d` then the most compact version for the next higher block that includes that block is the oneOf representation that is the block label with a str value that is its SAID.\r\n\r\nThe actual SAID of any block that does not have any nested SAIDed blocks must be the full expansion of that block. Otherwise a nested block would have to have a subblock with a SAIDed field in order for it not to be fully expanded.\r\n\r\nWhen ascending the tree any non-nested SAIDed blocks, we call such a block a `leaf` block. Its SAID must be the fully expanded  representations (there are no other variants possible and there is no oneOf in its schema).\r\n\r\nA SAIDed `non-leaf` blocks will have a oneOf for which one of the subschema is just the block label and a string value that is its SAID.\r\n\r\nThe computation of a SAIDed `non-leaf` block\u2019s SAID is as follows:\r\n\r\nEach SAIDed `non-leaf` block represents each of its nested SAIDed sub-blocks with str fields where the field value is the SAID of the nested block. Non-SAIDed `leaf` sub-blocks are fully expanded (they can\u2019t be any other way) and other top level fields are represented as is.\r\n\r\nThe most compact SAID for any SAIDed `non-leaf` black can be computed recursively as a depth first search of its top-level fields.\r\n\r\nFirst descend depth first until a `leaf` is reached  then compute the SAID of the `leaf` and then ascend back up and compute the SAIDs of any siblings (each by recursive descent) then compute the SAID of that `non-leaf` block and so one until the SAID of the top-level block is computed. \r\n\r\nUsing this algorithm there is one and only one SAID for any given ACDC as well as any of its parts at any level. The  SAID of any block is the SAID of its most compact version so there is never any ambiguity introduced by the oneOf schema operator. ",
+      "createdAt": "2023-07-02T16:00:21Z",
+      "updatedAt": "2023-07-08T16:01:41Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "nkongsuwan",
+          "authorAssociation": "NONE",
+          "body": "Do I understand correctly that the \"d\" field of an ACDC in its **uncompacted** form, e.g. a fully expanded version, must always be the SAID of its **most compacted** form?",
+          "createdAt": "2023-07-04T06:52:51Z",
+          "updatedAt": "2023-07-04T06:53:52Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes",
+          "createdAt": "2023-07-04T13:45:55Z",
+          "updatedAt": "2023-07-04T13:45:55Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "See the examples in the spec of compact vs non compact forms",
+          "createdAt": "2023-07-04T13:47:14Z",
+          "updatedAt": "2023-07-04T13:47:14Z"
+        },
+        {
+          "author": "nkongsuwan",
+          "authorAssociation": "NONE",
+          "body": "I have checked the KLI demo on credential issuance for the QVI vLEI schema [(keripy/scripts/demo/credentials/single-issuer.sh)](https://github.com/WebOfTrust/keripy/blob/development/scripts/demo/credentials/single-issuer.sh), and it seems that the protocol you described above is not implemented in the KLI yet. Is this something on your to-do list? Or am I missing something? \r\n\r\nTo give you more detail, this is the ACDC I obtain from the script:\r\n```\r\n{\r\n    \"v\": \"ACDC10JSON000197_\",\r\n    \"d\": \"EDeh2Em1o8nHvMPqOcI5Yv2e51H_t0MTU-f4Z6MSTwvh\",\r\n    \"i\": \"EKxICWTx5Ph4EKq5xie2znZf7amggUn4Sd-2-46MIQTg\",\r\n    \"ri\": \"EEloVTY1iX6TUP9kRVKyYF-qVT8p89pgXMvsFRac7MDK\",\r\n    \"s\": \"EBfdlu8R27Fbx-ehrqwImnK-8Cm79sqbAQ4MmvEAYqao\",\r\n    \"a\": {\r\n      \"d\": \"EPGoWl90AsJ-O6BdhBrFCsIHWG7wfVJ3p2TPk_cALmoU\",\r\n      \"i\": \"ELjSFdrTdCebJlmvbFNX9-TLhR2PO0_60al1kQp5_e6k\",\r\n      \"dt\": \"2023-07-05T13:35:38.335995+00:00\",\r\n      \"LEI\": \"5493001KJTIIGC8Y1R17\"\r\n    }\r\n}\r\n```\r\n\r\nHowever, when I tried using `kli saidify` on its most compacted form, I get a difference SAID:\r\n```\r\n{\r\n    \"v\": \"ACDC10JSON000119_\",\r\n    \"d\": \"EL3uJYzwBNxuGxY5ZJCqJe_6Dtm55HVLfyuOONQGnLmz\",\r\n    \"i\": \"EKxICWTx5Ph4EKq5xie2znZf7amggUn4Sd-2-46MIQTg\",\r\n    \"ri\": \"EEloVTY1iX6TUP9kRVKyYF-qVT8p89pgXMvsFRac7MDK\",\r\n    \"s\": \"EBfdlu8R27Fbx-ehrqwImnK-8Cm79sqbAQ4MmvEAYqao\",\r\n    \"a\": \"EPGoWl90AsJ-O6BdhBrFCsIHWG7wfVJ3p2TPk_cALmoU\"\r\n}\r\n```",
+          "createdAt": "2023-07-05T14:00:27Z",
+          "updatedAt": "2023-07-05T14:00:27Z"
+        },
+        {
+          "author": "SmithSamuelM",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@nkongsuwan Yes the most compact version algorithm is on the todo list for the vLEI. The vLEI was implemented before we resolved how to manage nested partial disclosure in ACDCs",
+          "createdAt": "2023-07-08T16:01:40Z",
+          "updatedAt": "2023-07-08T16:01:40Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -2274,25 +2615,33 @@
       "id": "PR_kwDOGxcvRc4_JQ3L",
       "title": "simple grammar changes",
       "url": "https://github.com/trustoverip/tswg-acdc-specification/pull/70",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "trentlarson",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2022-09-17T20:00:01Z",
-      "updatedAt": "2022-09-17T20:00:01Z",
+      "updatedAt": "2023-03-15T14:49:38Z",
       "baseRepository": "trustoverip/tswg-acdc-specification",
       "baseRefName": "main",
-      "baseRefOid": "bf6e0bf403459788a02e8cc036cf28d53d710f8c",
+      "baseRefOid": "09ca2254f6a6f3e484c9b0b2918c62561b549d83",
       "headRepository": "trentlarson/tswg-acdc-specification",
       "headRefName": "patch-2",
-      "headRefOid": "eb737536d091eb7a5035636f0bcc00492a1bc8e2",
-      "closedAt": null,
+      "headRefOid": "f12f4cbbb3984c3769d8ef9da21e067860008a5f",
+      "closedAt": "2023-03-15T14:49:38Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "linux-foundation-easycla",
+          "authorAssociation": "NONE",
+          "body": " <a href=\"https://api.easycla.lfx.linuxfoundation.org/v2/repository-provider/github/sign/31104196/454504261/70/#/?version=2\"><img src=\"https://s3.amazonaws.com/cla-project-logo-prod/cla-not-signed.svg\" alt=\"CLA Not Signed\" align=\"left\" height=\"28\" width=\"328\"></a><br/><br /><ul><li>:white_check_mark: login: m00sey / name: Kevin Griffin  (f12f4cbbb3984c3769d8ef9da21e067860008a5f)</li><li><a href='https://api.easycla.lfx.linuxfoundation.org/v2/repository-provider/github/sign/31104196/454504261/70/#/?version=2' target='_blank'>:x:</a> - login: @trentlarson / name: Trent Larson . The commit (eb737536d091eb7a5035636f0bcc00492a1bc8e2) is not authorized under a signed CLA. <a href='https://api.easycla.lfx.linuxfoundation.org/v2/repository-provider/github/sign/31104196/454504261/70/#/?version=2' target='_blank'>Please click here to be authorized</a>. For further assistance with EasyCLA, <a href='https://jira.linuxfoundation.org/servicedesk/customer/portal/4' target='_blank'>please submit a support request ticket</a>.</li></ul>",
+          "createdAt": "2023-03-14T15:30:16Z",
+          "updatedAt": "2023-03-14T17:58:51Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -2300,25 +2649,69 @@
       "id": "PR_kwDOGxcvRc4_JThb",
       "title": "Typos and grammar fixes",
       "url": "https://github.com/trustoverip/tswg-acdc-specification/pull/71",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kentbull",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Found a couple of typos and made a clarifying grammar fix. I may submit another PR once I finish reading the second half of the spec or I may update this PR if it isn't merged yet.",
       "createdAt": "2022-09-17T21:17:34Z",
-      "updatedAt": "2022-09-17T21:17:34Z",
+      "updatedAt": "2023-03-15T15:02:31Z",
       "baseRepository": "trustoverip/tswg-acdc-specification",
       "baseRefName": "main",
-      "baseRefOid": "bf6e0bf403459788a02e8cc036cf28d53d710f8c",
+      "baseRefOid": "09ca2254f6a6f3e484c9b0b2918c62561b549d83",
       "headRepository": "kentbull/tswg-acdc-specification",
       "headRefName": "main",
-      "headRefOid": "55df4852ac0862ae4db0f604cbd327137b4f7048",
-      "closedAt": null,
+      "headRefOid": "6b5489a97e77aa2afc0384d0be3866860704acc3",
+      "closedAt": "2023-03-15T14:49:28Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "linux-foundation-easycla",
+          "authorAssociation": "NONE",
+          "body": "<a href=\"https://easycla.lfx.linuxfoundation.org/#/?version=2\"><img src=\"https://s3.amazonaws.com/cla-project-logo-prod/cla-signed.svg\" alt=\"CLA Signed\" align=\"left\" height=\"28\" width=\"328\" ></a><br/><br />The committers listed above are authorized under a signed CLA.<ul><li>:white_check_mark: login: kentbull / name: Kent Bull  (55df4852ac0862ae4db0f604cbd327137b4f7048)</li><li>:white_check_mark: login: m00sey / name: Kevin Griffin  (6b5489a97e77aa2afc0384d0be3866860704acc3)</li></ul>",
+          "createdAt": "2023-03-14T15:30:24Z",
+          "updatedAt": "2023-03-15T15:02:31Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 72,
+      "id": "PR_kwDOGxcvRc5DmT49",
+      "title": "Add blindable state tel section fix some language",
+      "url": "https://github.com/trustoverip/tswg-acdc-specification/pull/72",
+      "state": "MERGED",
+      "author": "SmithSamuelM",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2022-11-23T21:39:31Z",
+      "updatedAt": "2022-11-23T21:46:34Z",
+      "baseRepository": "trustoverip/tswg-acdc-specification",
+      "baseRefName": "main",
+      "baseRefOid": "bf6e0bf403459788a02e8cc036cf28d53d710f8c",
+      "headRepository": "SmithSamuelM/toip-acdc",
+      "headRefName": "main",
+      "headRefOid": "4eb26e724feae18f04e9bf2388d868e58b807645",
+      "closedAt": "2022-11-23T21:46:34Z",
+      "mergedAt": "2022-11-23T21:46:34Z",
+      "mergedBy": "SmithSamuelM",
+      "mergeCommit": {
+        "oid": "09ca2254f6a6f3e484c9b0b2918c62561b549d83"
+      },
+      "comments": [
+        {
+          "author": "linux-foundation-easycla",
+          "authorAssociation": "NONE",
+          "body": "<a href=\"https://easycla.lfx.linuxfoundation.org/#/?version=2\"><img src=\"https://s3.amazonaws.com/cla-project-logo-prod/cla-signed.svg\" alt=\"CLA Signed\" align=\"left\" height=\"28\" width=\"328\" ></a><br/><br />The committers listed above are authorized under a signed CLA.<ul><li>:white_check_mark: login: SmithSamuelM / name: Samuel Smith  (f42bf1d7abcbf66aadcb3f9812f1b4da537d73e4, 4eb26e724feae18f04e9bf2388d868e58b807645)</li></ul>",
+          "createdAt": "2022-11-23T21:39:38Z",
+          "updatedAt": "2022-11-23T21:45:49Z"
+        }
+      ],
       "reviews": []
     }
   ]
